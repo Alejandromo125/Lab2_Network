@@ -21,7 +21,7 @@ public class ClientUDP_Script : MonoBehaviour
         data = new byte[1024];
         
         IPEndPoint ipep = new IPEndPoint(
-                        IPAddress.Parse("127.0.0.1"), 9050);
+                        IPAddress.Parse("192.168.104.32"), 9050);
 
         server = new Socket(AddressFamily.InterNetwork,
                        SocketType.Dgram, ProtocolType.Udp);
