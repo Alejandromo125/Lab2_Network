@@ -1,4 +1,4 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Net;
@@ -18,14 +18,14 @@ public class ServerUDP_Script : MonoBehaviour
     void Start()
     {
         data = new byte[1024];
-        IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 9050);
 
         newsock = new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp);
 
+        IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 9050);
+
         newsock.Bind(ipep);
         StartCoroutine("ClientsConnection");
-        
     }
 
     // Update is called once per frame
@@ -37,6 +37,8 @@ public class ServerUDP_Script : MonoBehaviour
         //Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
         //newsock.SendTo(data, recv, SocketFlags.None, Remote);
 
+        recv = newsock.ReceiveFrom(data, ref Remote);
+        newsock.SendTo(data, recv, SocketFlags.None, Remote);
     }
 
     IEnumerator ClientsConnection()
