@@ -24,7 +24,23 @@ public class ServerUDP_Script : MonoBehaviour
                         SocketType.Dgram, ProtocolType.Udp);
 
         newsock.Bind(ipep);
-        newsock.Listen(10);
+        StartCoroutine("ClientsConnection");
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //data = new byte[1024];
+        //recv = newsock.ReceiveFrom(data, ref Remote);
+
+        //Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
+        //newsock.SendTo(data, recv, SocketFlags.None, Remote);
+
+    }
+
+    IEnumerator ClientsConnection()
+    {
         Debug.Log("Waiting for a client...");
 
         IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
@@ -38,16 +54,7 @@ public class ServerUDP_Script : MonoBehaviour
         string welcome = "Welcome to my test server";
         data = Encoding.ASCII.GetBytes(welcome);
         newsock.SendTo(data, data.Length, SocketFlags.None, Remote);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        data = new byte[1024];
-        recv = newsock.ReceiveFrom(data, ref Remote);
-
-        Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
-        newsock.SendTo(data, recv, SocketFlags.None, Remote);
-
+        yield return null;
     }
 }
