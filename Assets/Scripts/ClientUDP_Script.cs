@@ -1,38 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using UnityEngine.Windows;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using TMPro;
 
 public class ClientUDP_Script : MonoBehaviour
 {
-    private UdpClient udpClient;
+    
     [SerializeField]
-    private TMP_InputField InputFieldText;
+    private TMP_InputField InputFieldTextIP;
+    [SerializeField]
+    private TMP_InputField InputFieldTextUserName;
+
+    private UdpClient udpClient;
     private string currentServerIP;
+    private string userName;
     private int serverPort = 12345;
 
+    private string waitingRoom = "WaitingRoom";
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     public async void LogIn()
     {
-        currentServerIP = InputFieldText.text;
+        currentServerIP = InputFieldTextIP.text;
+        userName = InputFieldTextUserName.text;
         udpClient = new UdpClient();
 
-        // Send a message to the server
-        string userName = "WaitingRoom";
-        byte[] data = Encoding.UTF8.GetBytes(userName);
+        string username = InputFieldTextUserName.text;
+        byte[] data = Encoding.UTF8.GetBytes(username);
         await udpClient.SendAsync(data, data.Length, currentServerIP, serverPort);
 
-        UdpReceiveResult result = await udpClient.ReceiveAsync();
-        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
+       
+        SceneManager.LoadScene(waitingRoom);
+    }
 
-        SceneManager.LoadScene(receivedMessage, LoadSceneMode.Additive);
+    public async void SendMessage()
+    {
+        string message = "Mensaje de ejemplo enviado por" + userName;
+        byte[] data = Encoding.UTF8.GetBytes(message);
+        await udpClient.SendAsync(data, data.Length, currentServerIP, serverPort);
+    }
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.KeypadEnter))
+        {
+            SendMessage();
+        }
+            
+        
     }
     private void OnDisable()
     {

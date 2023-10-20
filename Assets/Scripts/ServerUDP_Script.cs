@@ -11,31 +11,47 @@ using UnityEngine.SceneManagement;
 
 public class ServerUDP_Script : MonoBehaviour
 {
-    // Start is called before the first frame update
 
     private UdpClient udpListener;
     private string serverIP = "127.0.0.1";
     private int port = 12345;
-    [SerializeField] SceneLoader sceneLoader;
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     private async void Start()
     {
         udpListener = new UdpClient(port);
         Debug.Log("Server started on port " + port);
+        UdpReceiveResult result = await udpListener.ReceiveAsync();
+        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
+        StartCoroutine(StartWaitingScene(receivedMessage));
     }
     private async void Update()
     {
-        UdpReceiveResult result = await udpListener.ReceiveAsync();
-        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-        if(SceneManager.LoadSceneAsync(receivedMessage,LoadSceneMode.Additive).isDone)
+        try
         {
-            byte[] data = Encoding.UTF8.GetBytes(receivedMessage);
-            await udpListener.SendAsync(data, data.Length, serverIP, port);
-        }
+            UdpReceiveResult result = await udpListener.ReceiveAsync();
+            string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
 
-        
+            Debug.Log(receivedMessage);
+        }
+        catch (Exception ex) 
+        {
+
+        }
+       
     }
+
     private void OnDisable()
     {
         udpListener.Close();
+    }
+
+    private IEnumerator StartWaitingScene(string userConnected)
+    {
+        Debug.Log("Client connected" + userConnected);
+        yield return(5);
+        SceneManager.LoadSceneAsync("WaitingRoom");
     }
 }
