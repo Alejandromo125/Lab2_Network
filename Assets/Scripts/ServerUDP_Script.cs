@@ -6,57 +6,36 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class ServerUDP_Script : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    private int recv;
-    byte[] data;
-    Socket newsock;
-    EndPoint Remote;
-    void Start()
+    private UdpClient udpListener;
+    private string serverIP = "127.0.0.1";
+    private int port = 12345;
+    [SerializeField] SceneLoader sceneLoader;
+    private async void Start()
     {
-        data = new byte[1024];
-
-        newsock = new Socket(AddressFamily.InterNetwork,
-                        SocketType.Dgram, ProtocolType.Udp);
-
-        IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 9050);
-
-        newsock.Bind(ipep);
-        StartCoroutine("ClientsConnection");
+        udpListener = new UdpClient(port);
+        Debug.Log("Server started on port " + port);
     }
-
-    // Update is called once per frame
-    void Update()
+    private async void Update()
     {
-        //data = new byte[1024];
-        //recv = newsock.ReceiveFrom(data, ref Remote);
+        UdpReceiveResult result = await udpListener.ReceiveAsync();
+        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
+        if(SceneManager.LoadSceneAsync(receivedMessage,LoadSceneMode.Additive).isDone)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(receivedMessage);
+            await udpListener.SendAsync(data, data.Length, serverIP, port);
+        }
 
-        //Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
-        //newsock.SendTo(data, recv, SocketFlags.None, Remote);
-
-        recv = newsock.ReceiveFrom(data, ref Remote);
-        newsock.SendTo(data, recv, SocketFlags.None, Remote);
+        
     }
-
-    IEnumerator ClientsConnection()
+    private void OnDisable()
     {
-        Debug.Log("Waiting for a client...");
-
-        IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-        Remote = (EndPoint)(sender);
-
-        recv = newsock.ReceiveFrom(data, ref Remote);
-
-        Debug.Log("Message received from: " + Remote.ToString());
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-
-        string welcome = "Welcome to my test server";
-        data = Encoding.ASCII.GetBytes(welcome);
-        newsock.SendTo(data, data.Length, SocketFlags.None, Remote);
-
-        yield return null;
+        udpListener.Close();
     }
 }

@@ -7,67 +7,35 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine.Windows;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class ClientUDP_Script : MonoBehaviour
 {
-    // Start is called before the first frame update
-    byte[] data;
-    string input, stringData;
-    Socket server;
-    EndPoint Remote;
-    int recv;
-    void Start()
+    private UdpClient udpClient;
+    [SerializeField]
+    private TMP_InputField InputFieldText;
+    private string currentServerIP;
+    private int serverPort = 12345;
+
+    public async void LogIn()
     {
-        data = new byte[1024];
-        
-        IPEndPoint ipep = new IPEndPoint(
-                        IPAddress.Parse("192.168.104.32"), 9050);
+        currentServerIP = InputFieldText.text;
+        udpClient = new UdpClient();
 
-        server = new Socket(AddressFamily.InterNetwork,
-                       SocketType.Dgram, ProtocolType.Udp);
+        // Send a message to the server
+        string userName = "WaitingRoom";
+        byte[] data = Encoding.UTF8.GetBytes(userName);
+        await udpClient.SendAsync(data, data.Length, currentServerIP, serverPort);
 
+        UdpReceiveResult result = await udpClient.ReceiveAsync();
+        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
 
-        string welcome = "Hello, are you there?";
-        data = Encoding.ASCII.GetBytes(welcome);
-        server.SendTo(data, data.Length, SocketFlags.None, ipep);
-
-        IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-        Remote = (EndPoint)sender;
-
-        data = new byte[1024];
-        recv = server.ReceiveFrom(data, ref Remote);
-
-        Debug.Log("Message received from: " +  Remote.ToString());
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        SceneManager.LoadScene(receivedMessage, LoadSceneMode.Additive);
     }
-
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        if(UnityEngine.Input.GetKeyDown(KeyCode.Escape)) 
-        {
-            CloseClient();
-        }
-
-        if (UnityEngine.Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            SendMessage("hola");
-        }
-        
-    }
-
-    void CloseClient()
-    {
-        Debug.Log("Stopping client");
-        server.Close();
-    }
-
-    void SendMessage(string message)
-    {
-        server.SendTo(Encoding.ASCII.GetBytes(message), Remote);
-        data = new byte[1024];
-        recv = server.ReceiveFrom(data, ref Remote);
-        stringData = Encoding.ASCII.GetString(data, 0, recv);
-        Debug.Log(stringData);
+        udpClient.Close();
     }
 }
