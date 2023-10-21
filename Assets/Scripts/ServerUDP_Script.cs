@@ -14,10 +14,11 @@ public class ServerUDP_Script : MonoBehaviour
 {
 
     private UdpClient udpListener;
-    private string serverIP = "127.0.0.1";
+    private string serverIP = "192.168.56.1";
     private int port = 12345;
     private string lastMessage = string.Empty;
-    private bool responseSent = false;
+
+    private IPEndPoint _clientEndPoint;
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -26,27 +27,28 @@ public class ServerUDP_Script : MonoBehaviour
     {
         udpListener = new UdpClient(port);
         Debug.Log("Server started on port " + port);
-
-        
-        UdpReceiveResult result = await udpListener.ReceiveAsync();
-        string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-        StartCoroutine(StartWaitingScene(receivedMessage));
-
-             
+        AddMessageEventHandler();
+        udpListener.BeginReceive(ReceiveCallback, null);
     }
+
+    private void ReceiveCallback(IAsyncResult ar)
+    {
+        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, port);
+        _clientEndPoint = clientEndPoint;
+        byte[] data =  udpListener.EndReceive(ar, ref clientEndPoint);
+        string message = Encoding.UTF8.GetString(data);
+
+        // Handle the received message here (e.g., broadcast to clients)
+        UiManager.instance.UpdateText(message);
+
+        udpListener.BeginReceive(ReceiveCallback, null);
+    }
+
     private async void Update()
     {
         try
         {
-            UdpReceiveResult result = await udpListener.ReceiveAsync();
-            string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-            UiManager.instance.UpdateText(receivedMessage);
-            if (!responseSent)
-            {
-                lastMessage = receivedMessage;
-                
-                responseSent = true;
-            }
+            //udpListener.BeginReceive(ReceiveCallback, null);
         }
         catch (Exception ex) 
         {
@@ -61,18 +63,31 @@ public class ServerUDP_Script : MonoBehaviour
     }
     private IEnumerator StartWaitingScene(string userConnected)
     {
-        Debug.Log("Client connected" + userConnected);
+        Debug.Log("Client connected " + userConnected);
         yield return(5);
-        SceneManager.LoadSceneAsync("WaitingRoom");
     }
 
-    public async void BroadcastMessage()
+    public async void BroadcastMessage(string message)
     {
-        byte[] data = Encoding.UTF8.GetBytes(lastMessage);
-        await udpListener.SendAsync(data, data.Length, serverIP, port);
-        UiManager.instance.UpdateText(lastMessage);
+        byte[] data = Encoding.UTF8.GetBytes(message);
+        udpListener.Send(data, data.Length, _clientEndPoint);
+        UiManager.instance.UpdateText(message);
 
-        responseSent = false;
+    }
+
+    private void AddMessageEventHandler()
+    {
+        MessageEventHandler messageEventHandler = null;
+        messageEventHandler = FindObjectOfType<MessageEventHandler>();
+        if (messageEventHandler != null)
+        {
+            messageEventHandler.OnButtonClicked += HandleCallbackEvent;
+        }
+    }
+    public void HandleCallbackEvent()
+    {
+        string message = "Server" + ":" + UiManager.instance.InputFieldMessage.text;
+        BroadcastMessage(message);
     }
 
 }
