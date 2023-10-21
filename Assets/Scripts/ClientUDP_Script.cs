@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using System.Net;
 
 public class ClientUDP_Script : MonoBehaviour
 {
@@ -36,9 +37,10 @@ public class ClientUDP_Script : MonoBehaviour
 
         string username = InputFieldTextUserName.text + " has joined the room";
         byte[] data = Encoding.UTF8.GetBytes(username);
-        await udpClient.SendAsync(data, data.Length, currentServerIP, serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        await udpClient.SendAsync(data, data.Length, recipientEndPoint);
 
-       
+
         SceneManager.LoadScene("WaitingRoom");
         
         
@@ -56,9 +58,9 @@ public class ClientUDP_Script : MonoBehaviour
     {
         string message =userName + ":" + UiManager.instance.InputFieldMessage.text;
         byte[] data = Encoding.UTF8.GetBytes(message);
-        udpClient.SendAsync(data, data.Length, currentServerIP, serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        udpClient.SendAsync(data, data.Length, recipientEndPoint);
         UiManager.instance.UpdateText(message);
-        lastMessage = message;
     }
     private async void Update()
     {
