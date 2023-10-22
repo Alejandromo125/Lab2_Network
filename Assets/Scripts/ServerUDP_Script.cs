@@ -18,7 +18,7 @@ public class ServerUDP_Script : MonoBehaviour
     private int port = 12345;
     private string lastMessage = string.Empty;
     private Thread serverThread;
-
+    private IPEndPoint clientEndPoint;
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -26,12 +26,13 @@ public class ServerUDP_Script : MonoBehaviour
     private async void Start()
     {
         udpListener = new UdpClient(port);
-        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 12345);
+        
 
         Debug.Log("Server started on port " + port);
         SceneManager.activeSceneChanged += AddMessageEventHandler;
 
         UdpReceiveResult result = await udpListener.ReceiveAsync();
+        clientEndPoint = result.RemoteEndPoint;
         string message = Encoding.UTF8.GetString(result.Buffer);
         StartCoroutine(StartWaitingScene(message));
 
@@ -83,14 +84,12 @@ public class ServerUDP_Script : MonoBehaviour
     {
         string message = "Server" + ":" + UiManager.instance.InputFieldMessage.text;
         byte[] data = Encoding.UTF8.GetBytes(message);
-        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 12345);
-        udpListener.SendAsync(data, data.Length,clientEndPoint);
+        udpListener.SendAsync(data, data.Length, clientEndPoint);
         UiManager.instance.UpdateText(message);
     }
 
     private void HandleRecieveMessages()
     {
-        IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 12345);
         while (true)
         {
             byte[] receivedData = udpListener.Receive(ref clientEndPoint);

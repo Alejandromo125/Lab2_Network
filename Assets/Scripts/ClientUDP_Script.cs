@@ -18,7 +18,7 @@ public class ClientUDP_Script : MonoBehaviour
     private string currentServerIP;
     private string userName;
     private int serverPort = 12345;
-
+    private int clientPort = 9050;
     private string lastMessage;
 
     private void Awake()
@@ -33,7 +33,7 @@ public class ClientUDP_Script : MonoBehaviour
     {
         currentServerIP = InputFieldTextIP.text;
         userName = InputFieldTextUserName.text;
-        udpClient = new UdpClient();
+        udpClient = new UdpClient(clientPort);
 
         string username = InputFieldTextUserName.text + " has joined the room";
         byte[] data = Encoding.UTF8.GetBytes(username);
