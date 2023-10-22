@@ -13,13 +13,14 @@ public class ClientUDP_Script : MonoBehaviour
     private TMP_InputField InputFieldTextIP;
     [SerializeField]
     private TMP_InputField InputFieldTextUserName;
+    [SerializeField]
+    private TMP_InputField InputPortClient;
 
     private UdpClient udpClient;
     private string currentServerIP;
     private string userName;
     private int serverPort = 12345;
-    private int clientPort = 9050;
-    private string lastMessage;
+    private int clientPort;
 
     private void Awake()
     {
@@ -33,9 +34,10 @@ public class ClientUDP_Script : MonoBehaviour
     {
         currentServerIP = InputFieldTextIP.text;
         userName = InputFieldTextUserName.text;
+        clientPort = int.Parse(InputPortClient.text);
         udpClient = new UdpClient(clientPort);
 
-        string username = InputFieldTextUserName.text + " has joined the room";
+        string username = "/connect:" + InputFieldTextUserName.text;
         byte[] data = Encoding.UTF8.GetBytes(username);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
         await udpClient.SendAsync(data, data.Length, recipientEndPoint);
@@ -68,7 +70,10 @@ public class ClientUDP_Script : MonoBehaviour
         {
             UdpReceiveResult result = await udpClient.ReceiveAsync();
             string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-            UiManager.instance.UpdateText(receivedMessage);
+            if(isFromAnotherUser(receivedMessage))
+            {
+                UiManager.instance.UpdateText(receivedMessage);
+            }
         }
         catch (Exception ex)
         {
