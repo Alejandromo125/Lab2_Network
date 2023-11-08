@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     float rotationAngle = 0f;
 
+    public GameObject explosionPrefab; // Prefab for the explosion particle system.
+
     void Start()
     {
         mainCamera = Camera.main;
@@ -72,21 +74,16 @@ public class PlayerController : MonoBehaviour
 
 
         // Rotate the character to look at the mouse pointer instantly on the Y-axis.
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+        {
+            Vector3 lookAtPoint = hit.point;
 
-        //Method 1 (works but not very comfortable) <-- selected for now...
-        rotationAngle += Input.GetAxis("Mouse X") * 1000 * -Time.deltaTime;
-        transform.rotation = Quaternion.AngleAxis(rotationAngle, Vector3.up);
+            Vector3 lookDir = lookAtPoint - transform.position;
+            lookDir.y = 0;
 
-        //Method 2 (goes weird)
-        //transform.LookAt(Input.mousePosition, Vector3.up);
-
-        //Method 3 (chat gpt version, does not seem to do anything functional)
-        //Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hitLayer))
-        //{
-        //    Vector3 lookAtPoint = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-        //    transform.LookAt(lookAtPoint, Vector3.up); // Y-axis rotation only.
-        //}
+            transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
+        }
     }
 
     void HandleShooting()
@@ -101,6 +98,9 @@ public class PlayerController : MonoBehaviour
     {
         raycastLine.enabled = true;
         raycastLine.SetPosition(0, gunTransform.position);
+
+        // Spawn the explosion particle at the gun's position.
+        Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity, this.transform);
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
