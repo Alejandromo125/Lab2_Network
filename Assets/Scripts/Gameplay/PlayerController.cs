@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,18 +13,26 @@ public class PlayerController : MonoBehaviour
     public float deceleration = 5f; // Deceleration rate.
     public float acceleration = 5f; // Deceleration rate.
     public LineRenderer raycastLine;
+    public float shootDelay = 0.3f; // Delay between shots.
+    public GameObject explosionPrefab; // Prefab for the explosion particle system.
 
-    private Camera mainCamera;
+    //public CinemachineFreeLook freeLookCamera; // Reference to your CinemachineFreeLook component.
+    //public CinemachineImpulseSource impulseSource; // Reference to CinemachineImpulseSource for camera shake.
+
+    public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
+    private float lastShootTime;
 
     float rotationAngle = 0f;
 
-    public GameObject explosionPrefab; // Prefab for the explosion particle system.
-
     void Start()
     {
-        mainCamera = Camera.main;
-        raycastLine.enabled = false;
+        //mainCamera = Camera.main;
+        raycastLine.enabled = true;
+
+        // Initialize references to the Cinemachine components.
+        //freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
+        //impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
     }
 
     void Update()
@@ -31,6 +40,18 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleShooting();
     }
+
+    // Call this method to trigger camera shake.
+    //void ShakeCamera(float shakeDuration, float shakeAmplitude, float shakeFrequency)
+    //{
+    //    impulseSource.GenerateImpulse(Vector3.one); // Basic impulse, can be customized.
+    //}
+
+    //// Call this method to zoom the camera.
+    //void ZoomCamera(float zoomAmount)
+    //{
+    //    freeLookCamera.m_Orbits[1].m_Radius += zoomAmount;
+    //}
 
     void HandleMovement()
     {
@@ -88,9 +109,10 @@ public class PlayerController : MonoBehaviour
 
     void HandleShooting()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
+            lastShootTime = Time.time;
         }
     }
 
@@ -100,7 +122,14 @@ public class PlayerController : MonoBehaviour
         raycastLine.SetPosition(0, gunTransform.position);
 
         // Spawn the explosion particle at the gun's position.
-        Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity, this.transform);
+        GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
+        
+        // Get the duration of the particle system's effect.
+        ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+        float duration = particleSystem.main.duration;
+
+        // Destroy the explosion prefab after the particle effect duration.
+        Destroy(explosion, duration);
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -116,7 +145,7 @@ public class PlayerController : MonoBehaviour
             raycastLine.SetPosition(1, rayEnd);
         }
 
-        Invoke("DisableRaycastLine", 0.2f);
+        //Invoke("DisableRaycastLine", 0.2f);
     }
 
     void DisableRaycastLine()
