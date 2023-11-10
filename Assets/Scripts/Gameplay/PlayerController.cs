@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
-using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
+    BulletHitManager bulletHitManager_;
+
+
     public Transform gunTransform;
     public LayerMask hitLayer;
     public float maxSpeed = 7f;
@@ -15,9 +18,6 @@ public class PlayerController : MonoBehaviour
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
-
-    //public CinemachineFreeLook freeLookCamera; // Reference to your CinemachineFreeLook component.
-    //public CinemachineImpulseSource impulseSource; // Reference to CinemachineImpulseSource for camera shake.
 
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
@@ -30,9 +30,7 @@ public class PlayerController : MonoBehaviour
         //mainCamera = Camera.main;
         raycastLine.enabled = true;
 
-        // Initialize references to the Cinemachine components.
-        //freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
-        //impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
+        bulletHitManager_ = FindObjectOfType<BulletHitManager>();
     }
 
     void Update()
@@ -40,18 +38,6 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleShooting();
     }
-
-    // Call this method to trigger camera shake.
-    //void ShakeCamera(float shakeDuration, float shakeAmplitude, float shakeFrequency)
-    //{
-    //    impulseSource.GenerateImpulse(Vector3.one); // Basic impulse, can be customized.
-    //}
-
-    //// Call this method to zoom the camera.
-    //void ZoomCamera(float zoomAmount)
-    //{
-    //    freeLookCamera.m_Orbits[1].m_Radius += zoomAmount;
-    //}
 
     void HandleMovement()
     {
@@ -119,7 +105,7 @@ public class PlayerController : MonoBehaviour
     void Shoot()
     {
         raycastLine.enabled = true;
-        raycastLine.SetPosition(0, gunTransform.position);
+        //raycastLine.SetPosition(0, gunTransform.position);
 
         // Spawn the explosion particle at the gun's position.
         GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
@@ -131,19 +117,30 @@ public class PlayerController : MonoBehaviour
         // Destroy the explosion prefab after the particle effect duration.
         Destroy(explosion, duration);
 
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //ray.origin = raycastLine.transform.position;
+        //ray.direction = raycastLine.transform.position;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ray.origin.Equals(raycastLine.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, hitLayer))
+        
+
+        if (Physics.Raycast(ray, out hit, 10, hitLayer))
         {
-            raycastLine.SetPosition(1, hit.point);
-            Debug.Log("Hit object: " + hit.transform.name);
+            //raycastLine.SetPosition(1, hit.point);
+            UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+
+            bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
+            
         }
         else
         {
             Vector3 rayEnd = ray.GetPoint(100f);
             raycastLine.SetPosition(1, rayEnd);
         }
+
+
 
         //Invoke("DisableRaycastLine", 0.2f);
     }
