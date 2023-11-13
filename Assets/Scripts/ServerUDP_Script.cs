@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEditor.VersionControl;
 
 public class ServerUDP_Script : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class ServerUDP_Script : MonoBehaviour
     private string lastMessage = string.Empty;
     private Thread serverThread;
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
+
+    private string currentScene;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -66,7 +70,8 @@ public class ServerUDP_Script : MonoBehaviour
     }
     public void  StartWaitingScene()
     {
-        HandleSendingMessages("/start_room");
+        Message message = new Message("/start_room",null,TypesOfMessage.WAITING_ROOM);
+        HandleSendingMessages(message);
         SceneManager.LoadSceneAsync("WaitingRoom");
     }
 
@@ -83,8 +88,8 @@ public class ServerUDP_Script : MonoBehaviour
     public void HandleCallbackEvent()
     {
         string message = "Server" + ":" + UiManager.instance.InputFieldMessage.text;
-        HandleSendingMessages(message);
-        UiManager.instance.UpdateText(message);
+        Message newMessage = new Message(message, null, TypesOfMessage.WAITING_ROOM);
+        HandleSendingMessages(newMessage);
     }
 
     private async void HandleRecieveMessages()
@@ -93,21 +98,50 @@ public class ServerUDP_Script : MonoBehaviour
         {
             UdpReceiveResult result =  await udpListener.ReceiveAsync();
             string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
+            Message newMessage = JsonUtility.FromJson<Message>(receivedMessage);
+
+            switch (newMessage.type)
+            {
+                case TypesOfMessage.WAITING_ROOM:
+                    if (UiManager.instance != null)
+                        UiManager.instance.UpdateText(newMessage.message);
+                    break;
+                case TypesOfMessage.GAMEPLAY_ROOM:
+                    break;
+                case TypesOfMessage.START_GAME:
+                    break;
+            }
+
             if (!clientEndPoint.Contains(result.RemoteEndPoint))
             {
-                Debug.Log(receivedMessage);
+                Debug.Log(newMessage.message);
                 clientEndPoint.Add(result.RemoteEndPoint);                
             }
-            HandleSendingMessages(receivedMessage);
-            lastMessage = receivedMessage;
+
+            HandleSendingMessages(newMessage);
+            lastMessage = newMessage.message;
         }
         
     }
 
-    private void HandleSendingMessages(string messages)
+    private void HandleSendingMessages(Message message)
     {
-        byte[] data = Encoding.UTF8.GetBytes(messages);
-        foreach(IPEndPoint client in clientEndPoint)
+        string jsonData = JsonUtility.ToJson(message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        switch(message.type)
+        {
+            case TypesOfMessage.WAITING_ROOM:
+                if(UiManager.instance != null)
+                    UiManager.instance.UpdateText(message.message);
+                break;
+            case TypesOfMessage.GAMEPLAY_ROOM:
+                break;
+            case TypesOfMessage.START_GAME:
+                break;
+        }
+
+        
+        foreach (IPEndPoint client in clientEndPoint)
         {
             udpListener.SendAsync(data, data.Length, client);
         }

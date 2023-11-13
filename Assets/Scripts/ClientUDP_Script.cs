@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using System.Net;
+using System.Threading;
+using UnityEditor.VersionControl;
 
 public class ClientUDP_Script : MonoBehaviour
 {
@@ -22,6 +24,13 @@ public class ClientUDP_Script : MonoBehaviour
     private int serverPort = 12345;
     private int clientPort;
 
+
+    private Thread listenerThread;
+    private string lastMessage;
+
+
+    private string currentScene = string.Empty;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -37,51 +46,87 @@ public class ClientUDP_Script : MonoBehaviour
         clientPort = int.Parse(InputPortClient.text);
         udpClient = new UdpClient(clientPort);
 
-        string username = "/connect:" + InputFieldTextUserName.text;
-        byte[] data = Encoding.UTF8.GetBytes(username);
+        string connectText = "/connect:" + InputFieldTextUserName.text;
+        Message _message = new Message(connectText, null, TypesOfMessage.WAITING_ROOM);
+        string jsonData = JsonUtility.ToJson(_message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
         await udpClient.SendAsync(data, data.Length, recipientEndPoint);
 
+        listenerThread = new Thread(RecieveMessages);
+        listenerThread.Start();
 
         SceneManager.LoadScene("WaitingRoom");
-        
-        
     }
+    #region WaitingRoomMessages
     private void AddMessageEventHandler(Scene current, Scene next)
     {
         MessageEventHandler messageEventHandler = null;
         messageEventHandler = FindObjectOfType<MessageEventHandler>();
         if(messageEventHandler != null) 
         {
-            messageEventHandler.OnButtonClicked += HandleCallbackEvent;
+            messageEventHandler.OnButtonClicked += SendMessageWaitingRoom;
         }
     }
-    public void HandleCallbackEvent()
+    public void SendMessageWaitingRoom()
     {
-        string message =userName + ":" + UiManager.instance.InputFieldMessage.text;
-        byte[] data = Encoding.UTF8.GetBytes(message);
+        string message = userName + ":" + UiManager.instance.InputFieldMessage.text;
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        Message _message = new Message(message, null, TypesOfMessage.WAITING_ROOM);
+        string jsonData = JsonUtility.ToJson(_message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
         UiManager.instance.UpdateText(message);
     }
-    private async void Update()
+    #endregion
+
+    #region GameplayRoomMessages
+    public void SendMessageGameplay()
     {
-        try
-        {
-            UdpReceiveResult result = await udpClient.ReceiveAsync();
-            string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
-            if(isFromAnotherUser(receivedMessage))
-            {
-                UiManager.instance.UpdateText(receivedMessage);
-            }
-        }
-        catch (Exception ex)
-        {
-
-        }
-
-
+        string message = userName + ":" + UiManager.instance.InputFieldMessage.text;
+        Message _message = new Message(message, null, TypesOfMessage.WAITING_ROOM);
+        string jsonData = JsonUtility.ToJson(_message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        udpClient.SendAsync(data, data.Length, recipientEndPoint);
     }
+    #endregion
+
+    private async void RecieveMessages()
+    {
+        while(true) 
+        {
+            
+            try
+            {
+                UdpReceiveResult result = await udpClient.ReceiveAsync();
+                string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
+                Message newMessage = JsonUtility.FromJson<Message>(receivedMessage);
+                switch(newMessage.type)
+                {
+                    case TypesOfMessage.WAITING_ROOM: {
+                            if (isFromAnotherUser(newMessage.message))
+                            {
+                                UiManager.instance.UpdateText(newMessage.message);
+                            }
+
+                            break; }
+                    case TypesOfMessage.GAMEPLAY_ROOM: { break; }
+                    case TypesOfMessage.START_GAME: { break; }
+                       
+                }
+               
+            }
+            catch (Exception ex)
+            {
+
+            }
+               
+            
+        }
+       
+    }
+   
     private void OnDisable()
     {
         udpClient.Close();
