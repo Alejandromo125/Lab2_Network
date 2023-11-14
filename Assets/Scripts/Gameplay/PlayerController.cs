@@ -18,25 +18,43 @@ public class PlayerController : MonoBehaviour
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public float serializationDelay = 0.5f; // Delay for sending data to server via json serialization
+    public bool disableDataSend = false; // Disable sending data for testing or other purposes
 
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
+    private float lastSerializationTime;
+    private string json;
 
     float rotationAngle = 0f;
+
+    PlayerStruct player;
 
     void Start()
     {
         //mainCamera = Camera.main;
         raycastLine.enabled = true;
-
+        
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+
+        player.playerTransform = transform;
+        player.gunTransform= gunTransform;
+        player.isMoving = false;
+        player.shooting= false;
     }
 
     void Update()
     {
         HandleMovement();
         HandleShooting();
+
+        if ((Time.time - lastSerializationTime > serializationDelay) && player.isMoving == true && disableDataSend == false)
+        {
+            json = JsonUtility.ToJson(player.playerTransform, player.isMoving);
+
+            lastSerializationTime = Time.time;
+        }
     }
 
     void HandleMovement()
@@ -90,6 +108,16 @@ public class PlayerController : MonoBehaviour
             lookDir.y = 0;
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
+        }
+
+        if(player.playerTransform != transform)
+        {
+            player.isMoving = true;
+            player.playerTransform = transform;
+        }
+        else if (player.playerTransform == transform)
+        {
+            player.isMoving = false;
         }
     }
 
