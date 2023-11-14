@@ -27,15 +27,21 @@ public class ClientUDP_Script : MonoBehaviour
 
     private Thread listenerThread;
 
+    private Message lastMessage;
+    private bool lastMessageUpdated = true;
 
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
         DontDestroyOnLoad(this);
     }
-    private void Start()
+    private void Update()
     {
-        SceneManager.activeSceneChanged += AddMessageEventHandler;
+        if(lastMessageUpdated == false)
+        {
+            HandleMessageOutput(lastMessage);
+            lastMessageUpdated = true;
+        }
     }
     public async void LogIn()
     {
@@ -57,15 +63,6 @@ public class ClientUDP_Script : MonoBehaviour
         SceneManager.LoadScene("WaitingRoom");
     }
     #region WaitingRoomMessages
-    private void AddMessageEventHandler(Scene current, Scene next)
-    {
-        MessageEventHandler messageEventHandler = null;
-        messageEventHandler = FindObjectOfType<MessageEventHandler>();
-        if(messageEventHandler != null) 
-        {
-            messageEventHandler.OnButtonClicked += SendMessageWaitingRoom;
-        }
-    }
     public void SendMessageWaitingRoom()
     {
         string message = userName + ":" + UiManager.instance.InputFieldMessage.text;
@@ -99,20 +96,9 @@ public class ClientUDP_Script : MonoBehaviour
                 UdpReceiveResult result = await udpClient.ReceiveAsync();
                 string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
                 Message newMessage = JsonUtility.FromJson<Message>(receivedMessage);
-                switch(newMessage.type)
-                {
-                    case TypesOfMessage.WAITING_ROOM: {
-                            if (isFromAnotherUser(newMessage.message))
-                            {
-                                UiManager.instance.UpdateText(newMessage.message);
-                            }
 
-                            break; }
-                    case TypesOfMessage.GAMEPLAY_ROOM: { break; }
-                    case TypesOfMessage.START_GAME: { break; }
-                       
-                }
-               
+                lastMessage = newMessage;
+                lastMessageUpdated = false;
             }
             catch (Exception ex)
             {
@@ -123,7 +109,31 @@ public class ClientUDP_Script : MonoBehaviour
         }
        
     }
-   
+    private void HandleMessageOutput(Message message)
+    {
+        try
+        {
+            switch (message.type)
+            {
+                case TypesOfMessage.WAITING_ROOM:
+                    if (isFromAnotherUser(message.message))
+                    {
+                        UiManager.instance.UpdateText(message.message);
+                    }
+                    break;
+                case TypesOfMessage.GAMEPLAY_ROOM:
+                    GameManager.instance.UpdatePlayersData(message);
+                    break;
+                case TypesOfMessage.START_GAME:
+                    SceneManager.LoadSceneAsync("GameplayRoom");
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
     private void OnDisable()
     {
         udpClient.Close();

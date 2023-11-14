@@ -17,12 +17,12 @@ public class ServerUDP_Script : MonoBehaviour
     private UdpClient udpListener;
     private string serverIP = "127.0.0.1";
     private int port = 12345;
-    private string lastMessage = string.Empty;
+    private bool lastMessageUpdated = true;
+    private Message lastMessage;
     private Thread serverThread;
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
 
     private string currentScene;
-
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -33,9 +33,6 @@ public class ServerUDP_Script : MonoBehaviour
         
 
         Debug.Log("Server started on port " + port);
-
-        SceneManager.activeSceneChanged += AddMessageEventHandler;
-
         UdpReceiveResult result = await udpListener.ReceiveAsync();
         clientEndPoint.Add(result.RemoteEndPoint);
         string message = Encoding.UTF8.GetString(result.Buffer);
@@ -45,23 +42,13 @@ public class ServerUDP_Script : MonoBehaviour
         serverThread.Start();
              
     }
-    private async void Update()
+    private void Update()
     {
-        try
-        {
-            if(lastMessage != string.Empty)
-            {
-                UiManager.instance.UpdateText(lastMessage);
-                lastMessage = string.Empty;
-            }
-                
-
-        }
-        catch (Exception ex) 
-        {
-
-        }
-       
+       if(lastMessageUpdated == false)
+       {
+            HandleMessageOutput(lastMessage);
+            lastMessageUpdated = true;
+       }
     }
 
     private void OnDisable()
@@ -74,17 +61,6 @@ public class ServerUDP_Script : MonoBehaviour
         HandleSendingMessages(message);
         SceneManager.LoadSceneAsync("WaitingRoom");
     }
-
-    private void AddMessageEventHandler(Scene current, Scene next)
-    {
-        MessageEventHandler messageEventHandler = null;
-        messageEventHandler = FindObjectOfType<MessageEventHandler>();
-        if (messageEventHandler != null)
-        {
-            messageEventHandler.OnButtonClicked += HandleCallbackEvent;
-        }
-    }
-
     public void HandleCallbackEvent()
     {
         string message = "Server" + ":" + UiManager.instance.InputFieldMessage.text;
@@ -100,17 +76,9 @@ public class ServerUDP_Script : MonoBehaviour
             string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
             Message newMessage = JsonUtility.FromJson<Message>(receivedMessage);
 
-            switch (newMessage.type)
-            {
-                case TypesOfMessage.WAITING_ROOM:
-                    if (UiManager.instance != null)
-                        UiManager.instance.UpdateText(newMessage.message);
-                    break;
-                case TypesOfMessage.GAMEPLAY_ROOM:
-                    break;
-                case TypesOfMessage.START_GAME:
-                    break;
-            }
+            lastMessage = newMessage;
+            lastMessageUpdated = false;
+
 
             if (!clientEndPoint.Contains(result.RemoteEndPoint))
             {
@@ -119,30 +87,57 @@ public class ServerUDP_Script : MonoBehaviour
             }
 
             HandleSendingMessages(newMessage);
-            lastMessage = newMessage.message;
+
         }
         
+    }
+
+    private void HandleMessageOutput(Message message)
+    {
+        try
+        {
+            switch (message.type)
+            {
+                case TypesOfMessage.WAITING_ROOM:
+                    UiManager.instance.UpdateText(message.message);
+                    break;
+                case TypesOfMessage.GAMEPLAY_ROOM:
+                    GameManager.instance.UpdatePlayersData(message);
+                    break;
+                case TypesOfMessage.START_GAME:
+                    SceneManager.LoadSceneAsync("GameplayRoom");
+                    break;
+            }
+        }
+        catch(Exception e) 
+        {
+            Debug.Log(e);
+        }
     }
 
     public void HandleSendingMessages(Message message)
     {
         string jsonData = JsonUtility.ToJson(message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
-        switch(message.type)
+        switch (message.type)
         {
             case TypesOfMessage.WAITING_ROOM:
-                if(UiManager.instance != null)
+                if (UiManager.instance != null)
                 {
                     UiManager.instance.UpdateText(message.message);
+                    Debug.Log("SEND MESSAGE");
+
                 }
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
+
                 break;
             case TypesOfMessage.START_GAME:
+                Debug.Log("SEND MESSAGE");
+                SceneManager.LoadSceneAsync("GameplayRoom");
+
                 break;
         }
-
-        
         foreach (IPEndPoint client in clientEndPoint)
         {
             udpListener.SendAsync(data, data.Length, client);

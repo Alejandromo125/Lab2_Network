@@ -4,16 +4,29 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public int healthPoints;
     public string name;
+    public TypesOfActions actions;
     public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
     public float moveSpeed = 5f;
 
+
+    #region TimerForData
+    [SerializeField]
+    private float timeForUpdate;
+    private float timerUpdate;
+    #endregion
+    private void Awake()
+    {
+        characterData = new CharacterData(healthPoints, this.transform, actions);
+    }
     void Update()
     {
         HandleMovement();
         HandleShooting();
+        HandleCharacterUpdates();
     }
 
     void HandleMovement()
@@ -53,4 +66,37 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Hit object: " + hit.transform.name);
         }
     }
+    #region NetworkUpdates
+    private void UpdateCharacterData()
+    {
+        characterData.transform.position = gameObject.transform.position;
+        characterData.transform.rotation = gameObject.transform.rotation;
+        characterData.transform.localScale = gameObject.transform.localScale;
+
+        characterData.HealthPoints = 10;
+
+        characterData.actions.walk = true;
+        characterData.actions.run = false;
+        characterData.actions.dash = false;
+        characterData.actions.shoot = false;
+        characterData.actions.shield = false;
+
+    }
+    private void HandleCharacterUpdates()
+    {
+        timerUpdate += Time.deltaTime;
+        if(timerUpdate > timeForUpdate)
+        {
+            UpdateCharacterData();
+            UpdateInfo();
+            timerUpdate= 0;
+        }
+    }
+    void UpdateInfo()
+    {
+        Message message = new Message(name, characterData, TypesOfMessage.GAMEPLAY_ROOM);
+        GameManager.instance.UpdateData(message);
+    }
+
+    #endregion
 }

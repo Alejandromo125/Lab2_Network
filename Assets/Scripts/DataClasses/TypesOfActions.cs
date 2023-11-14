@@ -8,4 +8,5 @@ public class TypesOfActions
     public bool walk;
     public bool run;
     public bool dash;
+    public bool shield;
 }

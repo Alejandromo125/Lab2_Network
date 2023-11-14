@@ -24,6 +24,29 @@ public class UiManager : MonoBehaviour
     {
         textForMessages.text += text_for_update + "\n";
     }
+    public void SendMessage()
+    {
+        ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+        ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
+        if(server)
+        {
+            server.HandleCallbackEvent();
+        }
+        else if(client)
+        {
+            client.SendMessageWaitingRoom();
+        }
+        
+    }
+    public void StartGame()
+    {
+        ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+        if(server)
+        {
+            Message message = new Message("start game", null, TypesOfMessage.START_GAME);
+            server.HandleSendingMessages(message);
+        }
+    }
 
 
 }

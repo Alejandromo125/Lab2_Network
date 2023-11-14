@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     private ClientUDP_Script client;
     private ServerUDP_Script server;
-    public PlayerController[] players;
+    public DummyController[] dummies;
     public static GameManager instance { get; private set; }
 
     // Start is called before the first frame update
@@ -19,13 +19,13 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        players = FindObjectsOfType<PlayerController>();
+        dummies = FindObjectsOfType<DummyController>();
         client = FindObjectOfType<ClientUDP_Script>();
         server = FindObjectOfType<ServerUDP_Script>();
     }
 
     // Update is called once per frame
-    private void UpdateData(Message message)
+    public void UpdateData(Message message)
     {
         if(server)
         {
@@ -37,13 +37,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdatePlayersData(PlayerController player)
+    public void UpdatePlayersData(Message message)
     {
-        foreach (PlayerController playerController in players) 
+        
+        foreach (DummyController dummyController in dummies) 
         {
-            if(playerController != player) 
+            if(dummyController.name == message.message) 
             {
-                
+                dummyController.UpdateDummy(message.characterData);
             }
         }
     }

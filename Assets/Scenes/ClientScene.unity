@@ -437,6 +437,7 @@ GameObject:
   m_Component:
   - component: {fileID: 808515844}
   - component: {fileID: 808515845}
+  - component: {fileID: 808515846}
   m_Layer: 0
   m_Name: Client
   m_TagString: Untagged
@@ -474,6 +475,18 @@ MonoBehaviour:
   InputFieldTextIP: {fileID: 1825081318}
   InputFieldTextUserName: {fileID: 1987226133}
   InputPortClient: {fileID: 1254378977}
+--- !u!114 &808515846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808515843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda11da5f8d42e9439679dbae95c3f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &961583637
 GameObject:
   m_ObjectHideFlags: 0
