@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
 
             lastSerializationTime = Time.time;
         }
+
+        if(player.shooting == true && disableDataSend == false)
+        {
+            json = JsonUtility.ToJson(player.shooting);
+        }
     }
 
     void HandleMovement()
@@ -125,8 +130,14 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
+            player.shooting = true;
+
             Shoot();
             lastShootTime = Time.time;
+        }
+        else
+        {
+            player.shooting = false;
         }
     }
 
@@ -167,8 +178,6 @@ public class PlayerController : MonoBehaviour
             Vector3 rayEnd = ray.GetPoint(100f);
             raycastLine.SetPosition(1, rayEnd);
         }
-
-
 
         //Invoke("DisableRaycastLine", 0.2f);
     }

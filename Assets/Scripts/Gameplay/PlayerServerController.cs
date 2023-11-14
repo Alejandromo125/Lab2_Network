@@ -23,9 +23,15 @@ public class PlayerServerController : MonoBehaviour
     {
         if ((Time.time - lastDeserializationTime > deserializationDelay) && disableDataReceive == false)
         {
-            JsonUtility.FromJsonOverwrite(json, player);
+            JsonUtility.FromJsonOverwrite(json, player.playerTransform);
+            JsonUtility.FromJsonOverwrite(json, player.isMoving);
 
             lastDeserializationTime = Time.time;
+        }
+
+        if (disableDataReceive == false)
+        {
+            JsonUtility.FromJsonOverwrite(json, player.shooting);
         }
     }
 }
