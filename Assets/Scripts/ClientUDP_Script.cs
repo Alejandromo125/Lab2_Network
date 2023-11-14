@@ -26,11 +26,9 @@ public class ClientUDP_Script : MonoBehaviour
 
 
     private Thread listenerThread;
-    private string lastMessage;
 
 
-    private string currentScene = string.Empty;
-
+    //Creating an instance to access it through player's scripts
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -81,10 +79,9 @@ public class ClientUDP_Script : MonoBehaviour
     #endregion
 
     #region GameplayRoomMessages
-    public void SendMessageGameplay()
+    public void SendMessageGameplay(Message _message)
     {
-        string message = userName + ":" + UiManager.instance.InputFieldMessage.text;
-        Message _message = new Message(message, null, TypesOfMessage.WAITING_ROOM);
+        string message = userName + ":" + "gameplay_action";
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);

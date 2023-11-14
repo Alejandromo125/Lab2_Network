@@ -23,7 +23,6 @@ public class UiManager : MonoBehaviour
     public void UpdateText(string text_for_update)
     {
         textForMessages.text += text_for_update + "\n";
-
     }
 
 

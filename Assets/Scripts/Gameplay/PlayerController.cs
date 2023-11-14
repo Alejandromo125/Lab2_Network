@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public string name;
+    public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
     public float moveSpeed = 5f;

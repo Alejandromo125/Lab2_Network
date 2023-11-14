@@ -124,7 +124,7 @@ public class ServerUDP_Script : MonoBehaviour
         
     }
 
-    private void HandleSendingMessages(Message message)
+    public void HandleSendingMessages(Message message)
     {
         string jsonData = JsonUtility.ToJson(message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
@@ -132,7 +132,9 @@ public class ServerUDP_Script : MonoBehaviour
         {
             case TypesOfMessage.WAITING_ROOM:
                 if(UiManager.instance != null)
+                {
                     UiManager.instance.UpdateText(message.message);
+                }
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 break;
