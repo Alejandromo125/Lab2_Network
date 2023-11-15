@@ -1,33 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public int healthPoints;
-    public string username;
-    public TypesOfActions actions;
-    public CharacterData characterData;
+    BulletHitManager bulletHitManager_;
+
     public Transform gunTransform;
     public LayerMask hitLayer;
-    public float moveSpeed = 5f;
+    public float maxSpeed = 7f;
+    public float rotationSpeed = 10f; // Rotation speed around the Y-axis.
+    public float deceleration = 5f; // Deceleration rate.
+    public float acceleration = 5f; // Deceleration rate.
+    public LineRenderer raycastLine;
+    public float shootDelay = 0.3f; // Delay between shots.
+    public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public float serializationDelay = 0.5f; // Delay for sending data to server via json serialization
+    public bool disableDataSend = false; // Disable sending data for testing or other purposes
+
+    public Camera mainCamera;
+    private Vector3 velocity = Vector3.zero;
+    private float lastShootTime;
+    private float lastSerializationTime;
+    private string json;
+
+    float rotationAngle = 0f;
 
 
-    #region TimerForData
-    [SerializeField]
-    private float timeForUpdate;
-    private float timerUpdate;
-    #endregion
-    private void Awake()
+    void Start()
     {
-        characterData = new CharacterData(healthPoints, this.transform, actions);
+        //mainCamera = Camera.main;
+        raycastLine.enabled = true;
+        
+        bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+
     }
+
     void Update()
     {
         HandleMovement();
         HandleShooting();
-        UpdateCharacterData();
-        HandleCharacterUpdates();
+
+
+        if ((Time.time - lastSerializationTime > serializationDelay))
+        {
+            if(disableDataSend == true)
+            {
+                return;
+            }
+
+            
+        }
     }
 
     void HandleMovement()
@@ -36,68 +60,114 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
-        movement = transform.TransformDirection(movement); // Convert to character's local space.
+        Vector3 forward = transform.forward;
 
-        transform.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
-
-        if (movement.magnitude > 0)
+        // Apply acceleration and deceleration for smoother movement, limited to maxSpeed.
+        if (velocity.magnitude < maxSpeed)
         {
-            // Rotate the character to face the direction of movement.
-            Quaternion newRotation = Quaternion.LookRotation(movement);
-            transform.rotation = newRotation;
+            // Deceleration when no input is detected.
+            if (movement == Vector3.zero)
+            {
+                velocity = Vector3.Lerp(velocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
+            else
+            {
+                velocity += movement * maxSpeed * Time.deltaTime * acceleration;
+            }
+            
         }
+        else
+        {
+            // Deceleration when no input is detected.
+            if (movement == Vector3.zero)
+            {
+                velocity = Vector3.Lerp(velocity, Vector3.zero, deceleration * Time.deltaTime);
+            }
+            else
+            {
+                velocity = movement * maxSpeed;
+            }
+            
+        }
+
+        // Apply the movement in the player's forward direction.
+        transform.Translate(velocity * Time.deltaTime, Space.World);
+
+
+
+        // Rotate the character to look at the mouse pointer instantly on the Y-axis.
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+        {
+            Vector3 lookAtPoint = hit.point;
+
+            Vector3 lookDir = lookAtPoint - transform.position;
+            lookDir.y = 0;
+
+            transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
+        }
+
+        
+        
     }
 
     void HandleShooting()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
+
             Shoot();
+            lastShootTime = Time.time;
+        }
+        else
+        {
+            
         }
     }
 
     void Shoot()
     {
+        raycastLine.enabled = true;
+        //raycastLine.SetPosition(0, gunTransform.position);
+
+        // Spawn the explosion particle at the gun's position.
+        GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
+        
+        // Get the duration of the particle system's effect.
+        ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+        float duration = particleSystem.main.duration;
+
+        // Destroy the explosion prefab after the particle effect duration.
+        Destroy(explosion, duration);
+
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //ray.origin = raycastLine.transform.position;
+        //ray.direction = raycastLine.transform.position;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ray.origin.Equals(raycastLine.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, hitLayer))
+        
+
+        if (Physics.Raycast(ray, out hit, 10, hitLayer))
         {
-            // Do something with the hit object (e.g., damage it).
-            Debug.Log("Hit object: " + hit.transform.name);
+            //raycastLine.SetPosition(1, hit.point);
+            UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+
+            bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
+            
         }
-    }
-    #region NetworkUpdates
-    private void UpdateCharacterData()
-    {
-        characterData.transform.position = gameObject.transform.position;
-        characterData.transform.rotation = gameObject.transform.rotation;
-        characterData.transform.localScale = gameObject.transform.localScale;
-
-        characterData.HealthPoints = 10;
-
-        characterData.actions.walk = true;
-        characterData.actions.run = false;
-        characterData.actions.dash = false;
-        characterData.actions.shoot = false;
-        characterData.actions.shield = false;
-
-    }
-    private void HandleCharacterUpdates()
-    {
-        timerUpdate += Time.deltaTime;
-        if(timerUpdate > timeForUpdate)
+        else
         {
-            UpdateCharacterData();
-            UpdateInfo();
-            timerUpdate= 0;
+            Vector3 rayEnd = ray.GetPoint(100f);
+            raycastLine.SetPosition(1, rayEnd);
         }
-    }
-    void UpdateInfo()
-    {
-        Message message = new Message(name, characterData, TypesOfMessage.GAMEPLAY_ROOM);
-        GameManager.instance.UpdateData(message);
+
+        //Invoke("DisableRaycastLine", 0.2f);
     }
 
-    #endregion
+    void DisableRaycastLine()
+    {
+        raycastLine.enabled = false;
+    }
 }
