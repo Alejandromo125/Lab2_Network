@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerServerController : MonoBehaviour
 {
+    JsonStorageManager jsonStorageManager_;
+
     //public float deserializationDelay = 0.5f; // Delay for receiving data from server via json deserialization
     public bool disableDataReceive = false; // Disable receiving data for testing or other purposes
 
@@ -15,6 +17,10 @@ public class PlayerServerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        jsonStorageManager_ = FindObjectOfType<JsonStorageManager>();
+
+        json = jsonStorageManager_.LoadJsonFile("playerData.json", "Assets/Scripts/Jsons/");
+
         player = JsonUtility.FromJson<PlayerStruct>(json);
     }
 
@@ -23,15 +29,9 @@ public class PlayerServerController : MonoBehaviour
     {
         if (/*(Time.time - lastDeserializationTime > deserializationDelay) &&*/ disableDataReceive == false)
         {
-            JsonUtility.FromJsonOverwrite(json, player.playerTransform);
-            JsonUtility.FromJsonOverwrite(json, player.isMoving);
+            JsonUtility.FromJsonOverwrite(json, player);
 
             //lastDeserializationTime = Time.time;
-        }
-
-        if (disableDataReceive == false)
-        {
-            JsonUtility.FromJsonOverwrite(json, player.shooting);
         }
     }
 }

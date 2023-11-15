@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     BulletHitManager bulletHitManager_;
-
+    JsonStorageManager jsonStorageManager_;
 
     public Transform gunTransform;
     public LayerMask hitLayer;
@@ -37,9 +37,12 @@ public class PlayerController : MonoBehaviour
         raycastLine.enabled = true;
         
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+        jsonStorageManager_ = FindObjectOfType<JsonStorageManager>();
 
-        player.playerTransform = transform;
-        player.gunTransform= gunTransform;
+        
+        player.position = transform.position;
+        player.rotation = transform.rotation;
+
         player.isMoving = false;
         player.shooting= false;
     }
@@ -51,14 +54,18 @@ public class PlayerController : MonoBehaviour
 
         if ((Time.time - lastSerializationTime > serializationDelay) && player.isMoving == true && disableDataSend == false)
         {
-            json = JsonUtility.ToJson(player.playerTransform, player.isMoving);
+            json = JsonUtility.ToJson(player);
+
+            jsonStorageManager_.SaveJsonFile("playerData.json", json, "/Assets/Scripts/Jsons/");
 
             lastSerializationTime = Time.time;
+
+            //UnityEngine.Debug.Log("Saving player Json");
         }
 
         if(player.shooting == true && disableDataSend == false)
         {
-            json = JsonUtility.ToJson(player.shooting);
+            json = JsonUtility.ToJson(player);
         }
     }
 
@@ -115,15 +122,18 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
 
-        if(player.playerTransform != transform)
-        {
-            player.isMoving = true;
-            player.playerTransform = transform;
-        }
-        else if (player.playerTransform == transform)
+        if (player.position == transform.position && player.rotation == transform.rotation)
         {
             player.isMoving = false;
+            
         }
+        else if (player.position != transform.position || player.rotation != transform.rotation)
+        {
+            player.isMoving = true;
+            player.position = transform.position;
+            player.rotation = transform.rotation;
+        }
+        
     }
 
     void HandleShooting()

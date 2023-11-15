@@ -7,8 +7,8 @@ using UnityEngine;
 public struct PlayerStruct
 {
     //player movement
-    public Transform playerTransform;
-    public Transform gunTransform; //<-- maybe we don't need this one
+    public Vector3 position;
+    public Quaternion rotation;
 
     //actions
     public bool shooting;
