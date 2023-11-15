@@ -9,4 +9,13 @@ public class TypesOfActions
     public bool run;
     public bool dash;
     public bool shield;
+
+    public TypesOfActions(bool shoot, bool walk, bool run, bool dash, bool shield)
+    {
+        this.shoot = shoot;
+        this.walk = walk;
+        this.run = run;
+        this.dash = dash;
+        this.shield = shield;
+    }
 }

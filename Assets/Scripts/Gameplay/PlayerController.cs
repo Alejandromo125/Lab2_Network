@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     #endregion
     private void Awake()
     {
+        actions = new TypesOfActions(false,true,false,false,true);
         characterData = new CharacterData(healthPoints, this.transform, actions);
     }
 
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour
         if(timerUpdate > timeForUpdate)
         {
             UpdateCharacterData();
-            UpdateInfo();
+            //UpdateInfo();
             timerUpdate= 0;
         }
     }
