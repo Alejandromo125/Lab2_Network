@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
- 
-public class PlayerController : MonoBehaviour
+
+public class PlayerController_Old : MonoBehaviour
 {
     BulletHitManager bulletHitManager_;
 
-    public int healthPoints;
-    public string username;
-    public TypesOfActions actions;
-    public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
-    public float moveSpeed = 5f;
     public float maxSpeed = 7f;
     public float rotationSpeed = 10f; // Rotation speed around the Y-axis.
     public float deceleration = 5f; // Deceleration rate.
@@ -20,38 +16,44 @@ public class PlayerController : MonoBehaviour
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public float serializationDelay = 0.5f; // Delay for sending data to server via json serialization
+    public bool disableDataSend = false; // Disable sending data for testing or other purposes
 
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
+    private float lastSerializationTime;
+    private string json;
 
     float rotationAngle = 0f;
 
-    #region TimerForData
-    [SerializeField]
-    private float timeForUpdate;
-    private float timerUpdate;
-    #endregion
-    private void Awake()
-    {
-        characterData = new CharacterData(healthPoints, this.transform, actions);
-    }
 
-    private void Start()
+    void Start()
     {
+        //mainCamera = Camera.main;
         raycastLine.enabled = true;
-
+        
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+
     }
 
     void Update()
     {
         HandleMovement();
         HandleShooting();
-        UpdateCharacterData();
-        HandleCharacterUpdates();
+
+
+        if ((Time.time - lastSerializationTime > serializationDelay))
+        {
+            if(disableDataSend == true)
+            {
+                return;
+            }
+
+            
+        }
     }
- 
+
     void HandleMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -72,7 +74,7 @@ public class PlayerController : MonoBehaviour
             {
                 velocity += movement * maxSpeed * Time.deltaTime * acceleration;
             }
-
+            
         }
         else
         {
@@ -85,7 +87,7 @@ public class PlayerController : MonoBehaviour
             {
                 velocity = movement * maxSpeed;
             }
-
+            
         }
 
         // Apply the movement in the player's forward direction.
@@ -104,8 +106,11 @@ public class PlayerController : MonoBehaviour
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
+
+        
+        
     }
- 
+
     void HandleShooting()
     {
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
@@ -114,8 +119,12 @@ public class PlayerController : MonoBehaviour
             Shoot();
             lastShootTime = Time.time;
         }
+        else
+        {
+            
+        }
     }
- 
+
     void Shoot()
     {
         raycastLine.enabled = true;
@@ -123,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
         // Spawn the explosion particle at the gun's position.
         GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
-
+        
         // Get the duration of the particle system's effect.
         ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
         float duration = particleSystem.main.duration;
@@ -138,7 +147,7 @@ public class PlayerController : MonoBehaviour
         ray.origin.Equals(raycastLine.transform.forward);
         RaycastHit hit;
 
-
+        
 
         if (Physics.Raycast(ray, out hit, 10, hitLayer))
         {
@@ -146,7 +155,7 @@ public class PlayerController : MonoBehaviour
             UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
             bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
-
+            
         }
         else
         {
@@ -161,38 +170,4 @@ public class PlayerController : MonoBehaviour
     {
         raycastLine.enabled = false;
     }
-
-    #region NetworkUpdates
-    private void UpdateCharacterData()
-    {
-        characterData.transform.position = gameObject.transform.position;
-        characterData.transform.rotation = gameObject.transform.rotation;
-        characterData.transform.localScale = gameObject.transform.localScale;
- 
-        characterData.HealthPoints = 10;
- 
-        characterData.actions.walk = true;
-        characterData.actions.run = false;
-        characterData.actions.dash = false;
-        characterData.actions.shoot = false;
-        characterData.actions.shield = false;
- 
-    }
-    private void HandleCharacterUpdates()
-    {
-        timerUpdate += Time.deltaTime;
-        if(timerUpdate > timeForUpdate)
-        {
-            UpdateCharacterData();
-            UpdateInfo();
-            timerUpdate= 0;
-        }
-    }
-    void UpdateInfo()
-    {
-        Message message = new Message(name, characterData, TypesOfMessage.GAMEPLAY_ROOM);
-        GameManager.instance.UpdateData(message);
-    }
- 
-    #endregion
 }
