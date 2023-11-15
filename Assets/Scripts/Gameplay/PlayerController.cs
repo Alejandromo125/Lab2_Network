@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public int healthPoints;
-    public string name;
+    public string username;
     public TypesOfActions actions;
     public CharacterData characterData;
     public Transform gunTransform;
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleShooting();
+        UpdateCharacterData();
         HandleCharacterUpdates();
     }
 
