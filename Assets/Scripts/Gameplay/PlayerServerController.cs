@@ -32,6 +32,9 @@ public class PlayerServerController : MonoBehaviour
             JsonUtility.FromJsonOverwrite(json, player);
 
             //lastDeserializationTime = Time.time;
+
+            transform.position = player.position;
+            transform.rotation = player.rotation;
         }
     }
 }

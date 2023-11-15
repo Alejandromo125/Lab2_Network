@@ -52,8 +52,18 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleShooting();
 
-        if ((Time.time - lastSerializationTime > serializationDelay) && player.isMoving == true && disableDataSend == false)
+        if (player.shooting == true && disableDataSend == false)
         {
+            json = JsonUtility.ToJson(player);
+        }
+
+        if ((Time.time - lastSerializationTime > serializationDelay) && player.isMoving == true)
+        {
+            if(disableDataSend == true)
+            {
+                return;
+            }
+
             json = JsonUtility.ToJson(player);
 
             jsonStorageManager_.SaveJsonFile("playerData.json", json, "/Assets/Scripts/Jsons/");
@@ -61,11 +71,6 @@ public class PlayerController : MonoBehaviour
             lastSerializationTime = Time.time;
 
             //UnityEngine.Debug.Log("Saving player Json");
-        }
-
-        if(player.shooting == true && disableDataSend == false)
-        {
-            json = JsonUtility.ToJson(player);
         }
     }
 
