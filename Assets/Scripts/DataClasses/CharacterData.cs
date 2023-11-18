@@ -5,13 +5,7 @@ using UnityEngine;
 public class CharacterData
 {
     public int HealthPoints;
-    public Transform transform;
+    public Vector3 position = Vector3.zero;
+    public Quaternion rotation = Quaternion.identity;
     public TypesOfActions actions;
-
-    public CharacterData(int hp,Transform tr,TypesOfActions act) 
-    {
-        this.HealthPoints= hp;
-        this.transform = tr;    
-        this.actions = act;
-    }
 }

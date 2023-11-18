@@ -5,7 +5,7 @@ using UnityEngine;
 public class DummyController : MonoBehaviour
 {
     public int healthPoints;
-    public string name;
+    public string username;
     public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
@@ -13,9 +13,8 @@ public class DummyController : MonoBehaviour
 
     public void UpdateDummy(CharacterData data)
     {
-        characterData.transform.position = data.transform.position;
-        characterData.transform.rotation = data.transform.rotation;
-        characterData.transform.localScale = data.transform.localScale;
+        characterData.position = data.position;
+        characterData.rotation = data.rotation;
 
         characterData.HealthPoints = data.HealthPoints;
 

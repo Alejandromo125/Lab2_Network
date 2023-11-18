@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
 
-    float rotationAngle = 0f;
-
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -35,7 +33,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         actions = new TypesOfActions(false,true,false,false,true);
-        characterData = new CharacterData(healthPoints, this.transform, actions);
+        characterData = new CharacterData();
+
     }
 
     private void Start()
@@ -59,7 +58,6 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
-        Vector3 forward = transform.forward;
 
         // Apply acceleration and deceleration for smoother movement, limited to maxSpeed.
         if (velocity.magnitude < maxSpeed)
@@ -119,43 +117,40 @@ public class PlayerController : MonoBehaviour
  
     void Shoot()
     {
-        raycastLine.enabled = true;
-        //raycastLine.SetPosition(0, gunTransform.position);
+        //raycastLine.enabled = true;
 
-        // Spawn the explosion particle at the gun's position.
-        GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
+        //// Spawn the explosion particle at the gun's position.
+        //GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
 
-        // Get the duration of the particle system's effect.
-        ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
-        float duration = particleSystem.main.duration;
+        //// Get the duration of the particle system's effect.
+        //ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+        //float duration = particleSystem.main.duration;
 
-        // Destroy the explosion prefab after the particle effect duration.
-        Destroy(explosion, duration);
+        //// Destroy the explosion prefab after the particle effect duration.
+        //Destroy(explosion, duration);
 
+        
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //ray.origin = raycastLine.transform.position;
-        //ray.direction = raycastLine.transform.position;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        ray.origin.Equals(raycastLine.transform.forward);
-        RaycastHit hit;
+        //ray.origin.Equals(raycastLine.transform.forward);
+        //RaycastHit hit;
 
 
 
-        if (Physics.Raycast(ray, out hit, 10, hitLayer))
-        {
-            //raycastLine.SetPosition(1, hit.point);
-            UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+        //if (Physics.Raycast(ray, out hit, 10, hitLayer))
+        //{
+        //    //raycastLine.SetPosition(1, hit.point);
+        //    UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-            bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
+        //    bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
 
-        }
-        else
-        {
-            Vector3 rayEnd = ray.GetPoint(100f);
-            raycastLine.SetPosition(1, rayEnd);
-        }
+        //}
+        //else
+        //{
+        //    Vector3 rayEnd = ray.GetPoint(100f);
+        //    raycastLine.SetPosition(1, rayEnd);
+        //}
 
-        //Invoke("DisableRaycastLine", 0.2f);
+        ////Invoke("DisableRaycastLine", 0.2f);
     }
 
     void DisableRaycastLine()
@@ -166,9 +161,8 @@ public class PlayerController : MonoBehaviour
     #region NetworkUpdates
     private void UpdateCharacterData()
     {
-        characterData.transform.position = gameObject.transform.position;
-        characterData.transform.rotation = gameObject.transform.rotation;
-        characterData.transform.localScale = gameObject.transform.localScale;
+        characterData.position = gameObject.transform.position;
+        characterData.rotation = gameObject.transform.rotation;
  
         characterData.HealthPoints = 10;
  
@@ -185,7 +179,7 @@ public class PlayerController : MonoBehaviour
         if(timerUpdate > timeForUpdate)
         {
             UpdateCharacterData();
-            //UpdateInfo();
+            UpdateInfo();
             timerUpdate= 0;
         }
     }
