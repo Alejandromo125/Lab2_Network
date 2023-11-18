@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         
         foreach (DummyController dummyController in dummies) 
         {
-            if(dummyController.name == message.message) 
+            if(dummyController.username == message.message) 
             {
                 dummyController.UpdateDummy(message.characterData);
             }

@@ -165,12 +165,9 @@ public class PlayerController : MonoBehaviour
         characterData.rotation = gameObject.transform.rotation;
  
         characterData.HealthPoints = 10;
- 
-        characterData.actions.walk = true;
-        characterData.actions.run = false;
-        characterData.actions.dash = false;
-        characterData.actions.shoot = false;
-        characterData.actions.shield = false;
+
+        characterData.actions = actions;
+
  
     }
     private void HandleCharacterUpdates()
@@ -185,7 +182,7 @@ public class PlayerController : MonoBehaviour
     }
     void UpdateInfo()
     {
-        Message message = new Message(name, characterData, TypesOfMessage.GAMEPLAY_ROOM);
+        Message message = new Message("Test", characterData, TypesOfMessage.GAMEPLAY_ROOM);
         GameManager.instance.UpdateData(message);
     }
  

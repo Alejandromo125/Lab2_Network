@@ -19,5 +19,16 @@ public class DummyController : MonoBehaviour
         characterData.HealthPoints = data.HealthPoints;
 
         characterData.actions = data.actions;
+
+        UpdateActualData();
+    }
+
+    public void UpdateActualData()
+    {
+        Debug.Log("Updating dummy data");
+        transform.position = characterData.position;
+        transform.rotation = characterData.rotation;
+        healthPoints = characterData.HealthPoints;
+
     }
 }

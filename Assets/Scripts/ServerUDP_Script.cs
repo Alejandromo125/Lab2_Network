@@ -101,6 +101,7 @@ public class ServerUDP_Script : MonoBehaviour
                     UiManager.instance.UpdateText(message.message);
                     break;
                 case TypesOfMessage.GAMEPLAY_ROOM:
+                    message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.START_GAME:
@@ -116,8 +117,7 @@ public class ServerUDP_Script : MonoBehaviour
 
     public void HandleSendingMessages(Message message)
     {
-        string jsonData = JsonUtility.ToJson(message);
-        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        
         switch (message.type)
         {
             case TypesOfMessage.WAITING_ROOM:
@@ -129,7 +129,7 @@ public class ServerUDP_Script : MonoBehaviour
                 }
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
-
+                message.message = "Server:" + message.message;
                 break;
             case TypesOfMessage.START_GAME:
                 Debug.Log("SEND MESSAGE");
@@ -137,10 +137,21 @@ public class ServerUDP_Script : MonoBehaviour
 
                 break;
         }
+
+        string jsonData = JsonUtility.ToJson(message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+
         foreach (IPEndPoint client in clientEndPoint)
         {
             udpListener.SendAsync(data, data.Length, client);
         }
+    }
+
+    private string ReturnCorrectDummyName(string message)
+    {
+        string[] _messageArray = message.Split(':');
+
+        return _messageArray[2];
     }
 
 }

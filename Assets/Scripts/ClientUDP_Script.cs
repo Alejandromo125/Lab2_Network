@@ -77,7 +77,7 @@ public class ClientUDP_Script : MonoBehaviour
     #region GameplayRoomMessages
     public void SendMessageGameplay(Message _message)
     {
-        string message = userName + ":" + "gameplay_action";
+        _message.message = userName+":" + _message.message;
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
@@ -121,7 +121,11 @@ public class ClientUDP_Script : MonoBehaviour
                     }
                     break;
                 case TypesOfMessage.GAMEPLAY_ROOM:
-                    GameManager.instance.UpdatePlayersData(message);
+                    if(isFromAnotherUser(message.message))
+                    {
+                        message.message = ReturnCorrectDummyName(message.message);
+                        GameManager.instance.UpdatePlayersData(message);
+                    }
                     break;
                 case TypesOfMessage.START_GAME:
                     SceneManager.LoadSceneAsync("GameplayRoom");
@@ -150,5 +154,12 @@ public class ClientUDP_Script : MonoBehaviour
         {
             return true;
         }
+    }
+
+    private string ReturnCorrectDummyName(string message)
+    {
+        string[] _messageArray = message.Split(':');
+
+        return _messageArray[1];
     }
 }
