@@ -30,5 +30,7 @@ public class DummyController : MonoBehaviour
         transform.rotation = characterData.rotation;
         healthPoints = characterData.HealthPoints;
 
+        gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
+
     }
 }

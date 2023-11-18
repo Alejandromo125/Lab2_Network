@@ -97,6 +97,10 @@ public class ServerUDP_Script : MonoBehaviour
         {
             switch (message.type)
             {
+                case TypesOfMessage.CHECK_CONNECTION:
+                    message.message = "pong";
+                    HandleSendingMessages(message);
+                    break;
                 case TypesOfMessage.WAITING_ROOM:
                     UiManager.instance.UpdateText(message.message);
                     break;
@@ -120,6 +124,9 @@ public class ServerUDP_Script : MonoBehaviour
         
         switch (message.type)
         {
+            case TypesOfMessage.CHECK_CONNECTION:
+                Debug.Log("Connection check from client");
+                break;
             case TypesOfMessage.WAITING_ROOM:
                 if (UiManager.instance != null)
                 {
@@ -134,7 +141,6 @@ public class ServerUDP_Script : MonoBehaviour
             case TypesOfMessage.START_GAME:
                 Debug.Log("SEND MESSAGE");
                 SceneManager.LoadSceneAsync("GameplayRoom");
-
                 break;
         }
 

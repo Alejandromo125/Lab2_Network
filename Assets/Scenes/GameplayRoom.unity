@@ -453,7 +453,7 @@ MonoBehaviour:
   shootDelay: 0.3
   explosionPrefab: {fileID: 2129830587}
   mainCamera: {fileID: 1294906687}
-  timeForUpdate: 0.16
+  timeForUpdate: 0.016
 --- !u!1 &437548425
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum TypesOfMessage
 {
+    CHECK_CONNECTION,
     WAITING_ROOM,
     GAMEPLAY_ROOM,
     START_GAME,

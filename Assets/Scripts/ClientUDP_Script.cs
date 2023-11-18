@@ -29,6 +29,12 @@ public class ClientUDP_Script : MonoBehaviour
     private Message lastMessage;
     private bool lastMessageUpdated = true;
 
+
+    #region ConnectionCheckerTimers
+    private float lastPingTime;
+    #endregion
+
+
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
@@ -41,6 +47,9 @@ public class ClientUDP_Script : MonoBehaviour
             HandleMessageOutput(lastMessage);
             lastMessageUpdated = true;
         }
+
+
+       
     }
     public async void LogIn()
     {
@@ -61,6 +70,17 @@ public class ClientUDP_Script : MonoBehaviour
 
         SceneManager.LoadScene("WaitingRoom");
     }
+    #region CheckConnectionMessages
+    public void SendCheckConnection()
+    {
+        string message = "ping";
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        Message _message = new Message(message, null, TypesOfMessage.CHECK_CONNECTION);
+        string jsonData = JsonUtility.ToJson(_message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        udpClient.SendAsync(data, data.Length, recipientEndPoint);
+    }
+    #endregion
     #region WaitingRoomMessages
     public void SendMessageWaitingRoom()
     {
@@ -130,6 +150,9 @@ public class ClientUDP_Script : MonoBehaviour
                 case TypesOfMessage.START_GAME:
                     SceneManager.LoadSceneAsync("GameplayRoom");
                     break;
+                case TypesOfMessage.CHECK_CONNECTION:
+                    lastPingTime = Time.time;
+                    break;
             }
         }
         catch (Exception e)
@@ -161,5 +184,17 @@ public class ClientUDP_Script : MonoBehaviour
         string[] _messageArray = message.Split(':');
 
         return _messageArray[1];
+    }
+
+    private async void HandleCheck()
+    {
+        while (true)
+        {
+            if (lastPingTime + 4 < Time.time)
+            {
+                SceneManager.LoadScene("MainMenuScene");
+                Destroy(this);
+            }
+        }
     }
 }
