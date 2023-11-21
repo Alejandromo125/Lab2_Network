@@ -41,11 +41,18 @@ public class UiManager : MonoBehaviour
     public void StartGame()
     {
         ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+        ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
         if(server)
         {
-            Message message = new Message("start game", null, TypesOfMessage.START_GAME);
+            Message message = new Message("Server", null, TypesOfMessage.START_GAME);
             server.HandleSendingMessages(message);
         }
+        if(client)
+        {
+            Message message = new Message(client.GetComponent<ClientUDP_Script>().GetUsername(), null, TypesOfMessage.START_GAME);
+            client.SendStartMessage(message);
+        }
+        
     }
 
 

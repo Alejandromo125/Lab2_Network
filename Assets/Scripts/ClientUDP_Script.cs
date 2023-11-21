@@ -29,6 +29,7 @@ public class ClientUDP_Script : MonoBehaviour
     private Message lastMessage;
     private bool lastMessageUpdated = true;
 
+    private bool CreatePlayer = false;
 
     #region ConnectionCheckerTimers
     private float lastPingTime;
@@ -48,7 +49,11 @@ public class ClientUDP_Script : MonoBehaviour
             lastMessageUpdated = true;
         }
 
-
+        if(CreatePlayer == true && GameManager.instance)
+        {
+            GameManager.instance.CreatePlayerAndDummy(userName,"Server");
+            CreatePlayer= false;
+        }
        
     }
     public async void LogIn()
@@ -104,6 +109,15 @@ public class ClientUDP_Script : MonoBehaviour
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
     }
     #endregion
+    #region StartGameMessage
+    public void SendStartMessage(Message _message)
+    {
+        string jsonData = JsonUtility.ToJson(_message);
+        byte[] data = Encoding.UTF8.GetBytes(jsonData);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        udpClient.SendAsync(data, data.Length, recipientEndPoint);
+    }
+    #endregion
 
     private async void RecieveMessages()
     {
@@ -149,6 +163,9 @@ public class ClientUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.START_GAME:
                     SceneManager.LoadSceneAsync("GameplayRoom");
+                    Message _message = new Message(GetUsername(), null, TypesOfMessage.GENERATE_PLAYERS);
+                    SendStartMessage(_message);
+                    CreatePlayer = true;
                     break;
                 case TypesOfMessage.CHECK_CONNECTION:
                     lastPingTime = Time.time;
@@ -186,6 +203,10 @@ public class ClientUDP_Script : MonoBehaviour
         return _messageArray[1];
     }
 
+    public string GetUsername()
+    {
+        return userName;
+    }
     private async void HandleCheck()
     {
         while (true)

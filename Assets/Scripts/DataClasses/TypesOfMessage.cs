@@ -8,4 +8,5 @@ public enum TypesOfMessage
     WAITING_ROOM,
     GAMEPLAY_ROOM,
     START_GAME,
+    GENERATE_PLAYERS,
 }

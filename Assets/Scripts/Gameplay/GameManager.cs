@@ -6,7 +6,13 @@ public class GameManager : MonoBehaviour
 {
     private ClientUDP_Script client;
     private ServerUDP_Script server;
-    public DummyController[] dummies;
+    public List<DummyController> dummies;
+
+    public GameObject playerPrefab;
+    public GameObject dummyPrefab;
+
+    public Vector3 startingPlayerPos;
+    public Vector3 startingDummyPos;
     public static GameManager instance { get; private set; }
 
     // Start is called before the first frame update
@@ -19,7 +25,6 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        dummies = FindObjectsOfType<DummyController>();
         client = FindObjectOfType<ClientUDP_Script>();
         server = FindObjectOfType<ServerUDP_Script>();
     }
@@ -47,5 +52,16 @@ public class GameManager : MonoBehaviour
                 dummyController.UpdateDummy(message.characterData);
             }
         }
+    }
+
+
+    public void CreatePlayerAndDummy(string playerName,string dummyName)
+    {
+       GameObject player =  Instantiate(playerPrefab,startingPlayerPos,Quaternion.identity,null);
+       player.GetComponent<PlayerController>().username = playerName;
+
+       GameObject dummy = Instantiate(dummyPrefab,startingDummyPos,Quaternion.identity,null);
+       dummy.GetComponent<DummyController>().username = dummyName;
+       dummies.Add(dummy.GetComponent<DummyController>());
     }
 }

@@ -22,6 +22,11 @@ public class ServerUDP_Script : MonoBehaviour
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
 
     private string currentScene;
+
+    private bool playerCreated = false;
+
+    //hazlo luego en lista
+    private string player;
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -47,6 +52,12 @@ public class ServerUDP_Script : MonoBehaviour
        {
             HandleMessageOutput(lastMessage);
             lastMessageUpdated = true;
+       }
+
+       if(playerCreated == true && GameManager.instance)
+       {
+            GameManager.instance.CreatePlayerAndDummy("Server",player);
+            playerCreated = false;
        }
     }
 
@@ -108,9 +119,11 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdatePlayersData(message);
                     break;
-                case TypesOfMessage.START_GAME:
-                    SceneManager.LoadSceneAsync("GameplayRoom");
+                case TypesOfMessage.GENERATE_PLAYERS:
+                    playerCreated = true;
+                    player = message.message;
                     break;
+               
             }
         }
         catch(Exception e) 
@@ -141,6 +154,7 @@ public class ServerUDP_Script : MonoBehaviour
             case TypesOfMessage.START_GAME:
                 Debug.Log("SEND MESSAGE");
                 SceneManager.LoadSceneAsync("GameplayRoom");
+                
                 break;
         }
 
@@ -157,7 +171,7 @@ public class ServerUDP_Script : MonoBehaviour
     {
         string[] _messageArray = message.Split(':');
 
-        return _messageArray[2];
+        return _messageArray[1];
     }
 
 }

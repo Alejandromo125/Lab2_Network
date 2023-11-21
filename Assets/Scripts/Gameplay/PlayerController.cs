@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +43,8 @@ public class PlayerController : MonoBehaviour
         raycastLine.enabled = true;
 
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+
+        mainCamera = FindObjectOfType<Camera>();
     }
 
     void Update()
@@ -129,7 +132,7 @@ public class PlayerController : MonoBehaviour
         //// Destroy the explosion prefab after the particle effect duration.
         //Destroy(explosion, duration);
 
-        
+
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         //ray.origin.Equals(raycastLine.transform.forward);
         //RaycastHit hit;
@@ -182,7 +185,7 @@ public class PlayerController : MonoBehaviour
     }
     void UpdateInfo()
     {
-        Message message = new Message("Test", characterData, TypesOfMessage.GAMEPLAY_ROOM);
+        Message message = new Message(username, characterData, TypesOfMessage.GAMEPLAY_ROOM);
         GameManager.instance.UpdateData(message);
     }
  
