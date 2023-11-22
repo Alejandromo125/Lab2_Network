@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public float shootRange = 7.0f;
 
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
@@ -40,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        raycastLine.enabled = true;
+        raycastLine.enabled = false;
 
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
 
@@ -120,40 +121,53 @@ public class PlayerController : MonoBehaviour
  
     void Shoot()
     {
-        //raycastLine.enabled = true;
+        raycastLine.enabled = true;
 
-        //// Spawn the explosion particle at the gun's position.
-        //GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
+        // Spawn the explosion particle at the gun's position.
+        GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
 
-        //// Get the duration of the particle system's effect.
-        //ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
-        //float duration = particleSystem.main.duration;
+        // Get the duration of the particle system's effect.
+        ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+        float duration = particleSystem.main.duration;
 
-        //// Destroy the explosion prefab after the particle effect duration.
-        //Destroy(explosion, duration);
+        // Destroy the explosion prefab after the particle effect duration.
+        Destroy(explosion, duration);
+
+        // Get the mouse position in world space
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            // Calculate the direction from player to mouse pointer in X,Z plane
+            Vector3 direction = hit.point - transform.position;
+            direction.y = 0f; // Make sure the direction is parallel to the ground
 
 
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //ray.origin.Equals(raycastLine.transform.forward);
-        //RaycastHit hit;
+            // Cast a new ray from player position towards the calculated direction
+            if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitLayer))
+            {
+                //raycastLine.SetPosition(1, hit.point);
+                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
+                bulletHitManager_.TakeDamage(100, hit.collider.gameObject);
+            }
+            else
+            {
+                // If no hit, set a default end point for the ray.
+                Vector3 rayEnd = transform.position + direction.normalized * 100f;
+                //raycastLine.SetPosition(1, rayEnd);
+            }
+        }
+        else
+        {
+            // Handle case where mouse doesn't hit anything
+            // You might want to adjust this behavior based on your requirements
+            // For instance, you could set a default direction if no hit occurs
+            UnityEngine.Debug.Log("Mouse pointer doesn't hit anything.");
+        }
 
-
-        //if (Physics.Raycast(ray, out hit, 10, hitLayer))
-        //{
-        //    //raycastLine.SetPosition(1, hit.point);
-        //    UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
-
-        //    bulletHitManager_.TakeDamage(100, GameObject.Find(hit.collider.gameObject.name));
-
-        //}
-        //else
-        //{
-        //    Vector3 rayEnd = ray.GetPoint(100f);
-        //    raycastLine.SetPosition(1, rayEnd);
-        //}
-
-        ////Invoke("DisableRaycastLine", 0.2f);
+        Invoke("DisableRaycastLine", 0.2f);
     }
 
     void DisableRaycastLine()

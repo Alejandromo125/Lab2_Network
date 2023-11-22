@@ -5180,7 +5180,7 @@ MonoBehaviour:
   gunTransform: {fileID: 9123998348757920665}
   hitLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   moveSpeed: 3
   maxSpeed: 5
   rotationSpeed: 10
