@@ -5172,7 +5172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e9b3a200104cf34aa46a303e0912ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthPoints: 100
   username: 
   characterData:
     HealthPoints: 100
@@ -5182,6 +5181,9 @@ MonoBehaviour:
   hitLayer:
     serializedVersion: 2
     m_Bits: 128
+  hitDummyLayer:
+    serializedVersion: 2
+    m_Bits: 256
   moveSpeed: 3
   maxSpeed: 5
   rotationSpeed: 10

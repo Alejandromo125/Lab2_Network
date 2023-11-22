@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     BulletHitManager bulletHitManager_;
+    BulletHitDummyManager bulletHitDummyManager_;
 
     //public int healthPoints; <-- Not needed, takes it from bullet hit manager
     public string username;
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
+    public LayerMask hitDummyLayer;
     public float moveSpeed = 5f;
     public float maxSpeed = 7f;
     public float rotationSpeed = 10f; // Rotation speed around the Y-axis.
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
         raycastLine.enabled = false;
 
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
+        bulletHitDummyManager_ = FindObjectOfType<BulletHitDummyManager>();
 
         mainCamera = FindObjectOfType<Camera>();
     }
@@ -151,6 +154,13 @@ public class PlayerController : MonoBehaviour
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
                 bulletHitManager_.TakeDamage(100, hit.collider.gameObject);
+            }
+            else if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitDummyLayer))
+            {
+                //raycastLine.SetPosition(1, hit.point);
+                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+
+                bulletHitDummyManager_.TakeDamage(100, hit.collider.gameObject);
             }
             else
             {
