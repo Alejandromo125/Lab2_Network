@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletHitManager : MonoBehaviour
+public class BulletHitDummyManager : MonoBehaviour
 {
-    int entityLife = 100; // Initial entity life.
+    DummyController dummyController_;
 
     void Start()
     {
-        // Initialization, if needed.
+        dummyController_ = FindObjectOfType<DummyController>();
     }
 
     void Update()
@@ -18,13 +18,13 @@ public class BulletHitManager : MonoBehaviour
 
     public void TakeDamage(int damage, GameObject entity)
     {
-        entityLife -= damage;
+        dummyController_.healthPoints -= damage;
         Debug.Log("Object has been shot: " + entity);
 
         // Check for entity life conditions, e.g., destroy the entity if life reaches zero.
-        if (entityLife <= 0)
+        if (dummyController_.healthPoints <= 0)
         {
-            entityLife = 0;
+            dummyController_.healthPoints = 0;
             Destroy(entity);
         }
     }
