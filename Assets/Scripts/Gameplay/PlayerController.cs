@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     BulletHitManager bulletHitManager_;
 
-    public int healthPoints;
+    //public int healthPoints; <-- Not needed, takes it from bullet hit manager
     public string username;
     public TypesOfActions actions;
     public CharacterData characterData;
@@ -181,7 +181,7 @@ public class PlayerController : MonoBehaviour
         characterData.position = gameObject.transform.position;
         characterData.rotation = gameObject.transform.rotation;
  
-        characterData.HealthPoints = 10;
+        characterData.HealthPoints = bulletHitManager_.entityLife;
 
         characterData.actions = actions;
 

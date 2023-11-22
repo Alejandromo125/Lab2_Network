@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletHitManager : MonoBehaviour
 {
-    int entityLife = 100; // Initial entity life.
+    public int entityLife = 100; // Initial entity life.
 
     void Start()
     {
