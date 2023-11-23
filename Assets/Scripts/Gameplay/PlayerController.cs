@@ -119,6 +119,11 @@ public class PlayerController : MonoBehaviour
 
             Shoot();
             lastShootTime = Time.time;
+            actions.shoot = true;
+        }
+        else
+        {
+            actions.shoot = false;
         }
     }
  
