@@ -32,7 +32,7 @@ public class DummyController : MonoBehaviour
 
     void Update()
     {
-        if(characterData.actions.shoot == true)
+        if(characterData.actions.shoot == true) //<-- null reference of an object
         {
             DummyShoot();
         }
@@ -46,6 +46,20 @@ public class DummyController : MonoBehaviour
         characterData.HealthPoints = data.HealthPoints;
 
         characterData.actions = data.actions;
+
+        //if (characterData.actions.shoot == true)
+        //{
+        //    DummyShoot();
+        //}
+
+        if (characterData.HealthPoints <= 0)
+        {
+            transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            characterData.position = transform.position;
+
+            healthPoints = 100;
+            characterData.HealthPoints = 100;
+        }
 
         // Update also the line renderer as it is attached to the raycast
 
@@ -61,12 +75,14 @@ public class DummyController : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 
+
         if (characterData.HealthPoints <= 0)
         {
             transform.position = new Vector3(0.0f, 1.0f, 0.0f);
             characterData.position = transform.position;
 
             healthPoints = 100;
+            characterData.HealthPoints = 100;
         }
 
     }
