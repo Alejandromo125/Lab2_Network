@@ -200,7 +200,13 @@ public class PlayerController : MonoBehaviour
 
         characterData.actions = actions;
 
- 
+        if(characterData.HealthPoints <= 0)
+        {
+            gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            characterData.position = gameObject.transform.position;
+
+            bulletHitManager_.entityLife = 100;
+        }
     }
     private void HandleCharacterUpdates()
     {
