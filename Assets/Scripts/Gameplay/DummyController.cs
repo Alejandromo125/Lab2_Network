@@ -20,6 +20,11 @@ public class DummyController : MonoBehaviour
     BulletHitDummyManager bulletHitDummyManager_;
     public LineRenderer raycastLine;
 
+    private void Awake()
+    {
+        characterData = new CharacterData();
+        characterData.actions = new TypesOfActions(false,true,false,false,false);
+    }
     void Start()
     {
         raycastLine.enabled = false;

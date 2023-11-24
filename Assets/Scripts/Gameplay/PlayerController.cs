@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour
 
     //public int healthPoints; <-- Not needed, takes it from bullet hit manager
     public string username;
-    public TypesOfActions actions;
     public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
@@ -36,8 +35,8 @@ public class PlayerController : MonoBehaviour
     #endregion
     private void Awake()
     {
-        actions = new TypesOfActions(false,true,false,false,true);
         characterData = new CharacterData();
+        characterData.actions = new TypesOfActions(false, true, false, false, true);
 
     }
 
@@ -119,11 +118,11 @@ public class PlayerController : MonoBehaviour
 
             Shoot();
             lastShootTime = Time.time;
-            actions.shoot = true;
+            characterData.actions.shoot = true;
         }
         else
         {
-            actions.shoot = false;
+            characterData.actions.shoot = false;
         }
     }
  
@@ -197,8 +196,6 @@ public class PlayerController : MonoBehaviour
         characterData.rotation = gameObject.transform.rotation;
  
         characterData.HealthPoints = bulletHitManager_.entityLife;
-
-        characterData.actions = actions;
 
         if(characterData.HealthPoints <= 0)
         {
