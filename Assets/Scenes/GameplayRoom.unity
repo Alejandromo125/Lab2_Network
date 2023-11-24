@@ -205,7 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dummies: []
   playerPrefab: {fileID: 9123998349309100591, guid: bcb7d5a705b90db48bc83a93f2916c7f, type: 3}
-  dummyPrefab: {fileID: 166921202048635012, guid: 47371184b624c3f48958195139b8cb3f, type: 3}
+  dummyPrefab: {fileID: 6007317254089060652, guid: 47371184b624c3f48958195139b8cb3f, type: 3}
   startingPlayerPos: {x: 0, y: 1, z: 0}
   startingDummyPos: {x: 4, y: 1, z: 2}
 --- !u!1 &607773177
