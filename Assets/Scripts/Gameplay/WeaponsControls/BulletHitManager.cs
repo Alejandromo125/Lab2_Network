@@ -24,8 +24,9 @@ public class BulletHitManager : MonoBehaviour
         // Check for entity life conditions, e.g., destroy the entity if life reaches zero.
         if (entityLife <= 0)
         {
-            entityLife = 0;
-            Destroy(entity);
+            entityLife = 100;
+            entity.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            //Destroy(entity);
         }
     }
 }

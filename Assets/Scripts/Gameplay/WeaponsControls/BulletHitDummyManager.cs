@@ -25,7 +25,8 @@ public class BulletHitDummyManager : MonoBehaviour
         if (dummyController_.healthPoints <= 0)
         {
             dummyController_.healthPoints = 0;
-            Destroy(entity);
+            entity.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            //Destroy(entity);
         }
     }
 }
