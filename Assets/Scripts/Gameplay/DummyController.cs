@@ -37,10 +37,10 @@ public class DummyController : MonoBehaviour
 
     void Update()
     {
-        if(characterData.actions.shoot == true) //<-- null reference of an object
-        {
-            DummyShoot();
-        }
+        //if(characterData.actions.shoot == true) //<-- null reference of an object
+        //{
+        //    DummyShoot();
+        //}
     }
 
     public void UpdateDummy(CharacterData data)
@@ -59,7 +59,6 @@ public class DummyController : MonoBehaviour
 
     public void UpdateActualData()
     {
-        Debug.Log("Updating dummy data");
         transform.position = characterData.position;
         transform.rotation = characterData.rotation;
         healthPoints = characterData.HealthPoints;

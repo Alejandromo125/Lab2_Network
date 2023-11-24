@@ -221,5 +221,12 @@ public class PlayerController : MonoBehaviour
         GameManager.instance.UpdateData(message);
     }
  
+
+    public void UpdateLocalData(CharacterData data)
+    {
+        gameObject.transform.position = data.position;
+        gameObject.transform.rotation = data.rotation;
+
+    }
     #endregion
 }

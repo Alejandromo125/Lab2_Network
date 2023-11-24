@@ -158,7 +158,7 @@ public class ClientUDP_Script : MonoBehaviour
                     if(isFromAnotherUser(message.message))
                     {
                         message.message = ReturnCorrectDummyName(message.message);
-                        GameManager.instance.UpdatePlayersData(message);
+                        GameManager.instance.UpdateDummiesData(message);
                     }
                     break;
                 case TypesOfMessage.START_GAME:
@@ -170,6 +170,10 @@ public class ClientUDP_Script : MonoBehaviour
                 case TypesOfMessage.CHECK_CONNECTION:
                     lastPingTime = Time.time;
                     break;
+                case TypesOfMessage.DUMMY_SHOOT:
+                    GameManager.instance.UpdatePlayersData(message);
+                    break;
+
             }
         }
         catch (Exception e)

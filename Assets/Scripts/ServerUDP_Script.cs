@@ -117,13 +117,17 @@ public class ServerUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.GAMEPLAY_ROOM:
                     message.message = ReturnCorrectDummyName(message.message);
-                    GameManager.instance.UpdatePlayersData(message);
+                    GameManager.instance.UpdateDummiesData(message);
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
                     playerCreated = true;
                     player = message.message;
                     break;
-               
+                case TypesOfMessage.DUMMY_SHOOT:
+                    message.message = ReturnCorrectDummyName(message.message);
+                    GameManager.instance.UpdatePlayersData(message);
+                    break;
+
             }
         }
         catch(Exception e) 

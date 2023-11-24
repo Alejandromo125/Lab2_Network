@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdatePlayersData(Message message)
+    public void UpdateDummiesData(Message message)
     {
         
         foreach (DummyController dummyController in dummies) 
@@ -54,6 +54,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void UpdatePlayersData(Message message)
+    {
+
+        PlayerController player = FindObjectOfType<PlayerController>();
+        if(player.username == message.message) 
+        {
+            player.UpdateLocalData(message.characterData);
+        }
+    }
 
     public void CreatePlayerAndDummy(string playerName,string dummyName)
     {

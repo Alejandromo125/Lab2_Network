@@ -21,12 +21,19 @@ public class BulletHitDummyManager : MonoBehaviour
         dummyController_.healthPoints -= damage;
         Debug.Log("Object has been shot: " + entity);
 
+        string temp = entity.gameObject.GetComponent<DummyController>().username;
+        HandleHitEffect(temp, damage);
         // Check for entity life conditions, e.g., destroy the entity if life reaches zero.
-        if (dummyController_.healthPoints <= 0)
-        {
-            dummyController_.healthPoints = 0;
-            entity.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
-            //Destroy(entity);
-        }
+    }
+
+    public void HandleHitEffect(string username,int healthPoints)
+    {
+        CharacterData characterData = new CharacterData();
+        characterData.HealthPoints-=healthPoints;
+        characterData.HealthPoints = characterData.HealthPoints <= 0 ? 0 : characterData.HealthPoints;
+
+        characterData.actions = new TypesOfActions(false, false, false, false, false);
+        Message message = new Message(username, characterData, TypesOfMessage.DUMMY_SHOOT);
+        GameManager.instance.UpdateData(message);
     }
 }
