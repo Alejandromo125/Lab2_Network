@@ -112,7 +112,7 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = "pong";
                     HandleSendingMessages(message);
                     break;
-                
+             
                 case TypesOfMessage.GAMEPLAY_ROOM:
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdateDummiesData(message);
