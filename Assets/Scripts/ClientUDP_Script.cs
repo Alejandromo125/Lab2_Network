@@ -21,7 +21,7 @@ public class ClientUDP_Script : MonoBehaviour
     private string currentServerIP;
     private string userName;
     private int serverPort = 12345;
-    private int clientPort;
+    //private int clientPort;
 
 
     private Thread listenerThread;
@@ -60,8 +60,9 @@ public class ClientUDP_Script : MonoBehaviour
     {
         currentServerIP = InputFieldTextIP.text;
         userName = InputFieldTextUserName.text;
-        clientPort = int.Parse(InputPortClient.text);
-        udpClient = new UdpClient(clientPort);
+        udpClient = new UdpClient();
+
+        udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
 
         string connectText = "/connect:" + InputFieldTextUserName.text;
         Message _message = new Message(connectText, null, TypesOfMessage.WAITING_ROOM);

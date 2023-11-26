@@ -54,8 +54,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleShooting();
-        UpdateCharacterData();
-        HandleCharacterUpdates();
+        
     }
  
     void HandleMovement()
@@ -65,6 +64,8 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
 
+        if (movement != Vector3.zero) { characterData.actions.walk = true; }
+        if (movement == Vector3.zero) { characterData.actions.walk = false; }
         // Apply acceleration and deceleration for smoother movement, limited to maxSpeed.
         if (velocity.magnitude < maxSpeed)
         {
@@ -109,16 +110,27 @@ public class PlayerController : MonoBehaviour
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
+
+
+        Vector3 vel = velocity.normalized;
+        if(vel !=Vector3.zero) 
+        {
+            UpdateCharacterData();
+            HandleCharacterUpdates();
+        }
     }
  
     void HandleShooting()
     {
+        if(Input.GetMouseButtonDown(0)) { characterData.actions.shoot = true; }
+
+
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
-
             Shoot();
             lastShootTime = Time.time;
-            characterData.actions.shoot = true;
+            UpdateCharacterData();
+            HandleCharacterUpdates();
         }
         else
         {

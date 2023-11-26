@@ -68,7 +68,7 @@ public class DummyController : MonoBehaviour
 
         if (characterData.HealthPoints <= 0)
         {
-            transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            transform.position = new Vector3(0.0f, 3.0f, 0.0f);
             characterData.position = transform.position;
 
             healthPoints = 100;
