@@ -54,7 +54,8 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleShooting();
-        
+        UpdateCharacterData();
+        HandleCharacterUpdates();
     }
  
     void HandleMovement()
@@ -110,27 +111,19 @@ public class PlayerController : MonoBehaviour
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
-
-
-        Vector3 vel = velocity.normalized;
-        if(vel !=Vector3.zero) 
-        {
-            UpdateCharacterData();
-            HandleCharacterUpdates();
-        }
     }
  
     void HandleShooting()
     {
-        if(Input.GetMouseButtonDown(0)) { characterData.actions.shoot = true; }
+        if(Input.GetMouseButtonDown(0)) {  }
 
 
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
             lastShootTime = Time.time;
-            UpdateCharacterData();
-            HandleCharacterUpdates();
+            characterData.actions.shoot = true;
+            
         }
         else
         {
