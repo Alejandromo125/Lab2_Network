@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public struct GameScore
+{
+    public float scoreRedTeam;
+    public float scoreBlueTeam;
+}
 public class GameManager : MonoBehaviour
 {
     private ClientUDP_Script client;
@@ -15,9 +19,13 @@ public class GameManager : MonoBehaviour
     public Vector3 startingDummyPos;
     public static GameManager instance { get; private set; }
 
+    public GameScore score;
     // Start is called before the first frame update
     private void Awake()
     {
+        score.scoreRedTeam = 0;
+        score.scoreBlueTeam = 0;
+
         if(instance == null)
         {
             instance = this;
@@ -29,6 +37,42 @@ public class GameManager : MonoBehaviour
         server = FindObjectOfType<ServerUDP_Script>();
     }
 
+    private void Update()
+    {
+        VictoryHandler();
+    }
+
+    private void VictoryHandler()
+    {
+        if(score.scoreRedTeam >= 5)
+        {
+            TriggerWin("Red Team");
+        }
+        else if(score.scoreBlueTeam >= 5)
+        {
+            TriggerWin("Blue Team");
+        }
+
+    }
+    private void TriggerWin(string msg) 
+    {
+        Message message = new Message(msg, null, TypesOfMessage.FINISH_GAME);
+
+        if (server)
+        {
+            server.HandleSendingMessages(message);
+        }
+        if (client)
+        {
+            client.SendMessageGameplay(message);
+        }
+    }
+    public void UpdateScore(int team)
+    {
+        //Team 1 = blue Team 2 = red
+        if (team == 1) score.scoreBlueTeam++;
+        else if(team == 2) score.scoreRedTeam++;
+    }
     // Update is called once per frame
     public void UpdateData(Message message)
     {

@@ -22,17 +22,21 @@ public class BulletHitDummyManager : MonoBehaviour
         Debug.Log("Object has been shot: " + entity);
 
         string temp = entity.gameObject.GetComponent<DummyController>().username;
-        HandleHitEffect(temp, damage);
+        HandleHitEffect(temp, dummyController_.healthPoints);
         // Check for entity life conditions, e.g., destroy the entity if life reaches zero.
     }
 
     public void HandleHitEffect(string username,int healthPoints)
     {
         CharacterData characterData = new CharacterData();
-        characterData.HealthPoints-=healthPoints;
+        characterData.HealthPoints -= healthPoints;
         characterData.HealthPoints = characterData.HealthPoints <= 0 ? 0 : characterData.HealthPoints;
-
-        characterData.actions = new TypesOfActions(false, false, false, false, false);
+       
+        characterData.actions.walk = false;
+        characterData.actions.shoot = false;
+        characterData.actions.run = false;
+        characterData.actions.dash = false;
+        characterData.actions.shield = false;
         Message message = new Message(username, characterData, TypesOfMessage.DUMMY_SHOOT);
         GameManager.instance.UpdateData(message);
     }

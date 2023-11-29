@@ -10,4 +10,6 @@ public enum TypesOfMessage
     START_GAME,
     DUMMY_SHOOT,
     GENERATE_PLAYERS,
+    UPDATE_SCORE,
+    FINISH_GAME,
 }

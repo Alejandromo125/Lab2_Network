@@ -6,6 +6,7 @@ public class AnimationsHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     private CharacterData characterData;
+
     public Rigidbody rb;
     public Animator anim;
 
@@ -19,8 +20,10 @@ public class AnimationsHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.GetComponent<PlayerController>() != null) { characterData = gameObject.GetComponent<PlayerController>().characterData; }
-        if (gameObject.GetComponent<DummyController>() != null) { characterData = gameObject.GetComponent<DummyController>().characterData;}
+        if (gameObject.GetComponent<PlayerController>() != null) 
+        { characterData = gameObject.GetComponent<PlayerController>().characterData; }
+        if (gameObject.GetComponent<DummyController>() != null) 
+        { characterData = gameObject.GetComponent<DummyController>().characterData;}
         
         AnimationsStates();
     }

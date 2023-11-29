@@ -965,6 +965,37 @@ Transform:
   m_Father: {fileID: 3852047915728896730}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6198418114431174799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6673660136222577183}
+  m_Layer: 0
+  m_Name: AimTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6673660136222577183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198418114431174799}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0.0349, z: 0.2022}
+  m_LocalScale: {x: 0.02222222, y: 0.02222222, z: 0.02222222}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7107287894810048009}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6269364986354852843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1251,17 +1282,18 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7631903738347023539}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 16.243198, y: 0, z: -9.020228}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 45, y: 45, z: 45}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3382900838234609309}
   - {fileID: 1219049597686406855}
   - {fileID: 5863197258494856263}
+  - {fileID: 6673660136222577183}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &7289236329068272206
 Animator:
   serializedVersion: 4
@@ -1309,7 +1341,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &7192818126128248412
 MonoBehaviour:
@@ -1326,6 +1358,7 @@ MonoBehaviour:
   username: 
   characterData:
     HealthPoints: 100
+    GamePoints: 0
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 1}
   gunTransform: {fileID: 5863197258494856263}
@@ -1345,6 +1378,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 1676027095125072234, guid: 886154ece3e43644c9601f8d9ee72093, type: 3}
   shootRange: 7
   mainCamera: {fileID: 0}
+  aimTarget: {fileID: 6673660136222577183}
   timeForUpdate: 0.016
 --- !u!114 &7813864888399943506
 MonoBehaviour:

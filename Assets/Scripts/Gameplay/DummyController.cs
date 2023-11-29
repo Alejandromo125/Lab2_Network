@@ -23,7 +23,7 @@ public class DummyController : MonoBehaviour
     private void Awake()
     {
         characterData = new CharacterData();
-        characterData.actions = new TypesOfActions(false,true,false,false,false);
+       
     }
     void Start()
     {

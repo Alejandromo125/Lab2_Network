@@ -171,7 +171,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 08b150940b563e84abe29d66b6677d59, type: 2}
+  - {fileID: 2100000, guid: 35ef426e1c9c63d47af44443490d6283, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -806,8 +806,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5645892933578726370}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -2.6647384, y: -1.4913934, z: 7.8632307}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 45, y: 45, z: 45}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -816,7 +816,7 @@ Transform:
   - {fileID: 8569654519277697814}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4799522617172421919
 Animator:
   serializedVersion: 4
@@ -864,7 +864,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &1706201631127578603
 MonoBehaviour:
@@ -873,7 +873,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5645892933578726370}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c29d91ca972fdef43a0c4a5476428365, type: 3}
   m_Name: 
@@ -892,10 +892,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e2969001983fdc448dd28a8d0d97f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthPoints: 0
+  healthPoints: 100
   username: 
   characterData:
     HealthPoints: 100
+    GamePoints: 0
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 1}
   gunTransform: {fileID: 8569654519277697814}

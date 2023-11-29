@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,7 +28,11 @@ public class PlayerController : MonoBehaviour
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
+    private TypesOfActions actions;
 
+    private CinemachineVirtualCamera cam;
+
+    public Transform aimTarget;
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -36,8 +41,10 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterData = new CharacterData();
-        characterData.actions = new TypesOfActions(false, true, false, false, true);
+        cam = FindObjectOfType<CinemachineVirtualCamera>();
 
+        cam.LookAt = gameObject.transform;
+        cam.Follow = gameObject.transform;
     }
 
     private void Start()
@@ -65,8 +72,8 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
 
-        if (movement != Vector3.zero) { characterData.actions.walk = true; }
-        if (movement == Vector3.zero) { characterData.actions.walk = false; }
+        if (movement != Vector3.zero) { actions.walk = true; }
+        if (movement == Vector3.zero) { actions.walk = false; }
         // Apply acceleration and deceleration for smoother movement, limited to maxSpeed.
         if (velocity.magnitude < maxSpeed)
         {
@@ -111,23 +118,34 @@ public class PlayerController : MonoBehaviour
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
+
+        if (Input.GetMouseButtonDown(1)) 
+        {
+            cam.LookAt = aimTarget;
+
+        }
+        else if(Input.GetMouseButtonUp(1))
+        {
+            cam.LookAt = gameObject.transform;
+
+        }
     }
  
     void HandleShooting()
     {
-        if(Input.GetMouseButtonDown(0)) {  }
+        
 
 
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
             lastShootTime = Time.time;
-            characterData.actions.shoot = true;
+            actions.shoot = true;
             
         }
         else
         {
-            characterData.actions.shoot = false;
+            actions.shoot = false;
         }
     }
  
@@ -162,14 +180,14 @@ public class PlayerController : MonoBehaviour
                 //raycastLine.SetPosition(1, hit.point);
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                bulletHitManager_.TakeDamage(100, hit.collider.gameObject);
+                bulletHitManager_.TakeDamage(10, hit.collider.gameObject);
             }
             else if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitDummyLayer))
             {
                 //raycastLine.SetPosition(1, hit.point);
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                bulletHitDummyManager_.TakeDamage(100, hit.collider.gameObject);
+                bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject);
             }
             else
             {
@@ -202,6 +220,7 @@ public class PlayerController : MonoBehaviour
  
         characterData.HealthPoints = bulletHitManager_.entityLife;
 
+        characterData.actions = actions;
         if(characterData.HealthPoints <= 0)
         {
             gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
@@ -229,8 +248,10 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateLocalData(CharacterData data)
     {
+        characterData.HealthPoints = data.HealthPoints;
         gameObject.transform.position = data.position;
         gameObject.transform.rotation = data.rotation;
+        actions = data.actions;
 
     }
     #endregion
