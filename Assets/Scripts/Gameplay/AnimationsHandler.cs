@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimationsHandler : MonoBehaviour
 {
     // Start is called before the first frame update
+
     private CharacterData characterData;
 
     public Rigidbody rb;
@@ -30,23 +31,8 @@ public class AnimationsHandler : MonoBehaviour
 
     void AnimationsStates()
     {
-        Vector3 velocityNormalized = rb.velocity.normalized;
-        Vector3 vel = transform.InverseTransformDirection(velocityNormalized);
-
-        if ((vel.x > Vector3.zero.x || vel.z > Vector3.zero.z) && triggerWalk == false)
-        {
-            anim.SetTrigger("walkTrigger");
-            triggerWalk = true;
-        }
-        if((vel.x <= Vector3.zero.x || vel.z <= Vector3.zero.z))
-        {
-            triggerWalk = false;
-        }
-
-        anim.SetFloat("DirectionForward", vel.z);
-        anim.SetFloat("DirectionSides", vel.x);
-
         anim.SetBool("shoot", characterData.actions.shoot);
         anim.SetBool("walk", characterData.actions.walk);
+        anim.SetBool("run", characterData.actions.run);
     }
 }

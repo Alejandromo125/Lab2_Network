@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        actions.run = Input.GetKey(KeyCode.LeftShift) == true ? true : false;
 
         if (movement != Vector3.zero) { actions.walk = true; }
         if (movement == Vector3.zero) { actions.walk = false; }
@@ -103,9 +104,10 @@ public class PlayerController : MonoBehaviour
         }
 
         // Apply the movement in the player's forward direction.
-        transform.Translate(velocity * Time.deltaTime, Space.World);
-
-
+        if(actions.run == false)
+            transform.Translate(velocity * Time.deltaTime, Space.World);
+        else
+            transform.Translate(velocity * 1.5f * Time.deltaTime, Space.World);
 
         // Rotate the character to look at the mouse pointer instantly on the Y-axis.
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -249,10 +251,10 @@ public class PlayerController : MonoBehaviour
     public void UpdateLocalData(CharacterData data)
     {
         characterData.HealthPoints = data.HealthPoints;
+        bulletHitManager_.entityLife = data.HealthPoints;
         gameObject.transform.position = data.position;
         gameObject.transform.rotation = data.rotation;
-        actions = data.actions;
-
+       
     }
     #endregion
 }

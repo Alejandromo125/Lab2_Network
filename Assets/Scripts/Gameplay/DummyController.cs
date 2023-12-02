@@ -50,8 +50,11 @@ public class DummyController : MonoBehaviour
 
         characterData.HealthPoints = data.HealthPoints;
 
-        characterData.actions = data.actions;
+        characterData.actions.run = data.actions.run;
+        characterData.actions.shoot = data.actions.shoot;
+        characterData.actions.walk = data.actions.walk;
 
+        
         // Update also the line renderer as it is attached to the raycast
 
         UpdateActualData();

@@ -29,7 +29,7 @@ public class BulletHitDummyManager : MonoBehaviour
     public void HandleHitEffect(string username,int healthPoints)
     {
         CharacterData characterData = new CharacterData();
-        characterData.HealthPoints -= healthPoints;
+        characterData.HealthPoints = healthPoints;
         characterData.HealthPoints = characterData.HealthPoints <= 0 ? 0 : characterData.HealthPoints;
        
         characterData.actions.walk = false;
