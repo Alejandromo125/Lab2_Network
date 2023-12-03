@@ -174,7 +174,11 @@ public class ClientUDP_Script : MonoBehaviour
                 case TypesOfMessage.DUMMY_SHOOT:
                     GameManager.instance.UpdatePlayersData(message);
                     break;
-
+                case TypesOfMessage.FINISH_GAME:
+                    SceneManager.LoadScene("MainMenuScene");
+                    udpClient.Close();
+                    Destroy(this);
+                    break;
             }
         }
         catch (Exception e)

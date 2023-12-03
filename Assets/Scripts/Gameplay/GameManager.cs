@@ -1,11 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+
+[Serializable]
 public struct GameScore
 {
-    public float scoreRedTeam;
-    public float scoreBlueTeam;
+    public int scoreRedTeam;
+    public int scoreBlueTeam;
 }
+
+
 public class GameManager : MonoBehaviour
 {
     private ClientUDP_Script client;
@@ -20,6 +26,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance { get; private set; }
 
     public GameScore score;
+    public TextMeshProUGUI scoreBlueTeam;
+    public TextMeshProUGUI scoreRedTeam;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -40,8 +48,17 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         VictoryHandler();
+        UpdateScore();
     }
+    public void UpdateScore()
+    {
+        score.scoreBlueTeam = FindObjectOfType<PlayerController>().characterData.GameScore;
+        score.scoreRedTeam = FindObjectOfType<DummyController>().characterData.GameScore;
+        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
+        scoreRedTeam.text = score.scoreRedTeam.ToString();
 
+
+    }
     private void VictoryHandler()
     {
         if(score.scoreRedTeam >= 5)
@@ -57,21 +74,7 @@ public class GameManager : MonoBehaviour
     private void TriggerWin(string msg) 
     {
         Message message = new Message(msg, null, TypesOfMessage.FINISH_GAME);
-
-        if (server)
-        {
-            server.HandleSendingMessages(message);
-        }
-        if (client)
-        {
-            client.SendMessageGameplay(message);
-        }
-    }
-    public void UpdateScore(int team)
-    {
-        //Team 1 = blue Team 2 = red
-        if (team == 1) score.scoreBlueTeam++;
-        else if(team == 2) score.scoreRedTeam++;
+        UpdateData(message); 
     }
     // Update is called once per frame
     public void UpdateData(Message message)
@@ -112,9 +115,11 @@ public class GameManager : MonoBehaviour
     {
        GameObject player =  Instantiate(playerPrefab,startingPlayerPos,Quaternion.identity,null);
        player.GetComponent<PlayerController>().username = playerName;
+       player.GetComponent<PlayerController>().characterData.team = Team.BLUE_TEAM;
 
-       GameObject dummy = Instantiate(dummyPrefab,startingDummyPos,Quaternion.identity,null);
+        GameObject dummy = Instantiate(dummyPrefab,startingDummyPos,Quaternion.identity,null);
        dummy.GetComponent<DummyController>().username = dummyName;
+        dummy.GetComponent<DummyController>().characterData.team = Team.RED_TEAM;
        dummies.Add(dummy.GetComponent<DummyController>());
     }
 }

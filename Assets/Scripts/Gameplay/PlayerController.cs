@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
  
 public class PlayerController : MonoBehaviour
@@ -154,7 +155,7 @@ public class PlayerController : MonoBehaviour
     void Shoot()
     {
         raycastLine.enabled = true;
-
+        bool score = false;
         // Spawn the explosion particle at the gun's position.
         GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
 
@@ -168,6 +169,9 @@ public class PlayerController : MonoBehaviour
         // Get the mouse position in world space
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+
+        Invoke("DisableRaycastLine", 0.2f);
+
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
@@ -190,6 +194,7 @@ public class PlayerController : MonoBehaviour
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
                 bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject);
+                
             }
             else
             {
@@ -205,15 +210,11 @@ public class PlayerController : MonoBehaviour
             // For instance, you could set a default direction if no hit occurs
             UnityEngine.Debug.Log("Mouse pointer doesn't hit anything.");
         }
-
-        Invoke("DisableRaycastLine", 0.2f);
     }
-
     void DisableRaycastLine()
     {
         raycastLine.enabled = false;
     }
-
     #region NetworkUpdates
     private void UpdateCharacterData()
     {
@@ -227,7 +228,6 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
             characterData.position = gameObject.transform.position;
-
             bulletHitManager_.entityLife = 100;
         }
     }
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour
         bulletHitManager_.entityLife = data.HealthPoints;
         gameObject.transform.position = data.position;
         gameObject.transform.rotation = data.rotation;
-       
+        characterData.GameScore = data.GameScore;
     }
     #endregion
 }

@@ -1358,9 +1358,16 @@ MonoBehaviour:
   username: 
   characterData:
     HealthPoints: 100
-    GamePoints: 0
+    GameScore: 0
+    team: 0
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 1}
+    actions:
+      shoot: 0
+      walk: 0
+      run: 0
+      dash: 0
+      shield: 0
   gunTransform: {fileID: 5863197258494856263}
   hitLayer:
     serializedVersion: 2
@@ -1374,7 +1381,7 @@ MonoBehaviour:
   deceleration: 5
   acceleration: 5
   raycastLine: {fileID: 6742905594975133383}
-  shootDelay: 0.3
+  shootDelay: 0.5
   explosionPrefab: {fileID: 1676027095125072234, guid: 886154ece3e43644c9601f8d9ee72093, type: 3}
   shootRange: 7
   mainCamera: {fileID: 0}

@@ -125,6 +125,11 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdatePlayersData(message);
                     break;
+                case TypesOfMessage.FINISH_GAME:
+                    SceneManager.LoadScene("MainMenuScene");
+                    udpListener.Close();
+                    Destroy(this);
+                    break;
 
             }
         }
@@ -156,7 +161,6 @@ public class ServerUDP_Script : MonoBehaviour
             case TypesOfMessage.START_GAME:
                 Debug.Log("SEND MESSAGE");
                 SceneManager.LoadSceneAsync("GameplayRoom");
-                
                 break;
         }
 

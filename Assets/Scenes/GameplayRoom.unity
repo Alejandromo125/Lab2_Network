@@ -1007,6 +1007,8 @@ MonoBehaviour:
   dummyPrefab: {fileID: 5645892933578726370, guid: d03f321c98fba26479d2fd85ed73c910, type: 3}
   startingPlayerPos: {x: 0, y: 1, z: 0}
   startingDummyPos: {x: 4, y: 1, z: 2}
+  scoreBlueTeam: {fileID: 721253696}
+  scoreRedTeam: {fileID: 1149909580}
 --- !u!1001 &449784755
 PrefabInstance:
   m_ObjectHideFlags: 0
