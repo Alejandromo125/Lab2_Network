@@ -16,6 +16,7 @@ public class DummyController : MonoBehaviour
     public float shootRange = 7.0f;
 
 
+    public Transform spawner;
     BulletHitManager bulletHitManager_;
     BulletHitDummyManager bulletHitDummyManager_;
     public LineRenderer raycastLine;

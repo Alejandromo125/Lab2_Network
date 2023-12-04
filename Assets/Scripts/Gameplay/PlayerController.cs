@@ -1,5 +1,4 @@
 using Cinemachine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -229,7 +228,7 @@ public class PlayerController : MonoBehaviour
         characterData.actions = actions;
         if(characterData.HealthPoints <= 0)
         {
-            gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+            gameObject.transform.position = new Vector3(Random.Range(-10.0f,10.0f), 1.0f, Random.Range(-10.0f, 10.0f));
             characterData.position = gameObject.transform.position;
             bulletHitManager_.entityLife = 100;
             characterData.HealthPoints = 100;

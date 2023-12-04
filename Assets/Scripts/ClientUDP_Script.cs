@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using System.Net;
 using System.Threading;
+using UnityEngine.UI;
 
 public class ClientUDP_Script : MonoBehaviour
 {
@@ -14,8 +15,6 @@ public class ClientUDP_Script : MonoBehaviour
     private TMP_InputField InputFieldTextIP;
     [SerializeField]
     private TMP_InputField InputFieldTextUserName;
-    [SerializeField]
-    private TMP_InputField InputPortClient;
 
     private UdpClient udpClient;
     private string currentServerIP;
@@ -74,7 +73,7 @@ public class ClientUDP_Script : MonoBehaviour
         listenerThread = new Thread(RecieveMessages);
         listenerThread.Start();
 
-        SceneManager.LoadScene("WaitingRoom");
+        SceneManager.LoadScene("ServerScene");
     }
     #region CheckConnectionMessages
     public void SendCheckConnection()
@@ -175,9 +174,11 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    SceneManager.LoadScene("MainMenuScene");
-                    udpClient.Close();
-                    Destroy(this);
+                    //DontDestroyOnLoad(this);
+                    //udpClient.Close();
+                    //listenerThread.Join();
+                    //SceneManager.LoadSceneAsync("MainMenuScene");
+                    //Destroy(this);
                     break;
             }
         }

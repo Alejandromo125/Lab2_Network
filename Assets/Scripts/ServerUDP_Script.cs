@@ -69,7 +69,6 @@ public class ServerUDP_Script : MonoBehaviour
     {
         Message message = new Message("/start_room",null,TypesOfMessage.WAITING_ROOM);
         HandleSendingMessages(message);
-        SceneManager.LoadSceneAsync("WaitingRoom");
     }
     public void HandleCallbackEvent()
     {
@@ -125,11 +124,7 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdatePlayersData(message);
                     break;
-                case TypesOfMessage.FINISH_GAME:
-                    SceneManager.LoadScene("MainMenuScene");
-                    udpListener.Close();
-                    Destroy(this);
-                    break;
+               
 
             }
         }
@@ -141,7 +136,7 @@ public class ServerUDP_Script : MonoBehaviour
 
     public void HandleSendingMessages(Message message)
     {
-        
+
         switch (message.type)
         {
             case TypesOfMessage.CHECK_CONNECTION:
@@ -162,7 +157,15 @@ public class ServerUDP_Script : MonoBehaviour
                 Debug.Log("SEND MESSAGE");
                 SceneManager.LoadSceneAsync("GameplayRoom");
                 break;
+            case TypesOfMessage.FINISH_GAME:
+                //DontDestroyOnLoad(this);
+                //udpListener.Close();
+                //serverThread.Join();
+                //SceneManager.LoadSceneAsync("MainMenuScene");
+                //Destroy(this);
+                break;
         }
+
 
         string jsonData = JsonUtility.ToJson(message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
@@ -172,6 +175,7 @@ public class ServerUDP_Script : MonoBehaviour
             udpListener.SendAsync(data, data.Length, client);
         }
     }
+    
 
     private string ReturnCorrectDummyName(string message)
     {
