@@ -49,8 +49,6 @@ public class DummyController : MonoBehaviour
         characterData.position = data.position;
         characterData.rotation = data.rotation;
 
-        characterData.HealthPoints = data.HealthPoints;
-
         characterData.actions.run = data.actions.run;
         characterData.actions.shoot = data.actions.shoot;
         characterData.actions.walk = data.actions.walk;
@@ -65,12 +63,11 @@ public class DummyController : MonoBehaviour
     {
         transform.position = characterData.position;
         transform.rotation = characterData.rotation;
-        healthPoints = characterData.HealthPoints;
 
         gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 
 
-        if (characterData.HealthPoints <= 0)
+        if (healthPoints <= 0)
         {
             //transform.position = new Vector3(0.0f, 3.0f, 0.0f);
             //characterData.position = transform.position;

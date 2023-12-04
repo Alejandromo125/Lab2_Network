@@ -193,7 +193,10 @@ public class PlayerController : MonoBehaviour
                 //raycastLine.SetPosition(1, hit.point);
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject);
+                if(bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject) <= 0)
+                {
+                    characterData.GameScore++;
+                }
                 
             }
             else
@@ -229,6 +232,7 @@ public class PlayerController : MonoBehaviour
             gameObject.transform.position = new Vector3(0.0f, 1.0f, 0.0f);
             characterData.position = gameObject.transform.position;
             bulletHitManager_.entityLife = 100;
+            characterData.HealthPoints = 100;
         }
     }
     private void HandleCharacterUpdates()
