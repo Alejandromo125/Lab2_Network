@@ -51,9 +51,12 @@ public class ClientUDP_Script : MonoBehaviour
         if(CreatePlayer == true && GameManager.instance)
         {
             GameManager.instance.CreatePlayerAndDummy(userName,"Server");
-            CreatePlayer= false;
+            //TODO: Finish Implementing connection, basic logic here, need to polish it and find a way to delete the client and server
+            //SendCheckConnection();
+            //HandleCheck();
+            CreatePlayer = false;
         }
-       
+
     }
     public async void LogIn()
     {
@@ -135,9 +138,8 @@ public class ClientUDP_Script : MonoBehaviour
             }
             catch (Exception ex)
             {
-
+                Debug.LogException(ex);
             }
-               
             
         }
        
@@ -169,6 +171,7 @@ public class ClientUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.CHECK_CONNECTION:
                     lastPingTime = Time.time;
+                    SendCheckConnection();
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
                     GameManager.instance.UpdatePlayersData(message);
@@ -221,10 +224,9 @@ public class ClientUDP_Script : MonoBehaviour
     {
         while (true)
         {
-            if (lastPingTime + 4 < Time.time)
+            if (lastPingTime + 30 < Time.time)
             {
                 SceneManager.LoadScene("MainMenuScene");
-                Destroy(this);
             }
         }
     }
