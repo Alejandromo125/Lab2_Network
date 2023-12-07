@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class BulletHitDummyManager : MonoBehaviour
 {
+    HP_Bar_Manager hp_Bar_Manager_;
     DummyController dummyController_;
 
     void Start()
     {
+        hp_Bar_Manager_ = FindObjectOfType<HP_Bar_Manager>();
         dummyController_ = FindObjectOfType<DummyController>();
     }
 
@@ -20,6 +22,13 @@ public class BulletHitDummyManager : MonoBehaviour
     {
         dummyController_.healthPoints -= damage;
         Debug.Log("Object has been shot: " + entity);
+
+        hp_Bar_Manager_.Change(-damage);
+
+        if (dummyController_.healthPoints <= 0)
+        {
+            hp_Bar_Manager_.Change(100);
+        }
 
         string temp = entity.gameObject.GetComponent<DummyController>().username;
         HandleHitEffect(temp, dummyController_.healthPoints,entity);
