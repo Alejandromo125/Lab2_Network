@@ -1599,7 +1599,7 @@ GameObject:
   - component: {fileID: 7192818126128248412}
   - component: {fileID: 7813864888399943506}
   - component: {fileID: 3467315286757232826}
-  - component: {fileID: 8127789975535507933}
+  - component: {fileID: 1480319135658487090}
   m_Layer: 7
   m_Name: RobotoPlayer
   m_TagString: Untagged
@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1023427525667256523}
   anim: {fileID: 7289236329068272206}
---- !u!114 &8127789975535507933
+--- !u!114 &1480319135658487090
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1756,7 +1756,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7631903738347023539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 422df09fc21d4574a935bb98f487b411, type: 3}
+  m_Script: {fileID: 11500000, guid: 6710e6724d321d34199fa9908ace0c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <MaxValue>k__BackingField: 100
