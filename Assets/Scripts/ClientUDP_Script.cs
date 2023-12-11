@@ -140,7 +140,6 @@ public class ClientUDP_Script : MonoBehaviour
             {
                 Debug.LogException(ex);
             }
-            
         }
        
     }
@@ -177,11 +176,11 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    //DontDestroyOnLoad(this);
-                    //udpClient.Close();
-                    //listenerThread.Join();
-                    //SceneManager.LoadSceneAsync("MainMenuScene");
-                    //Destroy(this);
+                    listenerThread.Join();
+                    SceneManager.LoadSceneAsync("MainMenuScene");
+                    DontDestroyOnLoad(this);
+                    udpClient.Close();
+                    Destroy(this);
                     break;
             }
         }
@@ -229,5 +228,12 @@ public class ClientUDP_Script : MonoBehaviour
                 SceneManager.LoadScene("MainMenuScene");
             }
         }
+    }
+
+    public void DestroyClient()
+    {
+        DontDestroyOnLoad(gameObject);
+        udpClient.Close();
+        Destroy(gameObject);
     }
 }

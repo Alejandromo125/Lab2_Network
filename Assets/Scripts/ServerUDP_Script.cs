@@ -158,11 +158,10 @@ public class ServerUDP_Script : MonoBehaviour
                 SceneManager.LoadSceneAsync("GameplayRoom");
                 break;
             case TypesOfMessage.FINISH_GAME:
-                //DontDestroyOnLoad(this);
-                //udpListener.Close();
-                //serverThread.Join();
-                //SceneManager.LoadSceneAsync("MainMenuScene");
-                //Destroy(this);
+                
+                serverThread.Join();
+                SceneManager.LoadSceneAsync("MainMenuScene");
+                
                 break;
         }
 
@@ -184,4 +183,10 @@ public class ServerUDP_Script : MonoBehaviour
         return _messageArray[1];
     }
 
+    public void DestroyServer()
+    {
+        DontDestroyOnLoad(gameObject);
+        udpListener.Close();
+        Destroy(gameObject);
+    }
 }
