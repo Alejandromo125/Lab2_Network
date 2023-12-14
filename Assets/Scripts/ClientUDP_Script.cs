@@ -25,6 +25,8 @@ public class ClientUDP_Script : MonoBehaviour
 
     private Thread listenerThread;
 
+    private Thread checkerThread;
+
     private Message lastMessage;
     private bool lastMessageUpdated = true;
 
@@ -52,8 +54,8 @@ public class ClientUDP_Script : MonoBehaviour
         {
             GameManager.instance.CreatePlayerAndDummy(userName,"Server");
             //TODO: Finish Implementing connection, basic logic here, need to polish it and find a way to delete the client and server
-            //SendCheckConnection();
-            //HandleCheck();
+            SendCheckConnection();
+            checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;
         }
 
@@ -176,11 +178,9 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
+                    checkerThread.Join();
                     listenerThread.Join();
-                    SceneManager.LoadSceneAsync("MainMenuScene");
-                    DontDestroyOnLoad(this);
-                    udpClient.Close();
-                    Destroy(this);
+                    SceneManager.LoadSceneAsync("MainMenuScene");   
                     break;
             }
         }
@@ -225,6 +225,8 @@ public class ClientUDP_Script : MonoBehaviour
         {
             if (lastPingTime + 30 < Time.time)
             {
+                checkerThread.Join();
+                listenerThread.Join();
                 SceneManager.LoadScene("MainMenuScene");
             }
         }
