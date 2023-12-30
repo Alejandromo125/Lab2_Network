@@ -13,6 +13,7 @@ public class DummyController : MonoBehaviour
     public float moveSpeed = 5f;
     public Camera mainCamera;
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public GameObject explosionSparksPrefab; // Prefab for the explosion sparks particle system.
     public float shootRange = 7.0f;
 
 

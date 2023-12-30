@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     BulletHitManager bulletHitManager_;
     BulletHitDummyManager bulletHitDummyManager_;
 
+    AudioSource audioSource;
+
     //public int healthPoints; <-- Not needed, takes it from bullet hit manager
     public string username;
     public CharacterData characterData;
@@ -25,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    public GameObject explosionSparksPrefab;
     public float shootRange = 7.0f;
 
     public Camera mainCamera;
@@ -35,6 +38,8 @@ public class PlayerController : MonoBehaviour
     private CinemachineVirtualCamera cam;
 
     public Transform aimTarget;
+
+    public AudioClip shootSound;
 
     private bool playerRespawn = false;
     #region TimerForData
@@ -59,6 +64,9 @@ public class PlayerController : MonoBehaviour
         bulletHitDummyManager_ = FindObjectOfType<BulletHitDummyManager>();
 
         mainCamera = FindObjectOfType<Camera>();
+
+        audioSource = GetComponent<AudioSource>();
+        
     }
 
     void Update()
@@ -154,10 +162,13 @@ public class PlayerController : MonoBehaviour
  
     void Shoot()
     {
+        audioSource.PlayOneShot(shootSound);
+
         raycastLine.enabled = true;
         bool score = false;
         // Spawn the explosion particle at the gun's position.
         GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
+        GameObject explosionSparks = Instantiate(explosionSparksPrefab, gunTransform.position, Quaternion.identity);
 
         // Get the duration of the particle system's effect.
         ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
@@ -165,6 +176,7 @@ public class PlayerController : MonoBehaviour
 
         // Destroy the explosion prefab after the particle effect duration.
         Destroy(explosion, duration);
+        Destroy(explosionSparks, duration);
 
         // Get the mouse position in world space
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
