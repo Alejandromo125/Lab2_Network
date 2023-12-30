@@ -74,7 +74,10 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleShooting();
         UpdateCharacterData();
-        HandleCharacterUpdates();
+        if(!playerRespawn)
+        {
+            HandleCharacterUpdates();
+        }
     }
  
     void HandleMovement()
@@ -271,8 +274,7 @@ public class PlayerController : MonoBehaviour
     private void HandleCharacterUpdates()
     {
         timerUpdate += Time.deltaTime;
-        if (playerRespawn)
-            return;
+
         if(timerUpdate > timeForUpdate)
         {
             UpdateCharacterData();
