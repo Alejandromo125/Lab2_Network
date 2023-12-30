@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public Transform gunTransform;
     public LayerMask hitLayer;
     public LayerMask hitDummyLayer;
+    public LayerMask Obstacle;
+
     public float moveSpeed = 5f;
     public float maxSpeed = 7f;
     public float rotationSpeed = 10f; // Rotation speed around the Y-axis.
@@ -177,7 +179,11 @@ public class PlayerController : MonoBehaviour
             Vector3 direction = hit.point - transform.position;
             direction.y = 0f; // Make sure the direction is parallel to the ground
 
-
+            if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, Obstacle))
+            {
+                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+                return;
+            }
             // Cast a new ray from player position towards the calculated direction
             if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitLayer))
             {

@@ -1708,6 +1708,9 @@ MonoBehaviour:
   hitDummyLayer:
     serializedVersion: 2
     m_Bits: 256
+  Obstacle:
+    serializedVersion: 2
+    m_Bits: 1024
   moveSpeed: 1
   maxSpeed: 5
   rotationSpeed: 10
