@@ -17,11 +17,6 @@ public class CameraManager : MonoBehaviour
         impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     // Call this method to trigger camera shake.
     void ShakeCamera(float shakeDuration, float shakeAmplitude, float shakeFrequency)

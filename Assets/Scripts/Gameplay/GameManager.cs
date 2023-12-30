@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     public GameScore score;
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
-    // Start is called before the first frame update
     private void Awake()
     {
         score.scoreRedTeam = 0;
@@ -81,7 +80,7 @@ public class GameManager : MonoBehaviour
         Message message = new Message("Blue team", null, TypesOfMessage.FINISH_GAME);
         UpdateData(message);
     }
-    // Update is called once per frame
+
     public void UpdateData(Message message)
     {
         if(server)

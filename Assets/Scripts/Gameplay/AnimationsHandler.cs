@@ -11,11 +11,8 @@ public class AnimationsHandler : MonoBehaviour
     public Rigidbody rb;
     public Animator anim;
 
-    private bool triggerWalk;
-    private bool shoot;
     void Start()
     {
-        triggerWalk = false;
     }
 
     // Update is called once per frame

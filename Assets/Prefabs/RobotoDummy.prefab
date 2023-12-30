@@ -969,6 +969,7 @@ Transform:
   - {fileID: 3988265744928418198}
   - {fileID: 8569654519277697814}
   - {fileID: 3071615935004744258}
+  - {fileID: 4517975014080455816}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1072,9 +1073,10 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   explosionPrefab: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
   explosionSparksPrefab: {fileID: 1000011945391522, guid: 78b71003e8b357d4bbf89c8b5e5e4f0e, type: 3}
+  particleSpawnerTr: {fileID: 4517975014080455816}
   shootRange: 7
-  spawner: {fileID: 0}
   raycastLine: {fileID: 8800131939853134230}
+  shootClip: {fileID: 8300000, guid: 2136c2dd069541643be71e3620c65f74, type: 3}
 --- !u!114 &8856032856524264697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1671,6 +1673,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6901340563542388887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4517975014080455816}
+  m_Layer: 8
+  m_Name: ParticleSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4517975014080455816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6901340563542388887}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.02677, z: 0.02989}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4977019755445174616}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7278869482145981630
 GameObject:
   m_ObjectHideFlags: 0

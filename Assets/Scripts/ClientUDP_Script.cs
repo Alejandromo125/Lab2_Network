@@ -53,7 +53,6 @@ public class ClientUDP_Script : MonoBehaviour
         if(CreatePlayer == true && GameManager.instance)
         {
             GameManager.instance.CreatePlayerAndDummy(userName,Team.RED_TEAM,"Server",Team.BLUE_TEAM);
-            //TODO: Finish Implementing connection, basic logic here, need to polish it and find a way to delete the client and server
             SendCheckConnection();
             checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;

@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
 
     AudioSource audioSource;
 
-    //public int healthPoints; <-- Not needed, takes it from bullet hit manager
     public string username;
     public CharacterData characterData;
     public Transform gunTransform;
@@ -28,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab;
+    public Transform particleSpawnerTr;
     public float shootRange = 7.0f;
 
     public Camera mainCamera;
@@ -165,10 +165,9 @@ public class PlayerController : MonoBehaviour
         audioSource.PlayOneShot(shootSound);
 
         raycastLine.enabled = true;
-        bool score = false;
         // Spawn the explosion particle at the gun's position.
-        GameObject explosion = Instantiate(explosionPrefab, gunTransform.position, Quaternion.identity);
-        GameObject explosionSparks = Instantiate(explosionSparksPrefab, gunTransform.position, Quaternion.identity);
+        GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
+        GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
 
         // Get the duration of the particle system's effect.
         ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
@@ -224,9 +223,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Handle case where mouse doesn't hit anything
-            // You might want to adjust this behavior based on your requirements
-            // For instance, you could set a default direction if no hit occurs
+            
             UnityEngine.Debug.Log("Mouse pointer doesn't hit anything.");
         }
     }

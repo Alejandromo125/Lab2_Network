@@ -6,6 +6,7 @@ public class DummyController : MonoBehaviour
 {
     public int healthPoints;
     public string username;
+
     public CharacterData characterData;
     public Transform gunTransform;
     public LayerMask hitLayer;
@@ -14,18 +15,19 @@ public class DummyController : MonoBehaviour
     public Camera mainCamera;
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab; // Prefab for the explosion sparks particle system.
+    public Transform particleSpawnerTr;
     public float shootRange = 7.0f;
-
-
-    public Transform spawner;
     BulletHitManager bulletHitManager_;
     BulletHitDummyManager bulletHitDummyManager_;
     public LineRenderer raycastLine;
+    public AudioClip shootClip;
+    AudioSource audioSource;
 
     private void Awake()
     {
         characterData = new CharacterData();
-       
+        audioSource = gameObject.GetComponent<AudioSource>();
+
     }
     void Start()
     {
@@ -39,9 +41,21 @@ public class DummyController : MonoBehaviour
 
     void Update()
     {
-        if (characterData.actions.shoot == true) //<-- null reference of an object
+        if (characterData.actions.shoot == true) 
         {
             raycastLine.enabled = true;
+            audioSource.PlayOneShot(shootClip);
+            GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
+            GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
+
+            // Get the duration of the particle system's effect.
+            ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+            float duration = particleSystem.main.duration;
+
+            // Destroy the explosion prefab after the particle effect duration.
+            Destroy(explosion, duration);
+            Destroy(explosionSparks, duration);
+
             Invoke("DummyDisableRaycastLine", 0.1f);
         }
     }
@@ -71,12 +85,9 @@ public class DummyController : MonoBehaviour
 
         if (healthPoints <= 0)
         {
-            //transform.position = new Vector3(0.0f, 3.0f, 0.0f);
-            //characterData.position = transform.position;
             healthPoints = 100;
             characterData.HealthPoints = 100;
             FindObjectOfType<HP_Bar_Manager>().Change(100);
-
         }
 
     }

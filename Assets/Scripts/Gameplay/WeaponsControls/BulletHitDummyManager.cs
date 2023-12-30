@@ -13,11 +13,6 @@ public class BulletHitDummyManager : MonoBehaviour
         dummyController_ = FindObjectOfType<DummyController>();
     }
 
-    void Update()
-    {
-        // Check for entity life conditions, if needed.
-    }
-
     public int TakeDamage(int damage, GameObject entity)
     {
         dummyController_.healthPoints -= damage;

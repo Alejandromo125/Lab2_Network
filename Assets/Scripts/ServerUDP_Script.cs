@@ -14,7 +14,6 @@ public class ServerUDP_Script : MonoBehaviour
 {
 
     private UdpClient udpListener;
-    private string serverIP = "127.0.0.1";
     private int port = 12345;
     private bool lastMessageUpdated = true;
     private Message lastMessage;
