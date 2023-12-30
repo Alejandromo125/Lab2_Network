@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject dummyPrefab;
 
-    public Vector3 startingPlayerPos;
-    public Vector3 startingDummyPos;
+    public Vector3 startingBluePos;
+    public Vector3 startingRedPos;
     public static GameManager instance { get; private set; }
 
     public GameScore score;
@@ -63,18 +63,23 @@ public class GameManager : MonoBehaviour
     {
         if(score.scoreRedTeam >= 5)
         {
-            TriggerWin("Red Team");
+            Invoke("TriggerWinRed",2);
         }
         else if(score.scoreBlueTeam >= 5)
         {
-            TriggerWin("Blue Team");
+            Invoke("TriggerWinBlue", 2);
         }
 
     }
-    private void TriggerWin(string msg) 
+    private void TriggerWinRed() 
     {
-        Message message = new Message(msg, null, TypesOfMessage.FINISH_GAME);
+        Message message = new Message("Red team", null, TypesOfMessage.FINISH_GAME);
         UpdateData(message); 
+    }
+    private void TriggerWinBlue()
+    {
+        Message message = new Message("Blue team", null, TypesOfMessage.FINISH_GAME);
+        UpdateData(message);
     }
     // Update is called once per frame
     public void UpdateData(Message message)
@@ -111,15 +116,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CreatePlayerAndDummy(string playerName,string dummyName)
+    public void CreatePlayerAndDummy(string playerName,Team playerTeam,string dummyName,Team dummyTeam)
     {
-       GameObject player =  Instantiate(playerPrefab,startingPlayerPos,Quaternion.identity,null);
-       player.GetComponent<PlayerController>().username = playerName;
-       player.GetComponent<PlayerController>().characterData.team = Team.BLUE_TEAM;
+        GameObject player = null;
+        GameObject dummy = null;
+        if (playerTeam == Team.BLUE_TEAM)
+        {
+            player = Instantiate(playerPrefab, startingBluePos, Quaternion.identity, null);
+        }
+        else if(playerTeam == Team.RED_TEAM)
+        {
+            player = Instantiate(playerPrefab, startingRedPos, Quaternion.identity, null);
+        }
+        player.GetComponent<PlayerController>().username = playerName;
+        player.GetComponent<PlayerController>().characterData.team = playerTeam;
 
-        GameObject dummy = Instantiate(dummyPrefab,startingDummyPos,Quaternion.identity,null);
-       dummy.GetComponent<DummyController>().username = dummyName;
-        dummy.GetComponent<DummyController>().characterData.team = Team.RED_TEAM;
-       dummies.Add(dummy.GetComponent<DummyController>());
+        if (dummyTeam == Team.BLUE_TEAM)
+        {
+            dummy = Instantiate(dummyPrefab, startingBluePos, Quaternion.identity, null);
+        }
+        else if (dummyTeam == Team.RED_TEAM)
+        {
+            dummy = Instantiate(dummyPrefab, startingRedPos, Quaternion.identity, null);
+        }
+        dummy.GetComponent<DummyController>().username = dummyName;
+        dummy.GetComponent<DummyController>().characterData.team = dummyTeam;
+        dummies.Add(dummy.GetComponent<DummyController>());
     }
 }

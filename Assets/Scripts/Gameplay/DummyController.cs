@@ -56,7 +56,7 @@ public class DummyController : MonoBehaviour
 
         characterData.GameScore = data.GameScore;
         // Update also the line renderer as it is attached to the raycast
-
+        FindObjectOfType<HP_Bar_Manager>().Set(healthPoints);
         UpdateActualData();
     }
 
@@ -74,6 +74,8 @@ public class DummyController : MonoBehaviour
             //characterData.position = transform.position;
             healthPoints = 100;
             characterData.HealthPoints = 100;
+            FindObjectOfType<HP_Bar_Manager>().Change(100);
+
         }
 
     }

@@ -46,7 +46,17 @@ public class HP_Bar_ForPlayer : MonoBehaviour
 
         _adjustBarWidthCoroutine = StartCoroutine(AdjustBarWidth(amount));
     }
+    public void Set(int amount)
+    {
+        Value = amount;
 
+        if (_adjustBarWidthCoroutine != null)
+        {
+            StopCoroutine(_adjustBarWidthCoroutine);
+        }
+
+        _adjustBarWidthCoroutine = StartCoroutine(AdjustBarWidth(amount));
+    }
     private void Awake()
     {
         camForCanvas = FindObjectOfType<CinemachineVirtualCamera>();

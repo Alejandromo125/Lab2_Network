@@ -42,6 +42,17 @@ public class HP_Bar_Manager : MonoBehaviour
 
         _adjustBarWidthCoroutine = StartCoroutine(AdjustBarWidth(amount));
     }
+    public void Set(int amount)
+    {
+        Value = amount;
+
+        if (_adjustBarWidthCoroutine != null)
+        {
+            StopCoroutine(_adjustBarWidthCoroutine);
+        }
+
+        _adjustBarWidthCoroutine = StartCoroutine(AdjustBarWidth(amount));
+    }
 
     private void Awake()
     {

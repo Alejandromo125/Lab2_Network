@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     private CinemachineVirtualCamera cam;
 
     public Transform aimTarget;
+
+    private bool playerRespawn = false;
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -135,9 +137,6 @@ public class PlayerController : MonoBehaviour
  
     void HandleShooting()
     {
-        
-
-
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
@@ -226,17 +225,39 @@ public class PlayerController : MonoBehaviour
         characterData.HealthPoints = bulletHitManager_.entityLife;
 
         characterData.actions = actions;
-        if(characterData.HealthPoints <= 0)
+
+        FindObjectOfType<HP_Bar_ForPlayer>().Set(characterData.HealthPoints);
+
+        if (characterData.HealthPoints <= 0)
         {
-            gameObject.transform.position = new Vector3(Random.Range(-10.0f,10.0f), 1.0f, Random.Range(-10.0f, 10.0f));
+            playerRespawn = true;
+            Invoke("ResetUpdates", 0.5f);
+            switch(characterData.team)
+            {
+                case Team.NONE:
+
+                    break;
+                case Team.BLUE_TEAM:
+                    gameObject.transform.position = GameManager.instance.startingBluePos;
+
+                    break;
+                case Team.RED_TEAM:
+                    gameObject.transform.position = GameManager.instance.startingRedPos;
+
+                    break;
+            }
             characterData.position = gameObject.transform.position;
             bulletHitManager_.entityLife = 100;
             characterData.HealthPoints = 100;
+            FindObjectOfType<HP_Bar_ForPlayer>().Change(100);
+
         }
     }
     private void HandleCharacterUpdates()
     {
         timerUpdate += Time.deltaTime;
+        if (playerRespawn)
+            return;
         if(timerUpdate > timeForUpdate)
         {
             UpdateCharacterData();
@@ -259,5 +280,11 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.rotation = data.rotation;
         characterData.GameScore = data.GameScore;
     }
+    private void ResetUpdates()
+    {
+        playerRespawn = false;
+    }
+
     #endregion
+
 }

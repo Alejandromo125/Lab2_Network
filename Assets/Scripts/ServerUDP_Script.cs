@@ -25,7 +25,6 @@ public class ServerUDP_Script : MonoBehaviour
 
     private bool playerCreated = false;
 
-    //hazlo luego en lista
     private string player;
     private void Awake()
     {
@@ -56,7 +55,7 @@ public class ServerUDP_Script : MonoBehaviour
 
        if(playerCreated == true && GameManager.instance)
        {
-            GameManager.instance.CreatePlayerAndDummy("Server",player);
+            GameManager.instance.CreatePlayerAndDummy("Server",Team.BLUE_TEAM,player,Team.RED_TEAM);
             playerCreated = false;
        }
     }
@@ -124,13 +123,29 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdatePlayersData(message);
                     break;
-               
+                case TypesOfMessage.FINISH_GAME:
+
+                    serverThread.Join();
+                    SceneManager.LoadSceneAsync("MainMenuScene");
+
+                    break;
+                case TypesOfMessage.WAITING_ROOM:
+                    if (UiManager.instance != null)
+                    {
+                        if(ReturnCorrectDummyName(message.message) != "Server")
+                        {
+                            UiManager.instance.UpdateText(message.message);
+                        }  
+                    }
+                    break;
 
             }
         }
         catch(Exception e) 
         {
             Debug.Log(e);
+            serverThread.Join();
+            SceneManager.LoadSceneAsync("MainMenuScene");
         }
     }
 
@@ -155,12 +170,12 @@ public class ServerUDP_Script : MonoBehaviour
                 break;
             case TypesOfMessage.START_GAME:
                 Debug.Log("SEND MESSAGE");
-                SceneManager.LoadSceneAsync("GameplayRoom");
+                SceneManager.LoadSceneAsync("GameplayLevelRoom");
                 break;
             case TypesOfMessage.FINISH_GAME:
                 
                 serverThread.Join();
-                SceneManager.LoadSceneAsync("MainMenuScene");
+                SceneManager.LoadScene("MainMenuScene");
                 
                 break;
         }

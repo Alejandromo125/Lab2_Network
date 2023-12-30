@@ -52,7 +52,7 @@ public class ClientUDP_Script : MonoBehaviour
 
         if(CreatePlayer == true && GameManager.instance)
         {
-            GameManager.instance.CreatePlayerAndDummy(userName,"Server");
+            GameManager.instance.CreatePlayerAndDummy(userName,Team.RED_TEAM,"Server",Team.BLUE_TEAM);
             //TODO: Finish Implementing connection, basic logic here, need to polish it and find a way to delete the client and server
             SendCheckConnection();
             checkerThread = new Thread(HandleCheck);
@@ -112,6 +112,12 @@ public class ClientUDP_Script : MonoBehaviour
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
+
+        if(_message.type == TypesOfMessage.FINISH_GAME)
+        {
+            listenerThread.Join();
+            SceneManager.LoadSceneAsync("MainMenuScene");
+        }
     }
     #endregion
     #region StartGameMessage
@@ -165,7 +171,7 @@ public class ClientUDP_Script : MonoBehaviour
                     }
                     break;
                 case TypesOfMessage.START_GAME:
-                    SceneManager.LoadSceneAsync("GameplayRoom");
+                    SceneManager.LoadSceneAsync("GameplayLevelRoom");
                     Message _message = new Message(GetUsername(), null, TypesOfMessage.GENERATE_PLAYERS);
                     SendStartMessage(_message);
                     CreatePlayer = true;
@@ -187,6 +193,7 @@ public class ClientUDP_Script : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
+           
         }
     }
     private void OnDisable()
