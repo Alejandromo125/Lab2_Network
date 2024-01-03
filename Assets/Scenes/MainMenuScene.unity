@@ -2223,6 +2223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 745944341}
   - component: {fileID: 745944340}
+  - component: {fileID: 745944342}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -2341,6 +2342,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &745944342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745944339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b3d769794cffb4894a0404d85a087c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specifiedSceneName: ClientScene
 --- !u!1001 &780490851
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3337,6 +3351,7 @@ GameObject:
   - component: {fileID: 1066637247}
   - component: {fileID: 1066637246}
   - component: {fileID: 1066637249}
+  - component: {fileID: 1066637250}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3470,6 +3485,21 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1066637250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066637245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 677341b7ff009d241b73da8cea90c241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatHeight: 0.2
+  floatSpeed: 0.5
+  syncOffset: 1
 --- !u!1 &1068507840
 GameObject:
   m_ObjectHideFlags: 0

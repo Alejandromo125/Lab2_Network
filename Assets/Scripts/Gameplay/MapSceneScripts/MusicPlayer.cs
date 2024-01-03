@@ -12,6 +12,9 @@ public class MusicPlayer : MonoBehaviour
     private float nextTrackTime;
     private int lastTrackIndex = -1;
 
+    public float minMusicDuration = 65f;
+    public float maxMusicDuration = 100f;
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -48,7 +51,7 @@ public class MusicPlayer : MonoBehaviour
         lastTrackIndex = randomIndex;
         audioSource.clip = musicTracks[randomIndex];
 
-        loopDuration = Random.Range(90f, 180f); // Random duration between 90 to 180 seconds.
+        loopDuration = Random.Range(minMusicDuration, maxMusicDuration); // Random duration between 90 to 180 seconds.
         audioSource.Play();
         isPlaying = true;
         nextTrackTime = Time.time + loopDuration;
