@@ -275,7 +275,7 @@ public class PlayerController : MonoBehaviour
                     gameObject.transform.position = GameManager.instance.startingBluePos;
 
                     GameObject respawnParticles = Instantiate(respawnParticlesPrefab, gameObject.transform.position, transform.rotation);
-                    Destroy(respawnParticles, 1f);
+                    Destroy(respawnParticles, 1.5f);
 
                     break;
                 case Team.RED_TEAM:
@@ -285,7 +285,7 @@ public class PlayerController : MonoBehaviour
                     gameObject.transform.position = GameManager.instance.startingRedPos;
 
                     GameObject respawnParticles2 = Instantiate(respawnParticlesPrefab, gameObject.transform.position, transform.rotation);
-                    Destroy(respawnParticles2, 1f);
+                    Destroy(respawnParticles2, 1.5f);
 
                     break;
             }
