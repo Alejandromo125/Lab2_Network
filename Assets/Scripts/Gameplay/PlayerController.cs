@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab;
     public GameObject hitParticlesPrefab;
+    public GameObject deathParticlesPrefab;
+    public GameObject respawnParticlesPrefab;
     public Transform particleSpawnerTr;
     public float shootRange = 7.0f;
 
@@ -267,11 +269,23 @@ public class PlayerController : MonoBehaviour
 
                     break;
                 case Team.BLUE_TEAM:
+                    GameObject deathParticles = Instantiate(deathParticlesPrefab, gameObject.transform.position, transform.rotation);
+                    Destroy(deathParticles, 1f);
+
                     gameObject.transform.position = GameManager.instance.startingBluePos;
+
+                    GameObject respawnParticles = Instantiate(respawnParticlesPrefab, gameObject.transform.position, transform.rotation);
+                    Destroy(respawnParticles, 1f);
 
                     break;
                 case Team.RED_TEAM:
+                    GameObject deathParticles2 = Instantiate(deathParticlesPrefab, gameObject.transform.position, transform.rotation);
+                    Destroy(deathParticles2, 1f);
+
                     gameObject.transform.position = GameManager.instance.startingRedPos;
+
+                    GameObject respawnParticles2 = Instantiate(respawnParticlesPrefab, gameObject.transform.position, transform.rotation);
+                    Destroy(respawnParticles2, 1f);
 
                     break;
             }

@@ -1754,6 +1754,8 @@ MonoBehaviour:
   explosionPrefab: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
   explosionSparksPrefab: {fileID: 1000011945391522, guid: 78b71003e8b357d4bbf89c8b5e5e4f0e, type: 3}
   hitParticlesPrefab: {fileID: 1892351807075712, guid: 44be68b4fc4366142a9cd1ae1f761ea4, type: 3}
+  deathParticlesPrefab: {fileID: 1000011128802252, guid: 96730f8640590934eacb6f860058e7f9, type: 3}
+  respawnParticlesPrefab: {fileID: 1912731163003908, guid: c5febdd93ab44d640b3eb37b768360bb, type: 3}
   particleSpawnerTr: {fileID: 5302351732847823535}
   shootRange: 7
   mainCamera: {fileID: 0}

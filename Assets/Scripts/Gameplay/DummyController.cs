@@ -43,7 +43,7 @@ public class DummyController : MonoBehaviour
     {
         if (characterData.actions.shoot == true) 
         {
-            raycastLine.enabled = true;
+            //raycastLine.enabled = true;
             audioSource.PlayOneShot(shootClip);
             GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
             GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
@@ -56,7 +56,7 @@ public class DummyController : MonoBehaviour
             Destroy(explosion, duration);
             Destroy(explosionSparks, duration);
 
-            Invoke("DummyDisableRaycastLine", 0.1f);
+            //Invoke("DummyDisableRaycastLine", 0.1f);
         }
     }
 
