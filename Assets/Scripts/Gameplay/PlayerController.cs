@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float shootDelay = 0.3f; // Delay between shots.
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab;
+    public GameObject hitParticlesPrefab;
     public Transform particleSpawnerTr;
     public float shootRange = 7.0f;
 
@@ -167,7 +168,7 @@ public class PlayerController : MonoBehaviour
     {
         audioSource.PlayOneShot(shootSound);
 
-        raycastLine.enabled = true;
+        //raycastLine.enabled = true;
         // Spawn the explosion particle at the gun's position.
         GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
         GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        Invoke("DisableRaycastLine", 0.2f);
+        //Invoke("DisableRaycastLine", 0.2f);
 
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -196,6 +197,10 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, Obstacle))
             {
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+
+                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+                Destroy(hitParticles, duration + 0.35f);
+
                 return;
             }
             // Cast a new ray from player position towards the calculated direction
@@ -205,6 +210,9 @@ public class PlayerController : MonoBehaviour
                 UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
                 bulletHitManager_.TakeDamage(10, hit.collider.gameObject);
+
+                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+                Destroy(hitParticles, duration + 0.35f);
             }
             else if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitDummyLayer))
             {
@@ -215,7 +223,10 @@ public class PlayerController : MonoBehaviour
                 {
                     characterData.GameScore++;
                 }
-                
+
+                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+                Destroy(hitParticles, duration + 0.35f);
+
             }
             else
             {
