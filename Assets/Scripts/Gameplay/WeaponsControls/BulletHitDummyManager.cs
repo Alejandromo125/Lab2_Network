@@ -23,6 +23,7 @@ public class BulletHitDummyManager : MonoBehaviour
         if (dummyController_.healthPoints <= 0)
         {
             hp_Bar_Manager_.Change(100);
+            hp_Bar_Manager_.Change(-1);
         }
 
         string temp = entity.gameObject.GetComponent<DummyController>().username;

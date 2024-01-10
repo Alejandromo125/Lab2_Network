@@ -73,10 +73,10 @@ public class HP_Bar_ForPlayer : MonoBehaviour
 
     void Update()
     {
-        if(hpDifference != bulletHitManager_.entityLife)
+        if (hpDifference != bulletHitManager_.entityLife)
         {
             int calculateDamage = hpDifference - bulletHitManager_.entityLife;
-            if(calculateDamage < 0)
+            if (calculateDamage < 0)
             {
                 calculateDamage = calculateDamage * -1;
             }
@@ -86,10 +86,12 @@ public class HP_Bar_ForPlayer : MonoBehaviour
             hpDifference = bulletHitManager_.entityLife;
         }
 
-        if(bulletHitManager_.entityLife <= 0 || bulletHitManager_.entityLife >= 100)
+        if (bulletHitManager_.entityLife <= 0)
         {
+            bulletHitManager_.entityLife = 100;
             hpDifference = bulletHitManager_.entityLife;
             Change(100);
+            Change(-1);
         }
     }
 

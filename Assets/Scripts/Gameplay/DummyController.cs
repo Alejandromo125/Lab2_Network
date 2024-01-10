@@ -87,7 +87,8 @@ public class DummyController : MonoBehaviour
         {
             healthPoints = 100;
             characterData.HealthPoints = 100;
-            FindObjectOfType<HP_Bar_Manager>().Change(100);
+            //FindObjectOfType<HP_Bar_Manager>().Change(100);
+            //FindObjectOfType<HP_Bar_Manager>().Change(-1);
         }
 
     }

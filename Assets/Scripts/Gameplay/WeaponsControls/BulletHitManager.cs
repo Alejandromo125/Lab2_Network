@@ -18,11 +18,12 @@ public class BulletHitManager : MonoBehaviour
         entityLife -= damage;
         Debug.Log("Object has been shot: " + entity);
 
-        hp_Bar_Manager_.Change(-damage);
+        //hp_Bar_Manager_.Change(-damage);
 
-        if (entityLife <= 0)
-        {
-            hp_Bar_Manager_.Change(100);
-        }
+        //if (entityLife <= 0)
+        //{
+        //    hp_Bar_Manager_.Change(100);
+        //    hp_Bar_Manager_.Change(-1);
+        //}
     }
 }

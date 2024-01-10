@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour
                     break;
             }
             characterData.position = gameObject.transform.position;
-            bulletHitManager_.entityLife = 100;
+            //bulletHitManager_.entityLife = 100;
             characterData.HealthPoints = 100;
             FindObjectOfType<HP_Bar_ForPlayer>().Change(100);
 
