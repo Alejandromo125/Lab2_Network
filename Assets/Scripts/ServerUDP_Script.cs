@@ -24,7 +24,6 @@ public class ServerUDP_Script : MonoBehaviour
 
     private bool playerCreated = false;
 
-
     private string player;
     private void Awake()
     {
@@ -33,7 +32,7 @@ public class ServerUDP_Script : MonoBehaviour
     private async void Start()
     {
         udpListener = new UdpClient(port);
-        
+
 
         Debug.Log("Server started on port " + port);
         UdpReceiveResult result = await udpListener.ReceiveAsync();
@@ -43,29 +42,30 @@ public class ServerUDP_Script : MonoBehaviour
 
         serverThread = new Thread(HandleRecieveMessages);
         serverThread.Start();
+
     }
     private void Update()
     {
-       if(lastMessageUpdated == false)
-       {
+        if (lastMessageUpdated == false)
+        {
             HandleMessageOutput(lastMessage);
             lastMessageUpdated = true;
-       }
+        }
 
-       if(playerCreated == true && GameManager.instance)
-       {
-            GameManager.instance.CreatePlayerAndDummy("Server",Team.BLUE_TEAM,player,Team.RED_TEAM);
+        if (playerCreated == true && GameManager.instance)
+        {
+            GameManager.instance.CreatePlayerAndDummy("Server", Team.BLUE_TEAM, player, Team.RED_TEAM);
             playerCreated = false;
-       }
+        }
     }
 
     private void OnDisable()
     {
         udpListener.Close();
     }
-    public void  StartWaitingScene()
+    public void StartWaitingScene()
     {
-        Message message = new Message("/start_room",null,TypesOfMessage.WAITING_ROOM);
+        Message message = new Message("/start_room", null, TypesOfMessage.WAITING_ROOM);
         HandleSendingMessages(message);
     }
     public void HandleCallbackEvent()
@@ -79,7 +79,7 @@ public class ServerUDP_Script : MonoBehaviour
     {
         while (true)
         {
-            UdpReceiveResult result =  await udpListener.ReceiveAsync();
+            UdpReceiveResult result = await udpListener.ReceiveAsync();
             string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
             Message newMessage = JsonUtility.FromJson<Message>(receivedMessage);
 
@@ -90,13 +90,13 @@ public class ServerUDP_Script : MonoBehaviour
             if (!clientEndPoint.Contains(result.RemoteEndPoint))
             {
                 Debug.Log(newMessage.message);
-                clientEndPoint.Add(result.RemoteEndPoint);                
+                clientEndPoint.Add(result.RemoteEndPoint);
             }
 
             HandleSendingMessages(newMessage);
 
         }
-        
+
     }
 
     private void HandleMessageOutput(Message message)
@@ -109,7 +109,7 @@ public class ServerUDP_Script : MonoBehaviour
                     message.message = "pong";
                     HandleSendingMessages(message);
                     break;
-             
+
                 case TypesOfMessage.GAMEPLAY_ROOM:
                     message.message = ReturnCorrectDummyName(message.message);
                     GameManager.instance.UpdateDummiesData(message);
@@ -124,38 +124,23 @@ public class ServerUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.FINISH_GAME:
 
-                    //serverThread.Join();
-                    //SceneManager.LoadScene("MainMenuScene");
-                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
-                    {
-                        serverThread.Join();
-                        SceneManager.LoadScene("WinScene");
-                    }
-                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
-                    {
-                        serverThread.Join();
-                        SceneManager.LoadScene("LooseScene");
-                    }
-                    else
-                    {
-                        serverThread.Join();
-                        SceneManager.LoadScene("MainMenuScene");
-                    }
+                    serverThread.Join();
+                    SceneManager.LoadSceneAsync("MainMenuScene");
 
                     break;
                 case TypesOfMessage.WAITING_ROOM:
                     if (UiManager.instance != null)
                     {
-                        if(ReturnCorrectDummyName(message.message) != "Server")
+                        if (ReturnCorrectDummyName(message.message) != "Server")
                         {
                             UiManager.instance.UpdateText(message.message);
-                        }  
+                        }
                     }
                     break;
 
             }
         }
-        catch(Exception e) 
+        catch (Exception e)
         {
             Debug.Log(e);
             serverThread.Join();
@@ -187,24 +172,9 @@ public class ServerUDP_Script : MonoBehaviour
                 SceneManager.LoadSceneAsync("GameplayLevelRoom");
                 break;
             case TypesOfMessage.FINISH_GAME:
-                
-                //serverThread.Join();
-                //SceneManager.LoadScene("MainMenuScene");
-                if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
-                {
-                    serverThread.Join();
-                    SceneManager.LoadScene("WinScene");
-                }
-                else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
-                {
-                    serverThread.Join();
-                    SceneManager.LoadScene("LooseScene");
-                }
-                else
-                {
-                    serverThread.Join();
-                    SceneManager.LoadScene("MainMenuScene");
-                }
+
+                serverThread.Join();
+                SceneManager.LoadScene("MainMenuScene");
 
                 break;
         }
@@ -218,7 +188,7 @@ public class ServerUDP_Script : MonoBehaviour
             udpListener.SendAsync(data, data.Length, client);
         }
     }
-    
+
 
     private string ReturnCorrectDummyName(string message)
     {

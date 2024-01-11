@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class ClientUDP_Script : MonoBehaviour
 {
-    
+
     [SerializeField]
     private TMP_InputField InputFieldTextIP;
     [SerializeField]
@@ -42,18 +42,17 @@ public class ClientUDP_Script : MonoBehaviour
     {
         DontDestroyOnLoad(this);
     }
-
     private void Update()
     {
-        if(lastMessageUpdated == false)
+        if (lastMessageUpdated == false)
         {
             HandleMessageOutput(lastMessage);
             lastMessageUpdated = true;
         }
 
-        if(CreatePlayer == true && GameManager.instance)
+        if (CreatePlayer == true && GameManager.instance)
         {
-            GameManager.instance.CreatePlayerAndDummy(userName,Team.RED_TEAM,"Server",Team.BLUE_TEAM);
+            GameManager.instance.CreatePlayerAndDummy(userName, Team.RED_TEAM, "Server", Team.BLUE_TEAM);
             SendCheckConnection();
             checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;
@@ -107,32 +106,16 @@ public class ClientUDP_Script : MonoBehaviour
     #region GameplayRoomMessages
     public void SendMessageGameplay(Message _message)
     {
-        _message.message = userName+":" + _message.message;
+        _message.message = userName + ":" + _message.message;
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
 
-        if(_message.type == TypesOfMessage.FINISH_GAME)
+        if (_message.type == TypesOfMessage.FINISH_GAME)
         {
-            //listenerThread.Join();
-            //SceneManager.LoadSceneAsync("MainMenuScene");
-            if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("WinScene");
-            }
-            else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("LooseScene");
-            }
-            else
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("MainMenuScene");
-            }
-
+            listenerThread.Join();
+            SceneManager.LoadSceneAsync("MainMenuScene");
         }
     }
     #endregion
@@ -148,9 +131,9 @@ public class ClientUDP_Script : MonoBehaviour
 
     private async void RecieveMessages()
     {
-        while(true) 
+        while (true)
         {
-            
+
             try
             {
                 UdpReceiveResult result = await udpClient.ReceiveAsync();
@@ -165,7 +148,7 @@ public class ClientUDP_Script : MonoBehaviour
                 Debug.LogException(ex);
             }
         }
-       
+
     }
     private void HandleMessageOutput(Message message)
     {
@@ -180,7 +163,7 @@ public class ClientUDP_Script : MonoBehaviour
                     }
                     break;
                 case TypesOfMessage.GAMEPLAY_ROOM:
-                    if(isFromAnotherUser(message.message))
+                    if (isFromAnotherUser(message.message))
                     {
                         message.message = ReturnCorrectDummyName(message.message);
                         GameManager.instance.UpdateDummiesData(message);
@@ -200,34 +183,16 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    //checkerThread.Join();
-                    //listenerThread.Join();
-                    //SceneManager.LoadSceneAsync("MainMenuScene");
-                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
-                    {
-                        checkerThread.Join();
-                        listenerThread.Join();
-                        SceneManager.LoadSceneAsync("WinScene");
-                    }
-                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
-                    {
-                        checkerThread.Join();
-                        listenerThread.Join();
-                        SceneManager.LoadSceneAsync("LooseScene");
-                    }
-                    else
-                    {
-                        checkerThread.Join();
-                        listenerThread.Join();
-                        SceneManager.LoadSceneAsync("MainMenuScene");
-                    }
+                    checkerThread.Join();
+                    listenerThread.Join();
+                    SceneManager.LoadSceneAsync("MainMenuScene");
                     break;
             }
         }
         catch (Exception e)
         {
             Debug.Log(e);
-           
+
         }
     }
     private void OnDisable()

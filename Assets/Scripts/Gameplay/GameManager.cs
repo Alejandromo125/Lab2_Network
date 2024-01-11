@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
     public GameScore score;
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
-
-
     private void Awake()
     {
         score.scoreRedTeam = 0;
