@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     public GameScore score;
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
+
+    WinnerID winnerID_;
+
     private void Awake()
     {
         score.scoreRedTeam = 0;
@@ -42,6 +45,8 @@ public class GameManager : MonoBehaviour
     {
         client = FindObjectOfType<ClientUDP_Script>();
         server = FindObjectOfType<ServerUDP_Script>();
+
+        winnerID_ = FindObjectOfType<WinnerID>();
     }
 
     private void Update()
@@ -72,11 +77,13 @@ public class GameManager : MonoBehaviour
     }
     private void TriggerWinRed() 
     {
+        winnerID_.winnerID = 2;
         Message message = new Message("Red team", null, TypesOfMessage.FINISH_GAME);
         UpdateData(message); 
     }
     private void TriggerWinBlue()
     {
+        winnerID_.winnerID = 1;
         Message message = new Message("Blue team", null, TypesOfMessage.FINISH_GAME);
         UpdateData(message);
     }

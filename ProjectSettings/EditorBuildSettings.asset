@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameplayLevelRoom.unity
     guid: 76b2d7e0fa6831445a730f805c6509f7
+  - enabled: 1
+    path: Assets/Scenes/LooseScene.unity
+    guid: 251b04dec8a081b428643fcfdc1df9ec
+  - enabled: 1
+    path: Assets/Scenes/WinScene.unity
+    guid: 12116893113a38244a38b3b6413e01ae
   m_configObjects: {}

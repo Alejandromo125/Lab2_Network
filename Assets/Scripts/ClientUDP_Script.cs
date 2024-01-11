@@ -36,12 +36,22 @@ public class ClientUDP_Script : MonoBehaviour
     private float lastPingTime;
     #endregion
 
+    WinnerID winnerID_;
+    GameManager gameManager_;
 
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
         DontDestroyOnLoad(this);
     }
+
+    private void Start()
+    {
+        winnerID_ = FindObjectOfType<WinnerID>();
+        gameManager_ = FindObjectOfType<GameManager>();
+
+    }
+
     private void Update()
     {
         if(lastMessageUpdated == false)
@@ -114,8 +124,24 @@ public class ClientUDP_Script : MonoBehaviour
 
         if(_message.type == TypesOfMessage.FINISH_GAME)
         {
-            listenerThread.Join();
-            SceneManager.LoadSceneAsync("MainMenuScene");
+            //listenerThread.Join();
+            //SceneManager.LoadSceneAsync("MainMenuScene");
+            if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("WinScene");
+            }
+            else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("LooseScene");
+            }
+            else
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("MainMenuScene");
+            }
+
         }
     }
     #endregion
@@ -183,9 +209,27 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    checkerThread.Join();
-                    listenerThread.Join();
-                    SceneManager.LoadSceneAsync("MainMenuScene");   
+                    //checkerThread.Join();
+                    //listenerThread.Join();
+                    //SceneManager.LoadSceneAsync("MainMenuScene");
+                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("WinScene");
+                    }
+                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("LooseScene");
+                    }
+                    else
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("MainMenuScene");
+                    }
                     break;
             }
         }
