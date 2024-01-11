@@ -158,8 +158,23 @@ public class ServerUDP_Script : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
-            serverThread.Join();
-            SceneManager.LoadSceneAsync("MainMenuScene");
+            //serverThread.Join();
+            //SceneManager.LoadSceneAsync("MainMenuScene");
+            if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+            {
+                serverThread.Join();
+                SceneManager.LoadSceneAsync("WinScene");
+            }
+            else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+            {
+                serverThread.Join();
+                SceneManager.LoadSceneAsync("LooseScene");
+            }
+            else
+            {
+                serverThread.Join();
+                SceneManager.LoadSceneAsync("MainMenuScene");
+            }
         }
     }
 
