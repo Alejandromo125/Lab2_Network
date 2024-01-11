@@ -24,8 +24,6 @@ public class ServerUDP_Script : MonoBehaviour
 
     private bool playerCreated = false;
 
-    WinnerID winnerID_;
-    GameManager gameManager_;
 
     private string player;
     private void Awake()
@@ -45,10 +43,6 @@ public class ServerUDP_Script : MonoBehaviour
 
         serverThread = new Thread(HandleRecieveMessages);
         serverThread.Start();
-
-
-        winnerID_ = FindObjectOfType<WinnerID>();
-        gameManager_ = FindObjectOfType<GameManager>();
     }
     private void Update()
     {

@@ -36,20 +36,11 @@ public class ClientUDP_Script : MonoBehaviour
     private float lastPingTime;
     #endregion
 
-    WinnerID winnerID_;
-    GameManager gameManager_;
 
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
         DontDestroyOnLoad(this);
-    }
-
-    private void Start()
-    {
-        winnerID_ = FindObjectOfType<WinnerID>();
-        gameManager_ = FindObjectOfType<GameManager>();
-
     }
 
     private void Update()
