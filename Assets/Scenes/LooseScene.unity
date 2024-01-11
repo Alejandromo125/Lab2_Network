@@ -210,7 +210,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1686204723}
         m_TargetAssemblyTypeName: UiManager, Assembly-CSharp
-        m_MethodName: GoToTitleScreen
+        m_MethodName: SendMessage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

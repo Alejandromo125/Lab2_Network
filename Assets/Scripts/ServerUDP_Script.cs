@@ -124,8 +124,23 @@ public class ServerUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.FINISH_GAME:
 
-                    serverThread.Join();
-                    SceneManager.LoadSceneAsync("MainMenuScene");
+                    //serverThread.Join();
+                    //SceneManager.LoadSceneAsync("MainMenuScene");
+                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                    {
+                        serverThread.Join();
+                        SceneManager.LoadSceneAsync("WinScene");
+                    }
+                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                    {
+                        serverThread.Join();
+                        SceneManager.LoadSceneAsync("LooseScene");
+                    }
+                    else
+                    {
+                        serverThread.Join();
+                        SceneManager.LoadSceneAsync("MainMenuScene");
+                    }
 
                     break;
                 case TypesOfMessage.WAITING_ROOM:
@@ -173,8 +188,23 @@ public class ServerUDP_Script : MonoBehaviour
                 break;
             case TypesOfMessage.FINISH_GAME:
 
-                serverThread.Join();
-                SceneManager.LoadScene("MainMenuScene");
+                //serverThread.Join();
+                //SceneManager.LoadScene("MainMenuScene");
+                if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                {
+                    serverThread.Join();
+                    SceneManager.LoadScene("WinScene");
+                }
+                else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                {
+                    serverThread.Join();
+                    SceneManager.LoadScene("LooseScene");
+                }
+                else
+                {
+                    serverThread.Join();
+                    SceneManager.LoadScene("MainMenuScene");
+                }
 
                 break;
         }

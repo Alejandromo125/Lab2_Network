@@ -114,8 +114,23 @@ public class ClientUDP_Script : MonoBehaviour
 
         if (_message.type == TypesOfMessage.FINISH_GAME)
         {
-            listenerThread.Join();
-            SceneManager.LoadSceneAsync("MainMenuScene");
+            //listenerThread.Join();
+            //SceneManager.LoadSceneAsync("MainMenuScene");
+            if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("WinScene");
+            }
+            else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("LooseScene");
+            }
+            else
+            {
+                listenerThread.Join();
+                SceneManager.LoadSceneAsync("MainMenuScene");
+            }
         }
     }
     #endregion
@@ -183,9 +198,27 @@ public class ClientUDP_Script : MonoBehaviour
                     GameManager.instance.UpdatePlayersData(message);
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    checkerThread.Join();
-                    listenerThread.Join();
-                    SceneManager.LoadSceneAsync("MainMenuScene");
+                    //checkerThread.Join();
+                    //listenerThread.Join();
+                    //SceneManager.LoadSceneAsync("MainMenuScene");
+                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("WinScene");
+                    }
+                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("LooseScene");
+                    }
+                    else
+                    {
+                        checkerThread.Join();
+                        listenerThread.Join();
+                        SceneManager.LoadSceneAsync("MainMenuScene");
+                    }
                     break;
             }
         }
