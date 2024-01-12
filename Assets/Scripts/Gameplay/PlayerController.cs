@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
 
     public AudioClip shootSound;
 
+    HP_Bar_ForPlayer hp_Bar_Manager_ForPlayer_;
+    int currentHP = 100;
+
     private bool playerRespawn = false;
     #region TimerForData
     [SerializeField]
@@ -69,7 +72,9 @@ public class PlayerController : MonoBehaviour
         mainCamera = FindObjectOfType<Camera>();
 
         audioSource = GetComponent<AudioSource>();
-        
+
+        hp_Bar_Manager_ForPlayer_ = FindObjectOfType<HP_Bar_ForPlayer>();
+        currentHP = 100;
     }
 
     void Update()
@@ -257,7 +262,31 @@ public class PlayerController : MonoBehaviour
 
         characterData.actions = actions;
 
-        FindObjectOfType<HP_Bar_ForPlayer>().Set(characterData.HealthPoints);
+        //FindObjectOfType<HP_Bar_ForPlayer>().Set(characterData.HealthPoints);
+
+        //if (currentHP != characterData.HealthPoints)
+        //{
+        //    hp_Bar_Manager_ForPlayer_.Change(-10); //Harcoded because we only have a 10 point damage option y porque estoy hasta la polla de debuguear resultados inútiles
+        //    currentHP = characterData.HealthPoints;
+        //}
+
+        int a = 0;
+        a = currentHP - characterData.HealthPoints;
+
+        if (a < 0)
+        {
+            a = a * -1;
+        }
+
+        hp_Bar_Manager_ForPlayer_.Change(-a);
+        currentHP = characterData.HealthPoints;
+
+
+        if (characterData.HealthPoints <= 0 || bulletHitManager_.entityLife <= 0 || characterData.HealthPoints >= 100 || bulletHitManager_.entityLife >= 100 || currentHP <= 0 || currentHP >= 100)
+        {
+            hp_Bar_Manager_ForPlayer_.Change(100);
+            hp_Bar_Manager_ForPlayer_.Change(-1);
+        }
 
         if (characterData.HealthPoints <= 0)
         {
@@ -290,10 +319,12 @@ public class PlayerController : MonoBehaviour
                     break;
             }
             characterData.position = gameObject.transform.position;
-            //bulletHitManager_.entityLife = 100;
+            bulletHitManager_.entityLife = 100;
             characterData.HealthPoints = 100;
-            FindObjectOfType<HP_Bar_ForPlayer>().Change(100);
-
+            currentHP = characterData.HealthPoints;
+            //FindObjectOfType<HP_Bar_ForPlayer>().Change(100);
+            hp_Bar_Manager_ForPlayer_.Change(100);
+            hp_Bar_Manager_ForPlayer_.Change(-1);
         }
     }
     private void HandleCharacterUpdates()

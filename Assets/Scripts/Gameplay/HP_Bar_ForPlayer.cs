@@ -73,26 +73,27 @@ public class HP_Bar_ForPlayer : MonoBehaviour
 
     void Update()
     {
-        if (hpDifference != bulletHitManager_.entityLife)
-        {
-            int calculateDamage = hpDifference - bulletHitManager_.entityLife;
-            if (calculateDamage < 0)
-            {
-                calculateDamage = calculateDamage * -1;
-            }
+        //if (hpDifference != bulletHitManager_.entityLife)
+        //{
+        //    int calculateDamage = hpDifference - bulletHitManager_.entityLife;
+        //    if (calculateDamage < 0)
+        //    {
+        //        calculateDamage = calculateDamage * -1;
+        //    }
 
-            Change(-calculateDamage);
+        //    //Change(-calculateDamage);
+        //    Change(-10); //Harcoded because we only have a 10 point damage option y porque estoy hasta la polla de debuguear resultados inútiles
 
-            hpDifference = bulletHitManager_.entityLife;
-        }
+        //    hpDifference = bulletHitManager_.entityLife;
+        //}
 
-        if (bulletHitManager_.entityLife <= 0)
-        {
-            bulletHitManager_.entityLife = 100;
-            hpDifference = bulletHitManager_.entityLife;
-            Change(100);
-            Change(-1);
-        }
+        //if (bulletHitManager_.entityLife <= 0)
+        //{
+        //    bulletHitManager_.entityLife = 100;
+        //    hpDifference = bulletHitManager_.entityLife;
+        //    Change(100);
+        //    Change(-1);
+        //}
     }
 
     private void LateUpdate()
