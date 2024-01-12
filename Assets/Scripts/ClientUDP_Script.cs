@@ -19,7 +19,7 @@ public class ClientUDP_Script : MonoBehaviour
     private UdpClient udpClient;
     private string currentServerIP;
     private string userName;
-    private int serverPort = 3366;
+    private int serverPort = 12345;
     //private int clientPort;
 
 
@@ -71,7 +71,7 @@ public class ClientUDP_Script : MonoBehaviour
         Message _message = new Message(connectText, null, TypesOfMessage.WAITING_ROOM);
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
-        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         await udpClient.SendAsync(data, data.Length, recipientEndPoint);
 
         listenerThread = new Thread(RecieveMessages);
@@ -83,7 +83,7 @@ public class ClientUDP_Script : MonoBehaviour
     public void SendCheckConnection()
     {
         string message = "ping";
-        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         Message _message = new Message(message, null, TypesOfMessage.CHECK_CONNECTION);
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
@@ -94,7 +94,7 @@ public class ClientUDP_Script : MonoBehaviour
     public void SendMessageWaitingRoom()
     {
         string message = userName + ":" + UiManager.instance.InputFieldMessage.text;
-        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         Message _message = new Message(message, null, TypesOfMessage.WAITING_ROOM);
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
@@ -109,7 +109,7 @@ public class ClientUDP_Script : MonoBehaviour
         _message.message = userName + ":" + _message.message;
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
-        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
 
         if (_message.type == TypesOfMessage.FINISH_GAME)
@@ -139,7 +139,7 @@ public class ClientUDP_Script : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson(_message);
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
-        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), serverPort);
+        IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
     }
     #endregion
