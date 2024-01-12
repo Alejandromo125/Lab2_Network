@@ -19,7 +19,7 @@ public class ClientUDP_Script : MonoBehaviour
     private UdpClient udpClient;
     private string currentServerIP;
     private string userName;
-    private int serverPort = 12345;
+    private int serverPort = 3366;
     //private int clientPort;
 
 
