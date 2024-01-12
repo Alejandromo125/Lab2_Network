@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip shootSound;
 
     HP_Bar_ForPlayer hp_Bar_Manager_ForPlayer_;
+    TextHP_Set textHP_Set_;
 
     private bool playerRespawn = false;
     #region TimerForData
@@ -73,6 +74,8 @@ public class PlayerController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         hp_Bar_Manager_ForPlayer_ = FindObjectOfType<HP_Bar_ForPlayer>();
+        textHP_Set_ = FindObjectOfType<TextHP_Set>();
+
     }
 
     void Update()
@@ -261,6 +264,7 @@ public class PlayerController : MonoBehaviour
         characterData.actions = actions;
 
         hp_Bar_Manager_ForPlayer_.SetWidth_v2(characterData.HealthPoints);
+        textHP_Set_.playerHP = characterData.HealthPoints;
 
         if (characterData.HealthPoints <= 0)
         {
