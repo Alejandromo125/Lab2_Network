@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class HP_Bar_ForPlayer : MonoBehaviour
 {
-    [field:SerializeField]
+    [field: SerializeField]
     public int MaxValue { get; private set; }
 
-    [field:SerializeField]
-    public int Value {  get; private set; }
+    [field: SerializeField]
+    public int Value { get; private set; }
 
     [field: SerializeField]
     private RectTransform _topBar;
@@ -31,15 +31,11 @@ public class HP_Bar_ForPlayer : MonoBehaviour
 
     private CinemachineVirtualCamera camForCanvas;
 
-    int hpDifference;
-
-    BulletHitManager bulletHitManager_;
-
     public void Change(int amount)
     {
         Value = Mathf.Clamp(Value + amount, 0, MaxValue);
 
-        if(_adjustBarWidthCoroutine != null)
+        if (_adjustBarWidthCoroutine != null)
         {
             StopCoroutine(_adjustBarWidthCoroutine);
         }
@@ -57,6 +53,7 @@ public class HP_Bar_ForPlayer : MonoBehaviour
 
         _adjustBarWidthCoroutine = StartCoroutine(AdjustBarWidth(amount));
     }
+
     private void Awake()
     {
         camForCanvas = FindObjectOfType<CinemachineVirtualCamera>();
@@ -65,35 +62,11 @@ public class HP_Bar_ForPlayer : MonoBehaviour
     private void Start()
     {
         _fullWidth = _topBar.rect.width;
-        bulletHitManager_ = FindObjectOfType<BulletHitManager>();
-        hpDifference = bulletHitManager_.entityLife;
-
-        Change(100);
     }
 
     void Update()
     {
-        //if (hpDifference != bulletHitManager_.entityLife)
-        //{
-        //    int calculateDamage = hpDifference - bulletHitManager_.entityLife;
-        //    if (calculateDamage < 0)
-        //    {
-        //        calculateDamage = calculateDamage * -1;
-        //    }
 
-        //    //Change(-calculateDamage);
-        //    Change(-10); //Harcoded because we only have a 10 point damage option y porque estoy hasta la polla de debuguear resultados inútiles
-
-        //    hpDifference = bulletHitManager_.entityLife;
-        //}
-
-        //if (bulletHitManager_.entityLife <= 0)
-        //{
-        //    bulletHitManager_.entityLife = 100;
-        //    hpDifference = bulletHitManager_.entityLife;
-        //    Change(100);
-        //    Change(-1);
-        //}
     }
 
     private void LateUpdate()
@@ -118,5 +91,12 @@ public class HP_Bar_ForPlayer : MonoBehaviour
         slowChangeBar.SetWidth(TargetWidth);
     }
 
-    
+    public void SetWidth_v2(float width)
+    {
+        float newTargetWidth = width * _fullWidth / MaxValue;
+
+        _topBar.sizeDelta = new Vector2(newTargetWidth, _topBar.rect.height);
+    }
+
+
 }
