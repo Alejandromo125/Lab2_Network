@@ -264,7 +264,7 @@ public class PlayerController : MonoBehaviour
         characterData.actions = actions;
 
         hp_Bar_Manager_ForPlayer_.SetWidth_v2(characterData.HealthPoints);
-        textHP_Set_.playerHP = characterData.HealthPoints;
+        textHP_Set_.playerHP = bulletHitManager_.entityLife;
 
         if (characterData.HealthPoints <= 0)
         {
