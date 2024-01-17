@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Linq;
 
 public class ServerUDP_Script : MonoBehaviour
 {
@@ -19,12 +20,14 @@ public class ServerUDP_Script : MonoBehaviour
     private Message lastMessage;
     private Thread serverThread;
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
+    private bool playerCreated = true;
 
-    private string currentScene;
+    private List<string> player;
+    private List<Team> teams;
 
-    private bool playerCreated = false;
+    private string PlayerName;
+    private Team PlayerTeam;
 
-    private string player;
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -54,7 +57,11 @@ public class ServerUDP_Script : MonoBehaviour
 
         if (playerCreated == true && GameManager.instance)
         {
-            GameManager.instance.CreatePlayerAndDummy("Server", Team.BLUE_TEAM, player, Team.RED_TEAM);
+            GameManager.instance.CreatePlayer(PlayerName, PlayerTeam);
+            for(int i = 0; i<player.Count;i++)
+            {
+                GameManager.instance.CreateDummies(player,teams);
+            }
             playerCreated = false;
         }
     }
@@ -115,8 +122,9 @@ public class ServerUDP_Script : MonoBehaviour
                     GameManager.instance.UpdateDummiesData(message);
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
-                    playerCreated = true;
-                    player = message.message;
+                    string[] splittedMessage = message.message.Split('/');
+                    player.Add(splittedMessage[0]);
+                    teams.Add((Team)int.Parse(splittedMessage[1]));
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
                     message.message = ReturnCorrectDummyName(message.message);
@@ -193,6 +201,11 @@ public class ServerUDP_Script : MonoBehaviour
                     Debug.Log("SEND MESSAGE");
 
                 }
+                break;
+            case TypesOfMessage.GENERATE_PLAYERS:
+                string[] splittedMessage = message.message.Split('/');
+                PlayerName = splittedMessage[0];
+                PlayerTeam = (Team)int.Parse(splittedMessage[1]);
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 message.message = "Server:" + message.message;

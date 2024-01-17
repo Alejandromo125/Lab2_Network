@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -114,32 +115,39 @@ public class GameManager : MonoBehaviour
             player.UpdateLocalData(message.characterData);
         }
     }
-
-    public void CreatePlayerAndDummy(string playerName,Team playerTeam,string dummyName,Team dummyTeam)
+    public void CreatePlayer(string playerName, Team playerTeam)
     {
         GameObject player = null;
-        GameObject dummy = null;
         if (playerTeam == Team.BLUE_TEAM)
         {
             player = Instantiate(playerPrefab, startingBluePos, Quaternion.identity, null);
         }
-        else if(playerTeam == Team.RED_TEAM)
+        else if (playerTeam == Team.RED_TEAM)
         {
             player = Instantiate(playerPrefab, startingRedPos, Quaternion.identity, null);
         }
         player.GetComponent<PlayerController>().username = playerName;
         player.GetComponent<PlayerController>().characterData.team = playerTeam;
 
-        if (dummyTeam == Team.BLUE_TEAM)
+       
+    }
+    public void CreateDummies(List<string> dummyNames,List<Team> dummyTeams)
+    {
+        GameObject dummy = null;
+        for(int i = 0; i<dummyNames.Count;i++) 
         {
-            dummy = Instantiate(dummyPrefab, startingBluePos, Quaternion.identity, null);
+            if (dummyTeams.ElementAt(i) == Team.BLUE_TEAM)
+            {
+                dummy = Instantiate(dummyPrefab, startingBluePos, Quaternion.identity, null);
+            }
+            else if (dummyTeams.ElementAt(i) == Team.RED_TEAM)
+            {
+                dummy = Instantiate(dummyPrefab, startingRedPos, Quaternion.identity, null);
+            }
+            dummy.GetComponent<DummyController>().username = dummyNames.ElementAt(i);
+            dummy.GetComponent<DummyController>().characterData.team = dummyTeams.ElementAt(i);
+            dummies.Add(dummy.GetComponent<DummyController>());
         }
-        else if (dummyTeam == Team.RED_TEAM)
-        {
-            dummy = Instantiate(dummyPrefab, startingRedPos, Quaternion.identity, null);
-        }
-        dummy.GetComponent<DummyController>().username = dummyName;
-        dummy.GetComponent<DummyController>().characterData.team = dummyTeam;
-        dummies.Add(dummy.GetComponent<DummyController>());
+        
     }
 }

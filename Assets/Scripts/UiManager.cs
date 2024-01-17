@@ -11,6 +11,10 @@ public class UiManager : MonoBehaviour
     
     public TMP_Text textForMessages;
 
+    //InputField
+    public TMP_InputField inputFieldPlayerName;
+    //Dropdowm
+    public TMP_Dropdown dropdownTeam;
     public static UiManager instance { get; private set; }
     private void Awake()
     {
@@ -48,16 +52,26 @@ public class UiManager : MonoBehaviour
             Message message = new Message("Server", null, TypesOfMessage.START_GAME);
             server.HandleSendingMessages(message);
         }
-        if(client)
-        {
-            Message message = new Message(client.GetComponent<ClientUDP_Script>().GetUsername(), null, TypesOfMessage.START_GAME);
-            client.SendStartMessage(message);
-        }
-        
     }
 
     public void GoToTitleScreen()
     {
         SceneManager.LoadScene("MainMenuScene");
+    }
+    //Generate
+    public void GenerateValuesForPlayers()
+    {
+        ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+        ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
+        if (server)
+        {
+            Message message = new Message(inputFieldPlayerName.text + "/" + dropdownTeam.value.ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
+            server.HandleSendingMessages(message);
+        }
+        else if (client)
+        {
+            Message message = new Message(inputFieldPlayerName.text + "/" + dropdownTeam.value.ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
+            client.SendStartMessage(message);
+        }
     }
 }

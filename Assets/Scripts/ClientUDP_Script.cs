@@ -7,6 +7,8 @@ using System;
 using System.Net;
 using System.Threading;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 public class ClientUDP_Script : MonoBehaviour
 {
@@ -30,13 +32,16 @@ public class ClientUDP_Script : MonoBehaviour
     private Message lastMessage;
     private bool lastMessageUpdated = true;
 
-    private bool CreatePlayer = false;
+    private bool CreatePlayer = true;
 
     #region ConnectionCheckerTimers
     private float lastPingTime;
     #endregion
 
+    private Team userTeam;
 
+    private List<string> player;
+    private List<Team> teams;
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
@@ -52,7 +57,11 @@ public class ClientUDP_Script : MonoBehaviour
 
         if (CreatePlayer == true && GameManager.instance)
         {
-            GameManager.instance.CreatePlayerAndDummy(userName, Team.RED_TEAM, "Server", Team.BLUE_TEAM);
+            GameManager.instance.CreatePlayer(userName,userTeam);
+            for (int i = 0; i < player.Count; i++)
+            {
+                GameManager.instance.CreateDummies(player, teams);
+            }
             SendCheckConnection();
             checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;
@@ -141,6 +150,13 @@ public class ClientUDP_Script : MonoBehaviour
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
+
+
+        if(_message.type == TypesOfMessage.GENERATE_PLAYERS)
+        {
+            string[] splittedMessage = _message.message.Split('/');
+            userTeam = (Team)int.Parse(splittedMessage[1]);
+        }
     }
     #endregion
 
@@ -185,10 +201,7 @@ public class ClientUDP_Script : MonoBehaviour
                     }
                     break;
                 case TypesOfMessage.START_GAME:
-                    SceneManager.LoadSceneAsync("GameplayLevelRoom");
-                    Message _message = new Message(GetUsername(), null, TypesOfMessage.GENERATE_PLAYERS);
-                    SendStartMessage(_message);
-                    CreatePlayer = true;
+                    SceneManager.LoadSceneAsync("GameplayLevelRoom");                 
                     break;
                 case TypesOfMessage.CHECK_CONNECTION:
                     lastPingTime = Time.time;
@@ -197,10 +210,15 @@ public class ClientUDP_Script : MonoBehaviour
                 case TypesOfMessage.DUMMY_SHOOT:
                     GameManager.instance.UpdatePlayersData(message);
                     break;
+                case TypesOfMessage.GENERATE_PLAYERS:
+                    string[] splittedMessage = message.message.Split('/');
+                    if (isFromAnotherUser(splittedMessage[0]))
+                    {
+                        player.Add(splittedMessage.ElementAt(0));
+                        teams.Add((Team)int.Parse(splittedMessage.ElementAt(1)));
+                    }
+                    break;
                 case TypesOfMessage.FINISH_GAME:
-                    //checkerThread.Join();
-                    //listenerThread.Join();
-                    //SceneManager.LoadSceneAsync("MainMenuScene");
                     if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
                     {
                         checkerThread.Join();
