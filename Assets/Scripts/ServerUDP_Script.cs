@@ -22,8 +22,8 @@ public class ServerUDP_Script : MonoBehaviour
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
     private bool playerCreated = true;
 
-    private List<string> player;
-    private List<Team> teams;
+    private List<string> player = new List<string>();
+    private List<Team> teams = new List<Team>();
 
     private string PlayerName;
     private Team PlayerTeam;
@@ -58,10 +58,8 @@ public class ServerUDP_Script : MonoBehaviour
         if (playerCreated == true && GameManager.instance)
         {
             GameManager.instance.CreatePlayer(PlayerName, PlayerTeam);
-            for(int i = 0; i<player.Count;i++)
-            {
-                GameManager.instance.CreateDummies(player,teams);
-            }
+            GameManager.instance.CreateDummies(player,teams);
+            
             playerCreated = false;
         }
     }
@@ -203,9 +201,7 @@ public class ServerUDP_Script : MonoBehaviour
                 }
                 break;
             case TypesOfMessage.GENERATE_PLAYERS:
-                string[] splittedMessage = message.message.Split('/');
-                PlayerName = splittedMessage[0];
-                PlayerTeam = (Team)int.Parse(splittedMessage[1]);
+               
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 message.message = "Server:" + message.message;
@@ -254,11 +250,27 @@ public class ServerUDP_Script : MonoBehaviour
 
         return _messageArray[1];
     }
-
+    private bool isFromAnotherUserDummies(string infoSent)
+    {
+        if (infoSent == PlayerName)
+        {
+            Debug.Log("Same user");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     public void DestroyServer()
     {
         DontDestroyOnLoad(gameObject);
         udpListener.Close();
         Destroy(gameObject);
+    }
+    public void SetNameAndTeam(string playerName,Team team)
+    {
+        PlayerName = playerName;
+        PlayerTeam = team;
     }
 }

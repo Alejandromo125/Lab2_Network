@@ -2790,6 +2790,8 @@ MonoBehaviour:
     scoreBlueTeam: 0
   scoreBlueTeam: {fileID: 721253696}
   scoreRedTeam: {fileID: 1149909580}
+  redMaterial: {fileID: 2100000, guid: 35ef426e1c9c63d47af44443490d6283, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 08b150940b563e84abe29d66b6677d59, type: 2}
 --- !u!1 &442448629 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1613231038568742, guid: 6aecf3456f11166468124c695b00f745, type: 3}

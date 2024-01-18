@@ -29,6 +29,11 @@ public class GameManager : MonoBehaviour
     public GameScore score;
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
+
+
+
+    public Material redMaterial;
+    public Material blueMaterial;
     private void Awake()
     {
         score.scoreRedTeam = 0;
@@ -53,7 +58,7 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         score.scoreBlueTeam = FindObjectOfType<PlayerController>().characterData.GameScore;
-        score.scoreRedTeam = FindObjectOfType<DummyController>().characterData.GameScore;
+        score.scoreRedTeam = 0;//FindObjectOfType<DummyController>().characterData.GameScore;
         scoreBlueTeam.text = score.scoreBlueTeam.ToString();
         scoreRedTeam.text = score.scoreRedTeam.ToString();
 
@@ -121,10 +126,13 @@ public class GameManager : MonoBehaviour
         if (playerTeam == Team.BLUE_TEAM)
         {
             player = Instantiate(playerPrefab, startingBluePos, Quaternion.identity, null);
+            player.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
         }
         else if (playerTeam == Team.RED_TEAM)
         {
             player = Instantiate(playerPrefab, startingRedPos, Quaternion.identity, null);
+            player.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+
         }
         player.GetComponent<PlayerController>().username = playerName;
         player.GetComponent<PlayerController>().characterData.team = playerTeam;
@@ -139,10 +147,14 @@ public class GameManager : MonoBehaviour
             if (dummyTeams.ElementAt(i) == Team.BLUE_TEAM)
             {
                 dummy = Instantiate(dummyPrefab, startingBluePos, Quaternion.identity, null);
+                dummy.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+
             }
             else if (dummyTeams.ElementAt(i) == Team.RED_TEAM)
             {
                 dummy = Instantiate(dummyPrefab, startingRedPos, Quaternion.identity, null);
+                dummy.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+
             }
             dummy.GetComponent<DummyController>().username = dummyNames.ElementAt(i);
             dummy.GetComponent<DummyController>().characterData.team = dummyTeams.ElementAt(i);

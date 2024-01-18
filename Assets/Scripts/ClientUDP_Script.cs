@@ -40,8 +40,8 @@ public class ClientUDP_Script : MonoBehaviour
 
     private Team userTeam;
 
-    private List<string> player;
-    private List<Team> teams;
+    private List<string> player = new List<string>();
+    private List<Team> teams = new List<Team>();
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
@@ -58,10 +58,7 @@ public class ClientUDP_Script : MonoBehaviour
         if (CreatePlayer == true && GameManager.instance)
         {
             GameManager.instance.CreatePlayer(userName,userTeam);
-            for (int i = 0; i < player.Count; i++)
-            {
-                GameManager.instance.CreateDummies(player, teams);
-            }
+            GameManager.instance.CreateDummies(player, teams);
             SendCheckConnection();
             checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;
@@ -150,13 +147,6 @@ public class ClientUDP_Script : MonoBehaviour
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
-
-
-        if(_message.type == TypesOfMessage.GENERATE_PLAYERS)
-        {
-            string[] splittedMessage = _message.message.Split('/');
-            userTeam = (Team)int.Parse(splittedMessage[1]);
-        }
     }
     #endregion
 
@@ -212,7 +202,7 @@ public class ClientUDP_Script : MonoBehaviour
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
                     string[] splittedMessage = message.message.Split('/');
-                    if (isFromAnotherUser(splittedMessage[0]))
+                    if (isFromAnotherUserDummies(splittedMessage[0]))
                     {
                         player.Add(splittedMessage.ElementAt(0));
                         teams.Add((Team)int.Parse(splittedMessage.ElementAt(1)));
@@ -264,6 +254,18 @@ public class ClientUDP_Script : MonoBehaviour
             return true;
         }
     }
+    private bool isFromAnotherUserDummies(string infoSent)
+    {
+        if (infoSent == userName)
+        {
+            Debug.Log("Same user");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
     private string ReturnCorrectDummyName(string message)
     {
@@ -294,5 +296,12 @@ public class ClientUDP_Script : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         udpClient.Close();
         Destroy(gameObject);
+    }
+
+
+    public void SetNameAndTeam(string playerName, Team team)
+    {
+        userName = playerName;
+        userTeam = team;
     }
 }

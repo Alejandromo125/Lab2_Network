@@ -65,12 +65,14 @@ public class UiManager : MonoBehaviour
         ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
         if (server)
         {
-            Message message = new Message(inputFieldPlayerName.text + "/" + dropdownTeam.value.ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
+            server.SetNameAndTeam(inputFieldPlayerName.text, (Team)(dropdownTeam.value + 1));
+            Message message = new Message(inputFieldPlayerName.text + "/" + (dropdownTeam.value + 1).ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
             server.HandleSendingMessages(message);
         }
         else if (client)
         {
-            Message message = new Message(inputFieldPlayerName.text + "/" + dropdownTeam.value.ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
+            client.SetNameAndTeam(inputFieldPlayerName.text, (Team)(dropdownTeam.value + 1));
+            Message message = new Message(inputFieldPlayerName.text + "/" + (dropdownTeam.value + 1).ToString(), null, TypesOfMessage.GENERATE_PLAYERS);
             client.SendStartMessage(message);
         }
     }
