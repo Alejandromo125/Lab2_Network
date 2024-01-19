@@ -191,21 +191,17 @@ public class ClientUDP_Script : MonoBehaviour
                 case TypesOfMessage.FINISH_GAME:
                     if (GameManager.instance.score.scoreBlueTeam >= 5)
                     {
-                        checkerThread.Join();
-                        listenerThread.Join();
-
+                        
                         SceneManager.LoadScene("BlueTeamWinsScene");
                     }
                     else if (GameManager.instance.score.scoreRedTeam >= 5)
                     {
-                        checkerThread.Join();
-                        listenerThread.Join();
+                        
                         SceneManager.LoadScene("RedTeamWinsScene");
                     }
                     else
                     {
-                        checkerThread.Join();
-                        listenerThread.Join();
+                        
                         SceneManager.LoadSceneAsync("MainMenuScene");
                     }
                     break;

@@ -134,12 +134,10 @@ public class ServerUDP_Script : MonoBehaviour
                     //SceneManager.LoadSceneAsync("MainMenuScene");
                     if (GameManager.instance.score.scoreBlueTeam >= 5)
                     {
-                        serverThread.Join();
                         SceneManager.LoadScene("BlueTeamWinsScene");
                     }
                     else if (GameManager.instance.score.scoreRedTeam >= 5)
                     {
-                        serverThread.Join();
                         SceneManager.LoadScene("RedTeamWinsScene");
                     }
                     break;
@@ -164,17 +162,14 @@ public class ServerUDP_Script : MonoBehaviour
             //SceneManager.LoadSceneAsync("MainMenuScene");
             if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
             {
-                serverThread.Join();
                 SceneManager.LoadSceneAsync("WinScene");
             }
             else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
             {
-                serverThread.Join();
                 SceneManager.LoadSceneAsync("LooseScene");
             }
             else
             {
-                serverThread.Join();
                 SceneManager.LoadSceneAsync("MainMenuScene");
             }
         }
@@ -213,12 +208,10 @@ public class ServerUDP_Script : MonoBehaviour
                 //SceneManager.LoadScene("MainMenuScene");
                 if (GameManager.instance.score.scoreBlueTeam >= 5)
                 {
-                    serverThread.Join();
                     SceneManager.LoadScene("BlueTeamWinsScene");
                 }
                 else if(GameManager.instance.score.scoreRedTeam >= 5)
                 {
-                    serverThread.Join();
                     SceneManager.LoadScene("RedTeamWinsScene");
                 }
                 break;
