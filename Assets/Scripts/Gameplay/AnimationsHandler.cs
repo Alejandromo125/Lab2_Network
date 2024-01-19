@@ -13,6 +13,7 @@ public class AnimationsHandler : MonoBehaviour
     public GameObject dashEffect;
     public GameObject mesh;
     public GameObject meshRifle;
+    public GameObject shield;
     void Start()
     {
     }
@@ -43,5 +44,9 @@ public class AnimationsHandler : MonoBehaviour
         {
             meshRifle.SetActive(true);
         }
+
+        
+        shield.SetActive(characterData.actions.shield);
+        
     }
 }

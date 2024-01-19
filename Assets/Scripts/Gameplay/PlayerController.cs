@@ -37,6 +37,10 @@ public class PlayerController : MonoBehaviour
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
+    private float lastShieldTime;
+    public float shieldDelay = 15f;
+    public float shieldTimer = 5f;
+
     private TypesOfActions actions;
 
     private CinemachineVirtualCamera cam;
@@ -178,6 +182,16 @@ public class PlayerController : MonoBehaviour
         else if(Time.time - lastShootTime < shootDelay && Input.GetMouseButtonUp(0))
         {
             actions.shoot = false;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Q) && Time.time - lastShieldTime > shieldDelay)
+        {
+            lastShieldTime = Time.time;
+            actions.shield = true;
+        }
+        else if (Time.time - lastShieldTime > shieldTimer && actions.shield)
+        {
+            actions.shield = false;
         }
     }
  
@@ -343,25 +357,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        
-        switch (characterData.team)
+        if(!actions.shield)
         {
-            case Team.NONE:
-                break;
-            case Team.BLUE_TEAM:
-                if (collision.gameObject.CompareTag("RedTeamBullet"))
-                {
-                    bulletHitManager_.entityLife -= 10;
-                }
-                break;
-            case Team.RED_TEAM:
-                if (collision.gameObject.CompareTag("BlueTeamBullet"))
-                {
-                    bulletHitManager_.entityLife -= 10;
-                }
-                break;
+            switch (characterData.team)
+            {
+                case Team.NONE:
+                    break;
+                case Team.BLUE_TEAM:
+                    if (collision.gameObject.CompareTag("RedTeamBullet"))
+                    {
+                        bulletHitManager_.entityLife -= 10;
+                    }
+                    break;
+                case Team.RED_TEAM:
+                    if (collision.gameObject.CompareTag("BlueTeamBullet"))
+                    {
+                        bulletHitManager_.entityLife -= 10;
+                    }
+                    break;
+            }
         }
-        
     }
 
     IEnumerator Dash()

@@ -117,27 +117,6 @@ public class ClientUDP_Script : MonoBehaviour
         byte[] data = Encoding.UTF8.GetBytes(jsonData);
         IPEndPoint recipientEndPoint = new IPEndPoint(IPAddress.Parse(currentServerIP), serverPort);
         udpClient.SendAsync(data, data.Length, recipientEndPoint);
-
-        if (_message.type == TypesOfMessage.FINISH_GAME)
-        {
-            //listenerThread.Join();
-            //SceneManager.LoadSceneAsync("MainMenuScene");
-            if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("WinScene");
-            }
-            else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("LooseScene");
-            }
-            else
-            {
-                listenerThread.Join();
-                SceneManager.LoadSceneAsync("MainMenuScene");
-            }
-        }
     }
     #endregion
     #region StartGameMessage
@@ -210,17 +189,18 @@ public class ClientUDP_Script : MonoBehaviour
                     }
                     break;
                 case TypesOfMessage.FINISH_GAME:
-                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                    if (GameManager.instance.score.scoreBlueTeam >= 5)
                     {
                         checkerThread.Join();
                         listenerThread.Join();
-                        SceneManager.LoadSceneAsync("WinScene");
+
+                        SceneManager.LoadScene("BlueTeamWinsScene");
                     }
-                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                    else if (GameManager.instance.score.scoreRedTeam >= 5)
                     {
                         checkerThread.Join();
                         listenerThread.Join();
-                        SceneManager.LoadSceneAsync("LooseScene");
+                        SceneManager.LoadScene("RedTeamWinsScene");
                     }
                     else
                     {

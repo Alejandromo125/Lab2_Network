@@ -132,21 +132,17 @@ public class ServerUDP_Script : MonoBehaviour
 
                     //serverThread.Join();
                     //SceneManager.LoadSceneAsync("MainMenuScene");
-                    if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                    if (GameManager.instance.score.scoreBlueTeam >= 5)
                     {
                         serverThread.Join();
-                        SceneManager.LoadSceneAsync("WinScene");
+                        SceneManager.LoadScene("BlueTeamWinsScene");
                     }
-                    else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                    else if (GameManager.instance.score.scoreRedTeam >= 5)
                     {
                         serverThread.Join();
-                        SceneManager.LoadSceneAsync("LooseScene");
+                        SceneManager.LoadScene("RedTeamWinsScene");
                     }
-                    else
-                    {
-                        serverThread.Join();
-                        SceneManager.LoadSceneAsync("MainMenuScene");
-                    }
+                    break;
 
                     break;
                 case TypesOfMessage.WAITING_ROOM:
