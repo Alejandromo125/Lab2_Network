@@ -22,11 +22,11 @@ public class ServerUDP_Script : MonoBehaviour
     private List<IPEndPoint> clientEndPoint = new List<IPEndPoint>();
     private bool playerCreated = true;
 
-    private List<string> player = new List<string>();
-    private List<Team> teams = new List<Team>();
+    public List<string> player = new List<string>();
+    public List<Team> teams = new List<Team>();
 
-    private string PlayerName;
-    private Team PlayerTeam;
+    public string PlayerName;
+    public Team PlayerTeam;
 
     private void Awake()
     {
@@ -125,8 +125,7 @@ public class ServerUDP_Script : MonoBehaviour
                     teams.Add((Team)int.Parse(splittedMessage[1]));
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    string[] splittedMessage_dummyShot = message.message.Split("/");
-                    GameManager.instance.SetScores(int.Parse(splittedMessage_dummyShot[0]), int.Parse(splittedMessage_dummyShot[1]));
+                    GameManager.instance.AddScore((Team)int.Parse(message.message));
                     break;
                 case TypesOfMessage.FINISH_GAME:
 
@@ -181,8 +180,7 @@ public class ServerUDP_Script : MonoBehaviour
                 }
                 break;
             case TypesOfMessage.DUMMY_SHOOT:
-                string[] splittedMessage = message.message.Split("/");
-                GameManager.instance.SetScores(int.Parse(splittedMessage[0]),int.Parse(splittedMessage[1]));
+               
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 message.message = "Server:" + message.message;

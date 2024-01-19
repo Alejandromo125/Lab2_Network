@@ -96,13 +96,13 @@ public class DummyController : MonoBehaviour
         gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 
 
-        if (healthPoints <= 0)
-        {
-            healthPoints = 100;
-            characterData.HealthPoints = 100;
-            FindObjectOfType<HP_Bar_Manager>().Change(100);
-            FindObjectOfType<HP_Bar_Manager>().Change(-1);
-        }
+        //if (healthPoints <= 0)
+        //{
+        //    healthPoints = 100;
+        //    characterData.HealthPoints = 100;
+        //    FindObjectOfType<HP_Bar_Manager>().Change(100);
+        //    FindObjectOfType<HP_Bar_Manager>().Change(-1);
+        //}
 
     }
     void DummyDisableRaycastLine()

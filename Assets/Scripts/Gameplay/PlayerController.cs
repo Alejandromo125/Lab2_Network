@@ -324,7 +324,18 @@ public class PlayerController : MonoBehaviour
             hp_Bar_Manager_ForPlayer_.SetWidth_v2(characterData.HealthPoints);
             hp_Bar_Manager_ForPlayer_.Change(100);
             hp_Bar_Manager_ForPlayer_.Change(-1);
-            GameManager.instance.AddScore(characterData.team);
+            int teamValue = (int)characterData.team;
+            Message message = new Message(teamValue.ToString(), characterData, TypesOfMessage.DUMMY_SHOOT);
+            ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
+            ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+            if(client)
+            {
+                client.SendStartMessage(message);
+            }
+            else if(server)
+            {
+                server.HandleSendingMessages(message);
+            }
         }
     }
     private void HandleCharacterUpdates()

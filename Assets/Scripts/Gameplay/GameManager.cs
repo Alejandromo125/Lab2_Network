@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
 
     private void VictoryHandler()
     {
+        //TODO MILE:  WIN BANNER DEPENDING ON THE TEAM WHO WON
         if(score.scoreRedTeam >= 5)
         {
             Invoke("TriggerWinRed",0.5f);
@@ -156,13 +157,6 @@ public class GameManager : MonoBehaviour
         }
         
     }
-    public void SetScores(int blueTeam, int redTeam)
-    {
-        score.scoreBlueTeam = blueTeam;
-        score.scoreRedTeam = redTeam;
-        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
-        scoreRedTeam.text = score.scoreRedTeam.ToString();
-    }
     public void AddScore(Team teamPlayerDead)
     {
         switch(teamPlayerDead)
@@ -176,14 +170,8 @@ public class GameManager : MonoBehaviour
                 score.scoreRedTeam++;
                 break;
         }
-        Message message = new Message(score.scoreBlueTeam.ToString() + "/" + score.scoreRedTeam.ToString(), null, TypesOfMessage.DUMMY_SHOOT);
-        if (server)
-        {
-            server.HandleSendingMessages(message);
-        }
-        if (client)
-        {
-            client.SendStartMessage(message);
-        }
+
+        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
+        scoreRedTeam.text = score.scoreRedTeam.ToString();
     }
 }

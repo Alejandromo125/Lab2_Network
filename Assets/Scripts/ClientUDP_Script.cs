@@ -20,7 +20,7 @@ public class ClientUDP_Script : MonoBehaviour
 
     private UdpClient udpClient;
     private string currentServerIP;
-    private string userName;
+    public string userName;
     private int serverPort = 12345;
     //private int clientPort;
 
@@ -38,10 +38,10 @@ public class ClientUDP_Script : MonoBehaviour
     private float lastPingTime;
     #endregion
 
-    private Team userTeam;
+    public Team userTeam;
 
-    private List<string> player = new List<string>();
-    private List<Team> teams = new List<Team>();
+    public List<string> player = new List<string>();
+    public List<Team> teams = new List<Team>();
     //Creating an instance to access it through player's scripts
     private void Awake()
     {
@@ -177,8 +177,7 @@ public class ClientUDP_Script : MonoBehaviour
                     SendCheckConnection();
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    string[] splittedMessage_dummyShot = message.message.Split("/");
-                    GameManager.instance.SetScores(int.Parse(splittedMessage_dummyShot[0]), int.Parse(splittedMessage_dummyShot[1]));
+                    GameManager.instance.AddScore((Team)int.Parse(message.message));
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
                     string[] splittedMessage = message.message.Split('/');
