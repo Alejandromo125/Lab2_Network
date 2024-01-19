@@ -13,7 +13,7 @@ public class DummyController : MonoBehaviour
     public LayerMask hitDummyLayer;
     public float moveSpeed = 5f;
     public Camera mainCamera;
-    public GameObject explosionPrefab; // Prefab for the explosion particle system.
+    private GameObject bulletPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab; // Prefab for the explosion sparks particle system.
     public Transform particleSpawnerTr;
     public float shootRange = 7.0f;
@@ -22,7 +22,9 @@ public class DummyController : MonoBehaviour
     public LineRenderer raycastLine;
     public AudioClip shootClip;
     AudioSource audioSource;
+    private bool alreadyShot = false;
 
+    public GameObject blueTeamBullet, redTeamBullet;
     private void Awake()
     {
         characterData = new CharacterData();
@@ -37,26 +39,34 @@ public class DummyController : MonoBehaviour
         bulletHitDummyManager_ = FindObjectOfType<BulletHitDummyManager>();
 
         mainCamera = FindObjectOfType<Camera>();
+
+        switch (characterData.team)
+        {
+            case Team.NONE:
+                break;
+            case Team.BLUE_TEAM:
+                bulletPrefab = blueTeamBullet;
+                break;
+            case Team.RED_TEAM:
+                bulletPrefab = redTeamBullet;
+                break;
+        }
     }
 
     void Update()
     {
-        if (characterData.actions.shoot == true) 
+        if (characterData.actions.shoot == true && alreadyShot == false) 
         {
             //raycastLine.enabled = true;
             audioSource.PlayOneShot(shootClip);
-            GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
-            GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
+            GameObject explosion = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
+            alreadyShot = true;
+        }
 
-            // Get the duration of the particle system's effect.
-            ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
-            float duration = particleSystem.main.duration;
+        if(characterData.actions.shoot == false)
+        {
+            alreadyShot = false;
 
-            // Destroy the explosion prefab after the particle effect duration.
-            Destroy(explosion, duration);
-            Destroy(explosionSparks, duration);
-
-            //Invoke("DummyDisableRaycastLine", 0.1f);
         }
     }
 
@@ -68,10 +78,10 @@ public class DummyController : MonoBehaviour
         characterData.actions.run = data.actions.run;
         characterData.actions.shoot = data.actions.shoot;
         characterData.actions.walk = data.actions.walk;
-
+        characterData.HealthPoints = data.HealthPoints;
         characterData.GameScore = data.GameScore;
-        // Update also the line renderer as it is attached to the raycast
-        FindObjectOfType<HP_Bar_Manager>().Set(healthPoints);
+
+        FindObjectOfType<HP_Bar_Manager>().SetWidth_v2(characterData.HealthPoints);
         UpdateActualData();
     }
 
@@ -79,17 +89,19 @@ public class DummyController : MonoBehaviour
     {
         transform.position = characterData.position;
         transform.rotation = characterData.rotation;
-
+        healthPoints = characterData.HealthPoints;
         gameObject.GetComponent<Rigidbody>().angularVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 
 
-        if (healthPoints <= 0)
-        {
-            healthPoints = 100;
-            characterData.HealthPoints = 100;
-            //FindObjectOfType<HP_Bar_Manager>().Change(100);
-            //FindObjectOfType<HP_Bar_Manager>().Change(-1);
-        }
+        //if (healthPoints <= 0)
+        //{
+        //    healthPoints = 100;
+        //    characterData.HealthPoints = 100;
+        //    FindObjectOfType<HP_Bar_Manager>().Change(100);
+        //    FindObjectOfType<HP_Bar_Manager>().Change(-1);
+        //    GameManager.instance.AddScore(characterData.team);
+
+        //}
 
     }
     void DummyDisableRaycastLine()

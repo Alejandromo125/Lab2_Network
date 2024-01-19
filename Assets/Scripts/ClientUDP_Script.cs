@@ -59,8 +59,8 @@ public class ClientUDP_Script : MonoBehaviour
         {
             GameManager.instance.CreatePlayer(userName,userTeam);
             GameManager.instance.CreateDummies(player, teams);
-            SendCheckConnection();
-            checkerThread = new Thread(HandleCheck);
+            //SendCheckConnection();
+            //checkerThread = new Thread(HandleCheck);
             CreatePlayer = false;
         }
 
@@ -198,7 +198,8 @@ public class ClientUDP_Script : MonoBehaviour
                     SendCheckConnection();
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    GameManager.instance.UpdatePlayersData(message);
+                    string[] splittedMessage_dummyShot = message.message.Split("/");
+                    GameManager.instance.SetScores(int.Parse(splittedMessage_dummyShot[0]), int.Parse(splittedMessage_dummyShot[1]));
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
                     string[] splittedMessage = message.message.Split('/');

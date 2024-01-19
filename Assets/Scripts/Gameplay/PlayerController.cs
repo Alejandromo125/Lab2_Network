@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public float acceleration = 5f; // Deceleration rate.
     public LineRenderer raycastLine;
     public float shootDelay = 0.3f; // Delay between shots.
+    private GameObject bulletPrefab; 
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab;
     public GameObject hitParticlesPrefab;
@@ -47,7 +48,11 @@ public class PlayerController : MonoBehaviour
     HP_Bar_ForPlayer hp_Bar_Manager_ForPlayer_;
     TextHP_Set textHP_Set_;
 
-    private bool playerRespawn = false;
+    public float dashDistance = 4f;
+    public float dashDuration = 0.15f;
+    private bool isDashing = false;
+
+    public GameObject blueTeamBullet, redTeamBullet;
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -76,17 +81,27 @@ public class PlayerController : MonoBehaviour
         hp_Bar_Manager_ForPlayer_ = FindObjectOfType<HP_Bar_ForPlayer>();
         textHP_Set_ = FindObjectOfType<TextHP_Set>();
 
+        switch (characterData.team)
+        {
+            case Team.NONE:
+                break;
+            case Team.BLUE_TEAM:
+                bulletPrefab = blueTeamBullet;
+                break;
+            case Team.RED_TEAM:
+                bulletPrefab = redTeamBullet;
+                break;
+        }
+
     }
 
     void Update()
     {
         HandleMovement();
-        HandleShooting();
+        HandleActions();
         UpdateCharacterData();
-        if(!playerRespawn)
-        {
-            HandleCharacterUpdates();
-        }
+        HandleCharacterUpdates();
+        
     }
  
     void HandleMovement()
@@ -145,28 +160,22 @@ public class PlayerController : MonoBehaviour
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
         }
 
-        if (Input.GetMouseButtonDown(1)) 
+       
+        if(Input.GetKeyDown(KeyCode.Space) && !isDashing)
         {
-            cam.LookAt = aimTarget;
-
-        }
-        else if(Input.GetMouseButtonUp(1))
-        {
-            cam.LookAt = gameObject.transform;
-
+            StartCoroutine(Dash());
         }
     }
  
-    void HandleShooting()
+    void HandleActions()
     {
         if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
             lastShootTime = Time.time;
             actions.shoot = true;
-            
         }
-        else
+        else if(Time.time - lastShootTime < shootDelay && Input.GetMouseButtonUp(0))
         {
             actions.shoot = false;
         }
@@ -178,76 +187,77 @@ public class PlayerController : MonoBehaviour
 
         //raycastLine.enabled = true;
         // Spawn the explosion particle at the gun's position.
-        GameObject explosion = Instantiate(explosionPrefab, particleSpawnerTr.position, transform.rotation);
-        GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
 
-        // Get the duration of the particle system's effect.
-        ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
-        float duration = particleSystem.main.duration;
+        //GameObject explosionSparks = Instantiate(explosionSparksPrefab, particleSpawnerTr.position, transform.rotation);
 
-        // Destroy the explosion prefab after the particle effect duration.
-        Destroy(explosion, duration);
-        Destroy(explosionSparks, duration);
+        //// Get the duration of the particle system's effect.
+        //ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+        //float duration = particleSystem.main.duration;
 
-        // Get the mouse position in world space
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        //// Destroy the explosion prefab after the particle effect duration.
+        //Destroy(explosion, duration);
+        //Destroy(explosionSparks, duration);
 
-        //Invoke("DisableRaycastLine", 0.2f);
+        //// Get the mouse position in world space
+        //Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit hit;
+
+        ////Invoke("DisableRaycastLine", 0.2f);
 
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            // Calculate the direction from player to mouse pointer in X,Z plane
-            Vector3 direction = hit.point - transform.position;
-            direction.y = 0f; // Make sure the direction is parallel to the ground
+        //if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        //{
+        //    // Calculate the direction from player to mouse pointer in X,Z plane
+        //    Vector3 direction = hit.point - transform.position;
+        //    direction.y = 0f; // Make sure the direction is parallel to the ground
 
-            if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, Obstacle))
-            {
-                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+        //    if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, Obstacle))
+        //    {
+        //        UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
-                Destroy(hitParticles, duration + 0.35f);
+        //        GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+        //        Destroy(hitParticles, duration + 0.35f);
 
-                return;
-            }
-            // Cast a new ray from player position towards the calculated direction
-            if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitLayer))
-            {
-                //raycastLine.SetPosition(1, hit.point);
-                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+        //        return;
+        //    }
+        //    // Cast a new ray from player position towards the calculated direction
+        //    if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitLayer))
+        //    {
+        //        //raycastLine.SetPosition(1, hit.point);
+        //        UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                bulletHitManager_.TakeDamage(10, hit.collider.gameObject);
+        //        bulletHitManager_.TakeDamage(10, hit.collider.gameObject);
 
-                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
-                Destroy(hitParticles, duration + 0.35f);
-            }
-            else if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitDummyLayer))
-            {
-                //raycastLine.SetPosition(1, hit.point);
-                UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
+        //        GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+        //        Destroy(hitParticles, duration + 0.35f);
+        //    }
+        //    else if (Physics.Raycast(transform.position, direction.normalized, out hit, shootRange, hitDummyLayer))
+        //    {
+        //        //raycastLine.SetPosition(1, hit.point);
+        //        UnityEngine.Debug.Log("Hit object: " + hit.transform.name);
 
-                if(bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject) <= 0)
-                {
-                    characterData.GameScore++;
-                }
+        //        if(bulletHitDummyManager_.TakeDamage(10, hit.collider.gameObject) <= 0)
+        //        {
+        //            characterData.GameScore++;
+        //        }
 
-                GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
-                Destroy(hitParticles, duration + 0.35f);
+        //        GameObject hitParticles = Instantiate(hitParticlesPrefab, hit.point, transform.rotation);
+        //        Destroy(hitParticles, duration + 0.35f);
 
-            }
-            else
-            {
-                // If no hit, set a default end point for the ray.
-                Vector3 rayEnd = transform.position + direction.normalized * 100f;
-                //raycastLine.SetPosition(1, rayEnd);
-            }
-        }
-        else
-        {
-            
-            UnityEngine.Debug.Log("Mouse pointer doesn't hit anything.");
-        }
+        //    }
+        //    else
+        //    {
+        //        // If no hit, set a default end point for the ray.
+        //        Vector3 rayEnd = transform.position + direction.normalized * 100f;
+        //        //raycastLine.SetPosition(1, rayEnd);
+        //    }
+        //}
+        //else
+        //{
+
+        //    UnityEngine.Debug.Log("Mouse pointer doesn't hit anything.");
+        //}
     }
     void DisableRaycastLine()
     {
@@ -258,9 +268,9 @@ public class PlayerController : MonoBehaviour
     {
         characterData.position = gameObject.transform.position;
         characterData.rotation = gameObject.transform.rotation;
- 
+    
         characterData.HealthPoints = bulletHitManager_.entityLife;
-
+        actions.dash = isDashing;
         characterData.actions = actions;
 
         hp_Bar_Manager_ForPlayer_.SetWidth_v2(characterData.HealthPoints);
@@ -268,8 +278,6 @@ public class PlayerController : MonoBehaviour
 
         if (characterData.HealthPoints <= 0)
         {
-            playerRespawn = true;
-            Invoke("ResetUpdates", 0.5f);
             switch(characterData.team)
             {
                 case Team.NONE:
@@ -302,6 +310,7 @@ public class PlayerController : MonoBehaviour
             hp_Bar_Manager_ForPlayer_.SetWidth_v2(characterData.HealthPoints);
             hp_Bar_Manager_ForPlayer_.Change(100);
             hp_Bar_Manager_ForPlayer_.Change(-1);
+            GameManager.instance.AddScore(characterData.team);
         }
     }
     private void HandleCharacterUpdates()
@@ -330,11 +339,64 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.rotation = data.rotation;
         characterData.GameScore = data.GameScore;
     }
-    private void ResetUpdates()
-    {
-        playerRespawn = false;
-    }
-
     #endregion
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+        switch (characterData.team)
+        {
+            case Team.NONE:
+                break;
+            case Team.BLUE_TEAM:
+                if (collision.gameObject.CompareTag("RedTeamBullet"))
+                {
+                    bulletHitManager_.entityLife -= 10;
+                }
+                break;
+            case Team.RED_TEAM:
+                if (collision.gameObject.CompareTag("BlueTeamBullet"))
+                {
+                    bulletHitManager_.entityLife -= 10;
+                }
+                break;
+        }
+        
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+
+        // Store the initial position
+        Vector3 startPosition = transform.position;
+
+        // Calculate the end position based on the dash distance
+        Vector3 endPosition = startPosition + transform.forward * dashDistance;
+
+        RaycastHit hit;
+        if (Physics.Raycast(startPosition, transform.forward, out hit, dashDistance))
+        {
+            // Adjust the end position based on the obstacle hit
+            endPosition = hit.point;
+        }
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dashDuration)
+        {
+            // Move the player towards the end position
+            transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / dashDuration);
+
+            // Update the elapsed time
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        // Ensure the player is exactly at the end position
+        transform.position = endPosition;
+
+        isDashing = false;
+    }
 }

@@ -10,7 +10,9 @@ public class AnimationsHandler : MonoBehaviour
 
     public Rigidbody rb;
     public Animator anim;
-
+    public GameObject dashEffect;
+    public GameObject mesh;
+    public GameObject meshRifle;
     void Start()
     {
     }
@@ -31,5 +33,15 @@ public class AnimationsHandler : MonoBehaviour
         anim.SetBool("shoot", characterData.actions.shoot);
         anim.SetBool("walk", characterData.actions.walk);
         anim.SetBool("run", characterData.actions.run);
+        dashEffect.SetActive(characterData.actions.dash);
+        mesh.SetActive(!characterData.actions.dash);
+        if(characterData.actions.dash)
+        {
+            meshRifle.SetActive(false);
+        }
+        else if(!characterData.actions.dash)
+        {
+            meshRifle.SetActive(true);
+        }
     }
 }

@@ -125,8 +125,8 @@ public class ServerUDP_Script : MonoBehaviour
                     teams.Add((Team)int.Parse(splittedMessage[1]));
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    message.message = ReturnCorrectDummyName(message.message);
-                    GameManager.instance.UpdatePlayersData(message);
+                    string[] splittedMessage_dummyShot = message.message.Split("/");
+                    GameManager.instance.SetScores(int.Parse(splittedMessage_dummyShot[0]), int.Parse(splittedMessage_dummyShot[1]));
                     break;
                 case TypesOfMessage.FINISH_GAME:
 
@@ -200,8 +200,9 @@ public class ServerUDP_Script : MonoBehaviour
 
                 }
                 break;
-            case TypesOfMessage.GENERATE_PLAYERS:
-               
+            case TypesOfMessage.DUMMY_SHOOT:
+                string[] splittedMessage = message.message.Split("/");
+                GameManager.instance.SetScores(int.Parse(splittedMessage[0]),int.Parse(splittedMessage[1]));
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 message.message = "Server:" + message.message;
@@ -214,22 +215,16 @@ public class ServerUDP_Script : MonoBehaviour
 
                 //serverThread.Join();
                 //SceneManager.LoadScene("MainMenuScene");
-                if (FindObjectOfType<PlayerController>().characterData.GameScore >= 5)
+                if (GameManager.instance.score.scoreBlueTeam >= 5)
                 {
                     serverThread.Join();
-                    SceneManager.LoadScene("WinScene");
+                    SceneManager.LoadScene("BlueTeamWinsScene");
                 }
-                else if (FindObjectOfType<DummyController>().characterData.GameScore >= 5)
+                else if(GameManager.instance.score.scoreRedTeam >= 5)
                 {
                     serverThread.Join();
-                    SceneManager.LoadScene("LooseScene");
+                    SceneManager.LoadScene("RedTeamWinsScene");
                 }
-                else
-                {
-                    serverThread.Join();
-                    SceneManager.LoadScene("MainMenuScene");
-                }
-
                 break;
         }
 

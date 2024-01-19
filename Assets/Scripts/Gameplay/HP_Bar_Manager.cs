@@ -91,5 +91,11 @@ public class HP_Bar_Manager : MonoBehaviour
         slowChangeBar.SetWidth(TargetWidth);
     }
 
-    
+    public void SetWidth_v2(float width)
+    {
+        float newTargetWidth = width * _fullWidth / MaxValue;
+
+        _topBar.sizeDelta = new Vector2(newTargetWidth, _topBar.rect.height);
+    }
+
 }

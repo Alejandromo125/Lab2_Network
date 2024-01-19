@@ -19,14 +19,21 @@ public class GameManager : MonoBehaviour
     private ServerUDP_Script server;
     public List<DummyController> dummies;
 
-    public GameObject playerPrefab;
-    public GameObject dummyPrefab;
+    public GameObject playerPrefabBlue;
+    public GameObject playerPrefabRed;
+
+    public GameObject dummyPrefabBlue;
+    public GameObject dummyPrefabRed;
+
 
     public Vector3 startingBluePos;
     public Vector3 startingRedPos;
     public static GameManager instance { get; private set; }
 
     public GameScore score;
+    private List<GameObject> blueTeamList = new List<GameObject>();
+    private List<GameObject> redTeamList = new List<GameObject>();
+
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
 
@@ -53,26 +60,17 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         VictoryHandler();
-        UpdateScore();
     }
-    public void UpdateScore()
-    {
-        score.scoreBlueTeam = FindObjectOfType<PlayerController>().characterData.GameScore;
-        score.scoreRedTeam = 0;//FindObjectOfType<DummyController>().characterData.GameScore;
-        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
-        scoreRedTeam.text = score.scoreRedTeam.ToString();
 
-
-    }
     private void VictoryHandler()
     {
         if(score.scoreRedTeam >= 5)
         {
-            Invoke("TriggerWinRed",2);
+            Invoke("TriggerWinRed",0.5f);
         }
         else if(score.scoreBlueTeam >= 5)
         {
-            Invoke("TriggerWinBlue", 2);
+            Invoke("TriggerWinBlue", 0.5f);
         }
 
     }
@@ -125,13 +123,11 @@ public class GameManager : MonoBehaviour
         GameObject player = null;
         if (playerTeam == Team.BLUE_TEAM)
         {
-            player = Instantiate(playerPrefab, startingBluePos, Quaternion.identity, null);
-            player.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+            player = Instantiate(playerPrefabBlue, startingBluePos, Quaternion.identity, null);
         }
         else if (playerTeam == Team.RED_TEAM)
         {
-            player = Instantiate(playerPrefab, startingRedPos, Quaternion.identity, null);
-            player.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+            player = Instantiate(playerPrefabRed, startingRedPos, Quaternion.identity, null);
 
         }
         player.GetComponent<PlayerController>().username = playerName;
@@ -146,14 +142,12 @@ public class GameManager : MonoBehaviour
         {
             if (dummyTeams.ElementAt(i) == Team.BLUE_TEAM)
             {
-                dummy = Instantiate(dummyPrefab, startingBluePos, Quaternion.identity, null);
-                dummy.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+                dummy = Instantiate(dummyPrefabBlue, startingBluePos, Quaternion.identity, null);
 
             }
             else if (dummyTeams.ElementAt(i) == Team.RED_TEAM)
             {
-                dummy = Instantiate(dummyPrefab, startingRedPos, Quaternion.identity, null);
-                dummy.GetComponentInChildren<SkinnedMeshRenderer>().material = blueMaterial;
+                dummy = Instantiate(dummyPrefabRed, startingRedPos, Quaternion.identity, null);
 
             }
             dummy.GetComponent<DummyController>().username = dummyNames.ElementAt(i);
@@ -161,5 +155,35 @@ public class GameManager : MonoBehaviour
             dummies.Add(dummy.GetComponent<DummyController>());
         }
         
+    }
+    public void SetScores(int blueTeam, int redTeam)
+    {
+        score.scoreBlueTeam = blueTeam;
+        score.scoreRedTeam = redTeam;
+        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
+        scoreRedTeam.text = score.scoreRedTeam.ToString();
+    }
+    public void AddScore(Team teamPlayerDead)
+    {
+        switch(teamPlayerDead)
+        {
+            case Team.NONE:
+                break;
+            case Team.RED_TEAM:
+                score.scoreBlueTeam++;
+                break;
+            case Team.BLUE_TEAM:
+                score.scoreRedTeam++;
+                break;
+        }
+        Message message = new Message(score.scoreBlueTeam.ToString() + "/" + score.scoreRedTeam.ToString(), null, TypesOfMessage.DUMMY_SHOOT);
+        if (server)
+        {
+            server.HandleSendingMessages(message);
+        }
+        if (client)
+        {
+            client.SendStartMessage(message);
+        }
     }
 }
