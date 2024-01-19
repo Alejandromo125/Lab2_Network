@@ -142,17 +142,6 @@ public class ServerUDP_Script : MonoBehaviour
                     }
                     break;
 
-                    break;
-                case TypesOfMessage.WAITING_ROOM:
-                    if (UiManager.instance != null)
-                    {
-                        if (ReturnCorrectDummyName(message.message) != "Server")
-                        {
-                            UiManager.instance.UpdateText(message.message);
-                        }
-                    }
-                    break;
-
             }
         }
         catch (Exception e)
@@ -186,9 +175,9 @@ public class ServerUDP_Script : MonoBehaviour
             case TypesOfMessage.WAITING_ROOM:
                 if (UiManager.instance != null)
                 {
+                
                     UiManager.instance.UpdateText(message.message);
-                    Debug.Log("SEND MESSAGE");
-
+                    
                 }
                 break;
             case TypesOfMessage.DUMMY_SHOOT:
