@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public float deceleration = 5f; // Deceleration rate.
     public float acceleration = 5f; // Deceleration rate.
     public LineRenderer raycastLine;
-    public float shootDelay = 0.3f; // Delay between shots.
+    public float shootDelay = 0.5f; // Delay between shots.
     private GameObject bulletPrefab; 
     public GameObject explosionPrefab; // Prefab for the explosion particle system.
     public GameObject explosionSparksPrefab;
@@ -182,13 +182,13 @@ public class PlayerController : MonoBehaviour
  
     void HandleActions()
     {
-        if (Input.GetMouseButtonDown(0) && Time.time - lastShootTime > shootDelay)
+        if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
             lastShootTime = Time.time;
             actions.shoot = true;
         }
-        else if(Time.time - lastShootTime < shootDelay && Input.GetMouseButtonUp(0))
+        else if(Time.time - lastShootTime < shootDelay)
         {
             actions.shoot = false;
         }
