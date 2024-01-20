@@ -18,6 +18,9 @@ public class BulletScript : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("BlueTeamBullet") || collision.gameObject.CompareTag("RedTeamBullet"))
+            return;
+
         Destroy(gameObject); 
     }
 }
