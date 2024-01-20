@@ -6,7 +6,7 @@ using UnityEngine;
 public class CD_PlayersUI : MonoBehaviour
 {
 
-    float shieldBarWidth_CD = 0;
+    float setBarWidth = 0;
 
 
     [field: SerializeField]
@@ -21,42 +21,44 @@ public class CD_PlayersUI : MonoBehaviour
     [field: SerializeField]
     private RectTransform shieldBarComplete_CD;
 
-    private float _fullWidth;
+    private float _fullWidth_15;
     
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _fullWidth_15 = shieldBar_CD.rect.width; //it has to be harcoded aparently so all CD bars will have to be 15 or you make another function
     }
 
     // Update is called once per frame
     void Update()
     {
-        shieldBarWidth_CD = Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime;
+        setBarWidth = Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime;
 
-        if(shieldBarWidth_CD > 15)
+        if(setBarWidth > 15)
         {
-            shieldBarWidth_CD = 15;
+            setBarWidth = 15;
         }
 
-        SetWidth_v2(shieldBarWidth_CD, shieldBar_CD);
+        SetWidth_fw15(setBarWidth, shieldBar_CD);
+
+        Debug.Log("Shield bar width:" + setBarWidth);
 
         if (Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime > gameObject.GetComponent<PlayerController>().shieldDelay)
         {
-            SetWidth_v2(shieldBarWidth_CD, shieldBarComplete_CD);
+            SetWidth_fw15(15, shieldBarComplete_CD);
         }
         else
         {
-            SetWidth_v2(0, shieldBarComplete_CD);
+            SetWidth_fw15(0, shieldBarComplete_CD);
         }
     }
 
-    public void SetWidth_v2(float width, RectTransform targetBar)
+    public void SetWidth_fw15(float width, RectTransform targetBar)
     {
-        _fullWidth = targetBar.rect.width;
+        //float fullWidth = targetBar.rect.width;
 
-        float newTargetWidth = width * _fullWidth / MaxValue;
+        float newTargetWidth = width * _fullWidth_15 / MaxValue;
 
         targetBar.sizeDelta = new Vector2(newTargetWidth, targetBar.rect.height);
     }
