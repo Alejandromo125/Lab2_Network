@@ -40,9 +40,14 @@ public class GameManager : MonoBehaviour
 
     public GameObject EndBannerCanvasRedTeamObject;
     public GameObject EndBannerCanvasBlueTeamObject;
+    public GameObject MainCanvasObject;
 
     public Material redMaterial;
     public Material blueMaterial;
+
+    AudioSource audioSource;
+    public AudioClip endMatchSound;
+
     private void Awake()
     {
         score.scoreRedTeam = 0;
@@ -57,6 +62,9 @@ public class GameManager : MonoBehaviour
     {
         client = FindObjectOfType<ClientUDP_Script>();
         server = FindObjectOfType<ServerUDP_Script>();
+        audioSource = GetComponent<AudioSource>();
+
+        MainCanvasObject.SetActive(true);
     }
 
     private void Update()
@@ -79,15 +87,19 @@ public class GameManager : MonoBehaviour
         
         if(score.scoreRedTeam >= 5)
         {
+            audioSource.PlayOneShot(endMatchSound);
+            MainCanvasObject.SetActive(false);
             EndBannerCanvasRedTeamObject.SetActive(true);
 
-            Invoke("TriggerWinRed", 1.5f);
+            Invoke("TriggerWinRed", 2.0f);
         }
         else if(score.scoreBlueTeam >= 5)
         {
+            audioSource.PlayOneShot(endMatchSound);
+            MainCanvasObject.SetActive(false);
             EndBannerCanvasBlueTeamObject.SetActive(true);
 
-            Invoke("TriggerWinBlue", 1.5f);
+            Invoke("TriggerWinBlue", 2.0f);
         }
 
     }
