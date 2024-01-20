@@ -38,7 +38,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreBlueTeam;
     public TextMeshProUGUI scoreRedTeam;
 
-
+    public GameObject EndBannerCanvasRedTeamObject;
+    public GameObject EndBannerCanvasBlueTeamObject;
 
     public Material redMaterial;
     public Material blueMaterial;
@@ -65,14 +66,18 @@ public class GameManager : MonoBehaviour
 
     private void VictoryHandler()
     {
-        //TODO MILE:  WIN BANNER DEPENDING ON THE TEAM WHO WON
+        
         if(score.scoreRedTeam >= 5)
         {
-            Invoke("TriggerWinRed",0.5f);
+            EndBannerCanvasRedTeamObject.SetActive(true);
+
+            Invoke("TriggerWinRed", 1.5f);
         }
         else if(score.scoreBlueTeam >= 5)
         {
-            Invoke("TriggerWinBlue", 0.5f);
+            EndBannerCanvasBlueTeamObject.SetActive(true);
+
+            Invoke("TriggerWinBlue", 1.5f);
         }
 
     }
