@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -55,13 +56,12 @@ public class PlayerController : MonoBehaviour
     public float dashDistance = 4f;
     public float dashDuration = 0.15f;
     private bool isDashing = false;
-    private bool rotate = false;
-    public GameObject blueTeamBullet, redTeamBullet;
+    private bool recievedDamage = false;
+    public GameObject blueTeamBullet, redTeamBullet, shockBullet;
     private Quaternion LastRotation;
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
-    private float timerUpdate;
     #endregion
     private void Awake()
     {
@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
         HandleMovement();
         HandleActions();
         UpdateCharacterData();
@@ -181,7 +182,7 @@ public class PlayerController : MonoBehaviour
  
     void HandleActions()
     {
-        if (Input.GetMouseButton(0) && Time.time - lastShootTime > shootDelay)
+        if (Input.GetMouseButtonDown(0) && Time.time - lastShootTime > shootDelay)
         {
             Shoot();
             lastShootTime = Time.time;
@@ -191,8 +192,7 @@ public class PlayerController : MonoBehaviour
         {
             actions.shoot = false;
         }
-
-        if(Input.GetKeyDown(KeyCode.Q) && Time.time - lastShieldTime > shieldDelay)
+        if (Input.GetKeyDown(KeyCode.Q) && Time.time - lastShieldTime > shieldDelay)
         {
             lastShieldTime = Time.time;
             actions.shield = true;
@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
             actions.shield = false;
         }
     }
- 
+
     void Shoot()
     {
         audioSource.PlayOneShot(shootSound);
@@ -349,9 +349,10 @@ public class PlayerController : MonoBehaviour
     private void HandleCharacterUpdates()
     {
 
-        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield)
+        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage)
         {
             UpdateInfo();
+            recievedDamage = false;
         }
     }
     void UpdateInfo()
@@ -383,18 +384,20 @@ public class PlayerController : MonoBehaviour
                     if (collision.gameObject.CompareTag("RedTeamBullet"))
                     {
                         bulletHitManager_.entityLife -= 10;
+                        recievedDamage = true;
                     }
                     break;
                 case Team.RED_TEAM:
                     if (collision.gameObject.CompareTag("BlueTeamBullet"))
                     {
                         bulletHitManager_.entityLife -= 10;
+                        recievedDamage = true;
                     }
                     break;
             }
+            
         }
     }
-
     IEnumerator Dash()
     {
         isDashing = true;

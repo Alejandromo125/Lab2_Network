@@ -202,6 +202,11 @@ public class ServerUDP_Script : MonoBehaviour
                     SceneManager.LoadScene("RedTeamWinsScene");
                 }
                 break;
+            case TypesOfMessage.UPDATE_SCORE:
+                string[] splittedMessage_score = message.message.Split('/');
+
+                GameManager.instance.SetScore(int.Parse(splittedMessage_score[0]), int.Parse(splittedMessage_score[1]));
+                break;
         }
 
 

@@ -35,6 +35,19 @@ public class UiManager : MonoBehaviour
         }
         instance = this;
     }
+    private void Start()
+    {
+        ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();
+        ClientUDP_Script client = FindObjectOfType<ClientUDP_Script>();
+        if (server)
+        {
+            inputFieldPlayerName.text = "Host";
+        }
+        else if (client)
+        {
+            inputFieldPlayerName.text = client.userName;
+        }
+    }
     private void Update()
     {
         ServerUDP_Script server = FindObjectOfType<ServerUDP_Script>();

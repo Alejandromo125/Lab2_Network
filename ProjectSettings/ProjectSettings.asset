@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: NetworksFourthGameDelivery
-  defaultCursor: {fileID: 2800000, guid: 0e7a419cc25064e458c361ab7c246b87, type: 3}
+  defaultCursor: {fileID: 2800000, guid: 35d696efd7b3e4f4e9a7229c94736b55, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
@@ -273,7 +273,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: ba0644e74ccfbf44ab9efd3947aff217, type: 3}
+      m_Icon: {fileID: 2800000, guid: 1fed8a23ccb549c45879a3732c3eccf5, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

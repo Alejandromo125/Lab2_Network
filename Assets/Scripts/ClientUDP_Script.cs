@@ -206,6 +206,11 @@ public class ClientUDP_Script : MonoBehaviour
                         SceneManager.LoadSceneAsync("MainMenuScene");
                     }
                     break;
+                case TypesOfMessage.UPDATE_SCORE:
+                    string[] splittedMessage_score_update_score = message.message.Split('/');
+
+                    GameManager.instance.SetScore(int.Parse(splittedMessage_score_update_score[0]), int.Parse(splittedMessage_score_update_score[1]));
+                    break;
             }
         }
         catch (Exception e)

@@ -62,6 +62,16 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         VictoryHandler();
+        SendCurrentScore();
+    }
+
+    private void SendCurrentScore()
+    {
+        if(server)
+        {
+            Message message = new Message(score.scoreRedTeam + "/" +score.scoreBlueTeam, null, TypesOfMessage.UPDATE_SCORE);
+            UpdateData(message);
+        }
     }
 
     private void VictoryHandler()
