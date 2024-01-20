@@ -38,10 +38,10 @@ public class PlayerController : MonoBehaviour
     public Camera mainCamera;
     private Vector3 velocity = Vector3.zero;
     private float lastShootTime;
-    private float lastShieldTime;
+    public float lastShieldTime;
     public float shieldDelay = 15f;
     public float shieldTimer = 5f;
-
+    
     private TypesOfActions actions;
 
     private CinemachineVirtualCamera cam;
@@ -192,6 +192,7 @@ public class PlayerController : MonoBehaviour
         {
             actions.shoot = false;
         }
+
         if (Input.GetKeyDown(KeyCode.Q) && Time.time - lastShieldTime > shieldDelay)
         {
             lastShieldTime = Time.time;
