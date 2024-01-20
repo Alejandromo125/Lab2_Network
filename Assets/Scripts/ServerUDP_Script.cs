@@ -125,7 +125,6 @@ public class ServerUDP_Script : MonoBehaviour
                     teams.Add((Team)int.Parse(splittedMessage[1]));
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    GameManager.instance.AddScore((Team)int.Parse(message.message));
                     break;
                 case TypesOfMessage.FINISH_GAME:
 
@@ -180,7 +179,8 @@ public class ServerUDP_Script : MonoBehaviour
                 }
                 break;
             case TypesOfMessage.DUMMY_SHOOT:
-               
+                GameManager.instance.AddScore((Team)int.Parse(message.message));
+                message.message = GameManager.instance.score.scoreRedTeam + "/" + GameManager.instance.score.scoreBlueTeam;
                 break;
             case TypesOfMessage.GAMEPLAY_ROOM:
                 message.message = "Server:" + message.message;

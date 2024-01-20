@@ -55,8 +55,9 @@ public class PlayerController : MonoBehaviour
     public float dashDistance = 4f;
     public float dashDuration = 0.15f;
     private bool isDashing = false;
-
+    private bool rotate = false;
     public GameObject blueTeamBullet, redTeamBullet;
+    private Quaternion LastRotation;
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -116,8 +117,12 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
         actions.run = Input.GetKey(KeyCode.LeftShift) == true ? true : false;
 
-        if (movement != Vector3.zero) { actions.walk = true; }
-        if (movement == Vector3.zero) { actions.walk = false; }
+        if (movement != Vector3.zero) {
+            actions.walk = true; 
+        }
+        if (movement == Vector3.zero) {
+            actions.walk = false; 
+        }
         // Apply acceleration and deceleration for smoother movement, limited to maxSpeed.
         if (velocity.magnitude < maxSpeed)
         {
@@ -162,10 +167,13 @@ public class PlayerController : MonoBehaviour
             lookDir.y = 0;
 
             transform.LookAt(transform.position + lookDir, Vector3.up); // Y-axis rotation only.
+            UpdateInfo();
+        }
+        else
+        {
         }
 
-       
-        if(Input.GetKeyDown(KeyCode.Space) && !isDashing)
+        if (Input.GetKeyDown(KeyCode.Space) && !isDashing)
         {
             StartCoroutine(Dash());
         }
@@ -340,13 +348,10 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleCharacterUpdates()
     {
-        timerUpdate += Time.deltaTime;
 
-        if(timerUpdate > timeForUpdate)
+        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield)
         {
-            UpdateCharacterData();
             UpdateInfo();
-            timerUpdate= 0;
         }
     }
     void UpdateInfo()

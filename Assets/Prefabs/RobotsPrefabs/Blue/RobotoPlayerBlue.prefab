@@ -1913,13 +1913,14 @@ MonoBehaviour:
   shootRange: 7
   mainCamera: {fileID: 0}
   shieldDelay: 15
+  shieldTimer: 5
   aimTarget: {fileID: 6673660136222577183}
   shootSound: {fileID: 8300000, guid: 2136c2dd069541643be71e3620c65f74, type: 3}
   dashDistance: 4
   dashDuration: 0.15
   blueTeamBullet: {fileID: 7889977044535604048, guid: 63d88f2b312dece4fa4e322e48361181, type: 3}
   redTeamBullet: {fileID: 7223755139972434612, guid: a83750f3d0fecfe4fa74e9129529acc3, type: 3}
-  timeForUpdate: 0.016
+  timeForUpdate: 0.032
 --- !u!114 &7813864888399943506
 MonoBehaviour:
   m_ObjectHideFlags: 0

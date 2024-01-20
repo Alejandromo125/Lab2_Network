@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 [Serializable]
 public struct GameScore
@@ -156,6 +157,13 @@ public class GameManager : MonoBehaviour
             dummies.Add(dummy.GetComponent<DummyController>());
         }
         
+    }
+    public void SetScore(int scoreRed,int scoreBlue)
+    {
+        score.scoreBlueTeam = scoreBlue;
+        score.scoreRedTeam = scoreRed;
+        scoreBlueTeam.text = score.scoreBlueTeam.ToString();
+        scoreRedTeam.text = score.scoreRedTeam.ToString();
     }
     public void AddScore(Team teamPlayerDead)
     {

@@ -84,7 +84,7 @@ public class DummyController : MonoBehaviour
         characterData.HealthPoints = data.HealthPoints;
         characterData.GameScore = data.GameScore;
 
-        FindObjectOfType<HP_Bar_Manager>().SetWidth_v2(characterData.HealthPoints);
+        gameObject.GetComponent<HP_Bar_Manager>().SetWidth_v2(characterData.HealthPoints);
         UpdateActualData();
     }
 

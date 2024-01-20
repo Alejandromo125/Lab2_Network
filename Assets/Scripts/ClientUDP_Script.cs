@@ -177,7 +177,9 @@ public class ClientUDP_Script : MonoBehaviour
                     SendCheckConnection();
                     break;
                 case TypesOfMessage.DUMMY_SHOOT:
-                    GameManager.instance.AddScore((Team)int.Parse(message.message));
+                    string[] splittedMessage_score = message.message.Split('/');
+
+                    GameManager.instance.SetScore(int.Parse(splittedMessage_score[0]), int.Parse(splittedMessage_score[1]));
                     break;
                 case TypesOfMessage.GENERATE_PLAYERS:
                     string[] splittedMessage = message.message.Split('/');
