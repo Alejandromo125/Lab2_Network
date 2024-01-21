@@ -3093,8 +3093,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shieldBar_CD: {fileID: 8097035334538987252}
   shieldBarComplete_CD: {fileID: 5659652123677363878}
-  shotgunBar_CD: {fileID: 0}
-  shotgunBarComplete_CD: {fileID: 0}
+  shotgunBar_CD: {fileID: 7134831886003469251}
+  shotgunBarComplete_CD: {fileID: 3389229856470162005}
 --- !u!1 &7650931110062821352
 GameObject:
   m_ObjectHideFlags: 0
