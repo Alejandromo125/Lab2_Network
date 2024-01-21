@@ -200,7 +200,6 @@ public class PlayerController : MonoBehaviour
             actions.shoot = false;
         }
 
-        //TODO IN BRANCH: Instantiate 1 by 1 the  bullets with a delay
         if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
         {
             
@@ -350,12 +349,6 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleCharacterUpdates()
     {
-        //TODO IN BRANCH: If we wanna do health pool we need the follwing thigns:
-        /* a boolean similar to recieve damage that says heals
-         * detecting collisions with the healing tag
-         * OnCollisionStay() => heal the player x amount
-         * reset the boolean once you have sent the info similar to line 316
-         */
         if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage || actions.heal)
         {
             UpdateInfo();
@@ -386,8 +379,6 @@ public class PlayerController : MonoBehaviour
         {
             if (trigger.gameObject.CompareTag("HealPad"))
             {
-                Debug.Log("Healing...");
-                //Se podria hacer cambiar de sitio la cura la siguiente vez
                 bulletHitManager_.entityLife += 1;
 
                 if (bulletHitManager_.entityLife >= 100)
@@ -429,11 +420,6 @@ public class PlayerController : MonoBehaviour
             }
             
         }
-
-        
-
-        
-
     }
     IEnumerator Dash()
     {
