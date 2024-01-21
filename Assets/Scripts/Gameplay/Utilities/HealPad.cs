@@ -14,11 +14,11 @@ public class HealPad : MonoBehaviour
 
     void Start()
     {
-       timer = 50f;
-       timer_2 = 40f;
-       timer_3 = 30f;
-       timer_4 = 20f;
-       timer_5 = 10f;
+       timer = 100f;
+       timer_2 = 80f;
+       timer_3 = 60f;
+       timer_4 = 40f;
+       timer_5 = 20f;
     }
 
     // Update is called once per frame
