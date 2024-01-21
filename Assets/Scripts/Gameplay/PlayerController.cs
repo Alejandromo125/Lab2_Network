@@ -196,16 +196,16 @@ public class PlayerController : MonoBehaviour
         }
 
         //TODO IN BRANCH: Instantiate 1 by 1 the  bullets with a delay
-        //if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
-        //{
-        //    FiveShoots(-30);
-        //    lastShootTimeShotgun = Time.time;
-        //    actions.shotgun = true;
-        //}
-        //else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
-        //{
-        //    actions.shotgun = false;
-        //}
+        if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
+        {
+            FiveShoots(-30);
+            lastShootTimeShotgun = Time.time;
+            actions.shotgun = true;
+        }
+        else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
+        {
+            actions.shotgun = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.E) && Time.time - lastShieldTime > shieldDelay)
         {
@@ -226,19 +226,17 @@ public class PlayerController : MonoBehaviour
 
     public void FiveShoots(int degree)
     {
-        //Quaternion rotation = Quaternion.Euler(0, degree, 0);
-        //GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
-        //for(int i = 0; i <= 300;i++)
-        //{
-        //    Console.WriteLine("Delay");
-        //    if(i == 300)
-        //    {
-        //        if (degree <= 30)
-        //            FiveShoots(degree + 15);
-        //    }
-        //}
-
-       
+        Quaternion rotation = Quaternion.Euler(0, degree, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+        for (int i = 0; i <= 300; i++)
+        {
+            Console.WriteLine("Delay");
+            if (i == 300)
+            {
+                if (degree <= 30)
+                    FiveShoots(degree + 15);
+            }
+        }
     }
 
     #region NetworkUpdates
