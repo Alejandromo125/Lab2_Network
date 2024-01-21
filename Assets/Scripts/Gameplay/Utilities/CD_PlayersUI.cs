@@ -86,15 +86,15 @@ public class CD_PlayersUI : MonoBehaviour
             setShotgunBarWidth = 5;
         }
 
-        SetWidth_fw15(setShotgunBarWidth, shotgunBar_CD);
+        SetWidth_fw5(setShotgunBarWidth, shotgunBar_CD);
 
-        if (Time.time - gameObject.GetComponent<PlayerController>().lastShootTimeShotgun > gameObject.GetComponent<PlayerController>().lastShootTimeShotgun)
+        if (Time.time - gameObject.GetComponent<PlayerController>().lastShootTimeShotgun > gameObject.GetComponent<PlayerController>().shootDelayshotgun)
         {
-            SetWidth_fw15(5, shotgunBarComplete_CD);
+            SetWidth_fw5(5, shotgunBarComplete_CD);
         }
         else
         {
-            SetWidth_fw15(0, shotgunBarComplete_CD);
+            SetWidth_fw5(0, shotgunBarComplete_CD);
         }
     }
 }
