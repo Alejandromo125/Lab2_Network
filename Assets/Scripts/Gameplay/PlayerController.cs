@@ -62,8 +62,8 @@ public class PlayerController : MonoBehaviour
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
-    private float lastShootTimeShotgun;
-    private float shootDelayshotgun = 5f;
+    public float lastShootTimeShotgun;
+    public float shootDelayshotgun = 5f;
     #endregion
     private void Awake()
     {
