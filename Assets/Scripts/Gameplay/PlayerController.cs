@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
     private bool recievedDamage = false;
     public GameObject blueTeamBullet, redTeamBullet, shockBullet;
     private Quaternion LastRotation;
+    private float timerShoots = 0f;
+
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -198,7 +200,8 @@ public class PlayerController : MonoBehaviour
         //TODO IN BRANCH: Instantiate 1 by 1 the  bullets with a delay
         if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
         {
-            FiveShoots(-30);
+            
+            Shotgun();
             lastShootTimeShotgun = Time.time;
             actions.shotgun = true;
         }
@@ -224,19 +227,61 @@ public class PlayerController : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
     }
 
-    public void FiveShoots(int degree)
+    public void FiveShoots_1()
     {
-        Quaternion rotation = Quaternion.Euler(0, degree, 0);
+        //Quaternion rotation = Quaternion.Euler(0, degree, 0);
+        //GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+        //for (int i = 0; i <= 300; i++)
+        //{
+        //    if (i == 300)
+        //    {
+        //        if (degree <= 30)
+        //        {
+        //            if (timerShoots >= 0.2f)
+        //            {
+        //                timerShoots = 0f;
+        //                FiveShoots(degree + 15);
+        //            }   
+        //        }
+
+        //    }
+        //}
+
+        Quaternion rotation = Quaternion.Euler(0, -30, 0);
         GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
-        for (int i = 0; i <= 300; i++)
-        {
-            Console.WriteLine("Delay");
-            if (i == 300)
-            {
-                if (degree <= 30)
-                    FiveShoots(degree + 15);
-            }
-        }
+    }
+
+    public void FiveShoots_2()
+    {
+        Quaternion rotation = Quaternion.Euler(0, -15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_3()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_4()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_5()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 30, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void Shotgun()
+    {
+        Invoke("FiveShoots_1", 0.0f);
+        Invoke("FiveShoots_2", 0.1f);
+        Invoke("FiveShoots_3", 0.2f);
+        Invoke("FiveShoots_4", 0.3f);
+        Invoke("FiveShoots_5", 0.4f);
     }
 
     #region NetworkUpdates
