@@ -41,7 +41,9 @@ public class PlayerController : MonoBehaviour
     public float lastShieldTime;
     public float shieldDelay = 15f;
     public float shieldTimer = 5f;
-    
+    private float healDelay = 1f;
+    private float lastHealTime = 0f;
+
     private TypesOfActions actions;
 
     private CinemachineVirtualCamera cam;
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
+        
     }
 
     void Update()
@@ -379,7 +382,13 @@ public class PlayerController : MonoBehaviour
         {
             if (trigger.gameObject.CompareTag("HealPad"))
             {
-                bulletHitManager_.entityLife += 1;
+                if (Time.time - lastHealTime > healDelay)
+                {
+                    lastHealTime = Time.time;
+
+                    bulletHitManager_.entityLife += 5;
+                }
+                    
 
                 if (bulletHitManager_.entityLife >= 100)
                 {
