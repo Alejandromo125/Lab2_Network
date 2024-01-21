@@ -6,20 +6,20 @@ using UnityEngine;
 public class CD_PlayersUI : MonoBehaviour
 {
 
-    float setBarWidth = 0;
-
-
-    [field: SerializeField]
-    public int MaxValue { get; private set; }
-
-    [field: SerializeField]
-    public int Value { get; private set; }
+    float setShieldBarWidth = 0;
+    float setShotgunBarWidth = 0;
 
     [field: SerializeField]
     private RectTransform shieldBar_CD;
 
     [field: SerializeField]
     private RectTransform shieldBarComplete_CD;
+
+    [field: SerializeField]
+    private RectTransform shotgunBar_CD;
+
+    [field: SerializeField]
+    private RectTransform shotgunBarComplete_CD;
 
     private float _fullWidth_15;
     
@@ -33,16 +33,39 @@ public class CD_PlayersUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        setBarWidth = Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime;
+        UpdateShieldBarCD();
+        UpdateShotgutnBarCD();
 
-        if(setBarWidth > 15)
+    }
+
+    public void SetWidth_fw15(float width, RectTransform targetBar)
+    {
+        //float fullWidth = targetBar.rect.width;
+
+        float newTargetWidth = width * _fullWidth_15 / 15;
+
+        targetBar.sizeDelta = new Vector2(newTargetWidth, targetBar.rect.height);
+    }
+
+    public void SetWidth_fw5(float width, RectTransform targetBar)
+    {
+        //float fullWidth = targetBar.rect.width;
+
+        float newTargetWidth = width * _fullWidth_15 / 5;
+
+        targetBar.sizeDelta = new Vector2(newTargetWidth, targetBar.rect.height);
+    }
+
+    void UpdateShieldBarCD()
+    {
+        setShieldBarWidth = Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime;
+
+        if (setShieldBarWidth > 15)
         {
-            setBarWidth = 15;
+            setShieldBarWidth = 15;
         }
 
-        SetWidth_fw15(setBarWidth, shieldBar_CD);
-
-        Debug.Log("Shield bar width:" + setBarWidth);
+        SetWidth_fw15(setShieldBarWidth, shieldBar_CD);
 
         if (Time.time - gameObject.GetComponent<PlayerController>().lastShieldTime > gameObject.GetComponent<PlayerController>().shieldDelay)
         {
@@ -54,12 +77,24 @@ public class CD_PlayersUI : MonoBehaviour
         }
     }
 
-    public void SetWidth_fw15(float width, RectTransform targetBar)
+    void UpdateShotgutnBarCD()
     {
-        //float fullWidth = targetBar.rect.width;
+        setShotgunBarWidth = Time.time - gameObject.GetComponent<PlayerController>().lastShootTimeShotgun;
 
-        float newTargetWidth = width * _fullWidth_15 / MaxValue;
+        if (setShotgunBarWidth > 5)
+        {
+            setShotgunBarWidth = 5;
+        }
 
-        targetBar.sizeDelta = new Vector2(newTargetWidth, targetBar.rect.height);
+        SetWidth_fw15(setShotgunBarWidth, shotgunBar_CD);
+
+        if (Time.time - gameObject.GetComponent<PlayerController>().lastShootTimeShotgun > gameObject.GetComponent<PlayerController>().lastShootTimeShotgun)
+        {
+            SetWidth_fw15(5, shotgunBarComplete_CD);
+        }
+        else
+        {
+            SetWidth_fw15(0, shotgunBarComplete_CD);
+        }
     }
 }

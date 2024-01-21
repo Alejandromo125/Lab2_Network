@@ -4621,10 +4621,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee28732512c87444a87cfc7a7f178137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MaxValue>k__BackingField: 15
-  <Value>k__BackingField: 15
   shieldBar_CD: {fileID: 387259687}
   shieldBarComplete_CD: {fileID: 1902484776}
+  shotgunBar_CD: {fileID: 0}
+  shotgunBarComplete_CD: {fileID: 0}
 --- !u!1 &580458932
 GameObject:
   m_ObjectHideFlags: 0
