@@ -23,6 +23,7 @@ public class DummyController : MonoBehaviour
     public AudioClip shootClip;
     AudioSource audioSource;
     private bool alreadyShot = false;
+    private bool alreadyShotgun = false;
 
     public GameObject blueTeamBullet, redTeamBullet;
     private void Awake()
@@ -68,6 +69,30 @@ public class DummyController : MonoBehaviour
             alreadyShot = false;
 
         }
+
+        if (characterData.actions.shotgun == true && alreadyShotgun == false)
+        {
+            //raycastLine.enabled = true;
+            audioSource.PlayOneShot(shootClip);
+            Quaternion rotation2 = Quaternion.Euler(0, -10, 0);
+            Quaternion rotation3 = Quaternion.Euler(0, -25, 0);
+            Quaternion rotation4 = Quaternion.Euler(0, 10, 0);
+            Quaternion rotation5 = Quaternion.Euler(0, 25, 0);
+
+            // Spawn the explosion particle at the gun's position.
+            GameObject bullet1 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
+            GameObject bullet2 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation2);
+            GameObject bullet3 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation3);
+            GameObject bullet4 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation4);
+            GameObject bullet5 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation5); 
+            alreadyShotgun = true;
+        }
+
+        if (characterData.actions.shotgun == false)
+        {
+            alreadyShotgun = false;
+
+        }
     }
 
     public void UpdateDummy(CharacterData data)
@@ -80,6 +105,7 @@ public class DummyController : MonoBehaviour
         characterData.actions.walk = data.actions.walk;
         characterData.actions.dash = data.actions.dash;
         characterData.actions.shield = data.actions.shield;
+        characterData.actions.shotgun = data.actions.shotgun;
 
         characterData.HealthPoints = data.HealthPoints;
         characterData.GameScore = data.GameScore;

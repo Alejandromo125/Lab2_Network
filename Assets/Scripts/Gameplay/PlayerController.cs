@@ -199,11 +199,11 @@ public class PlayerController : MonoBehaviour
         {
             FiveShoots();
             lastShootTimeShotgun = Time.time;
-            actions.shoot = true;
+            actions.shotgun = true;
         }
         else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
         {
-            actions.shoot = false;
+            actions.shotgun = false;
         }
 
         if (Input.GetKeyDown(KeyCode.E) && Time.time - lastShieldTime > shieldDelay)

@@ -7,6 +7,7 @@ using UnityEngine;
 public struct TypesOfActions
 {
     public bool shoot;
+    public bool shotgun;
     public bool walk;
     public bool run;
     public bool dash;
