@@ -12,4 +12,5 @@ public struct TypesOfActions
     public bool run;
     public bool dash;
     public bool shield;
+    public bool heal;
 }

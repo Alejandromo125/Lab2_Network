@@ -8,7 +8,6 @@ TagManager:
   - RedTeamBullet
   - ShockBullet
   - HealPad
-  - HealingZone
   layers:
   - Default
   - TransparentFX

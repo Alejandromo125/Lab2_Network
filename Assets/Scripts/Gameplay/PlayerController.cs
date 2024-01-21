@@ -81,6 +81,8 @@ public class PlayerController : MonoBehaviour
     {
         raycastLine.enabled = false;
 
+        actions.heal = false;
+
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
         bulletHitDummyManager_ = FindObjectOfType<BulletHitDummyManager>();
 
@@ -354,11 +356,11 @@ public class PlayerController : MonoBehaviour
          * OnCollisionStay() => heal the player x amount
          * reset the boolean once you have sent the info similar to line 316
          */
-        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage || justHealed)
+        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage || actions.heal)
         {
             UpdateInfo();
             recievedDamage = false;
-            justHealed = false;
+            actions.heal = false;
         }
     }
     void UpdateInfo()
@@ -378,9 +380,33 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    void OnTriggerStay(Collider trigger)
+    {
+        if (!actions.heal)
+        {
+            if (trigger.gameObject.CompareTag("HealPad"))
+            {
+                Debug.Log("Healing...");
+                //Se podria hacer cambiar de sitio la cura la siguiente vez
+                bulletHitManager_.entityLife += 1;
+
+                if (bulletHitManager_.entityLife >= 100)
+                {
+                    bulletHitManager_.entityLife = 100;
+                }
+
+                actions.heal = true;
+
+            }
+        }
+        
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if(!actions.shield)
+        //Debug.Log("Current collision: " + collision.gameObject);
+
+        if (!actions.shield)
         {
             switch (characterData.team)
             {
@@ -404,17 +430,9 @@ public class PlayerController : MonoBehaviour
             
         }
 
-        if (!justHealed)
-        {
-            if (collision.gameObject.CompareTag("HealingZone"))
-            {
-                Debug.Log("Healed");
-                //Se podria hacer cambiar de sitio la cura la siguiente vez
-                characterData.HealthPoints += 20;
-                justHealed = true;
+        
 
-            }
-        }
+        
 
     }
     IEnumerator Dash()
