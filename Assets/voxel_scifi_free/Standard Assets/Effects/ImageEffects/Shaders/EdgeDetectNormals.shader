@@ -107,7 +107,6 @@ Shader "Hidden/EdgeDetect" {
 		#endif
 				
 		// calc coord for the X pattern
-		// maybe nicer TODO for the future: 'rotated triangles'
 		
 		o.uv[1] = UnityStereoScreenSpaceUVAdjust(uv + _MainTex_TexelSize.xy * half2(1,1) * _SampleDistance, _MainTex_ST);
 		o.uv[2] = UnityStereoScreenSpaceUVAdjust(uv + _MainTex_TexelSize.xy * half2(-1,-1) * _SampleDistance, _MainTex_ST);
