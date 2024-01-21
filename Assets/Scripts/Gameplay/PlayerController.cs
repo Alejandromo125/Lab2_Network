@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
     public float dashDuration = 0.15f;
     private bool isDashing = false;
     private bool recievedDamage = false;
+    private bool justHealed = false;
     public GameObject blueTeamBullet, redTeamBullet, shockBullet;
     private Quaternion LastRotation;
     private float timerShoots = 0f;
@@ -353,10 +354,11 @@ public class PlayerController : MonoBehaviour
          * OnCollisionStay() => heal the player x amount
          * reset the boolean once you have sent the info similar to line 316
          */
-        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage)
+        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage || justHealed)
         {
             UpdateInfo();
             recievedDamage = false;
+            justHealed = false;
         }
     }
     void UpdateInfo()
@@ -401,6 +403,19 @@ public class PlayerController : MonoBehaviour
             }
             
         }
+
+        if (!justHealed)
+        {
+            if (collision.gameObject.CompareTag("HealingZone"))
+            {
+                Debug.Log("Healed");
+                //Se podria hacer cambiar de sitio la cura la siguiente vez
+                characterData.HealthPoints += 20;
+                justHealed = true;
+
+            }
+        }
+
     }
     IEnumerator Dash()
     {
