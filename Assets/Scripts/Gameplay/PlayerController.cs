@@ -404,8 +404,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Current collision: " + collision.gameObject);
-
         if (!actions.shield)
         {
             switch (characterData.team)
