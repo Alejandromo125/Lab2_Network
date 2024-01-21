@@ -195,16 +195,17 @@ public class PlayerController : MonoBehaviour
             actions.shoot = false;
         }
 
-        if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
-        {
-            FiveShoots();
-            lastShootTimeShotgun = Time.time;
-            actions.shotgun = true;
-        }
-        else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
-        {
-            actions.shotgun = false;
-        }
+        //TODO IN BRANCH: Instantiate 1 by 1 the  bullets with a delay
+        //if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
+        //{
+        //    FiveShoots(-30);
+        //    lastShootTimeShotgun = Time.time;
+        //    actions.shotgun = true;
+        //}
+        //else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
+        //{
+        //    actions.shotgun = false;
+        //}
 
         if (Input.GetKeyDown(KeyCode.E) && Time.time - lastShieldTime > shieldDelay)
         {
@@ -223,20 +224,21 @@ public class PlayerController : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
     }
 
-    void FiveShoots()
+    public void FiveShoots(int degree)
     {
-        // Create bullets at different rotations
-        Quaternion rotation2 = Quaternion.Euler(0, -10, 0);
-        Quaternion rotation3 = Quaternion.Euler(0, -25, 0);
-        Quaternion rotation4 = Quaternion.Euler(0, 10, 0);
-        Quaternion rotation5 = Quaternion.Euler(0, 25, 0);
+        //Quaternion rotation = Quaternion.Euler(0, degree, 0);
+        //GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+        //for(int i = 0; i <= 300;i++)
+        //{
+        //    Console.WriteLine("Delay");
+        //    if(i == 300)
+        //    {
+        //        if (degree <= 30)
+        //            FiveShoots(degree + 15);
+        //    }
+        //}
 
-        // Spawn the explosion particle at the gun's position.
-        GameObject bullet1 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
-        GameObject bullet2 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation2);
-        GameObject bullet3 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation3);
-        GameObject bullet4 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation4);
-        GameObject bullet5 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation5);
+       
     }
 
     #region NetworkUpdates
@@ -302,7 +304,12 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleCharacterUpdates()
     {
-
+        //TODO IN BRANCH: If we wanna do health pool we need the follwing thigns:
+        /* a boolean similar to recieve damage that says heals
+         * detecting collisions with the healing tag
+         * OnCollisionStay() => heal the player x amount
+         * reset the boolean once you have sent the info similar to line 316
+         */
         if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage)
         {
             UpdateInfo();

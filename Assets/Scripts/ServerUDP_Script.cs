@@ -37,7 +37,7 @@ public class ServerUDP_Script : MonoBehaviour
         udpListener = new UdpClient(port);
 
 
-        Debug.Log("Server started on port " + port);
+        Debug.Log("Host started on port " + port);
         UdpReceiveResult result = await udpListener.ReceiveAsync();
         clientEndPoint.Add(result.RemoteEndPoint);
         string message = Encoding.UTF8.GetString(result.Buffer);
@@ -75,7 +75,7 @@ public class ServerUDP_Script : MonoBehaviour
     }
     public void HandleCallbackEvent()
     {
-        string message = "Server" + ":" + UiManager.instance.InputFieldMessage.text;
+        string message = "Host" + ":" + UiManager.instance.InputFieldMessage.text;
         Message newMessage = new Message(message, null, TypesOfMessage.WAITING_ROOM);
         HandleSendingMessages(newMessage);
     }
