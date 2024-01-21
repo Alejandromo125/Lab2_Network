@@ -74,17 +74,13 @@ public class DummyController : MonoBehaviour
         {
             //raycastLine.enabled = true;
             audioSource.PlayOneShot(shootClip);
-            Quaternion rotation2 = Quaternion.Euler(0, -10, 0);
-            Quaternion rotation3 = Quaternion.Euler(0, -25, 0);
-            Quaternion rotation4 = Quaternion.Euler(0, 10, 0);
-            Quaternion rotation5 = Quaternion.Euler(0, 25, 0);
 
-            // Spawn the explosion particle at the gun's position.
-            GameObject bullet1 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
-            GameObject bullet2 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation2);
-            GameObject bullet3 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation3);
-            GameObject bullet4 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation4);
-            GameObject bullet5 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation5); 
+            Invoke("FiveShoots_1", 0.0f);
+            Invoke("FiveShoots_2", 0.1f);
+            Invoke("FiveShoots_3", 0.2f);
+            Invoke("FiveShoots_4", 0.3f);
+            Invoke("FiveShoots_5", 0.4f);
+
             alreadyShotgun = true;
         }
 
@@ -134,5 +130,35 @@ public class DummyController : MonoBehaviour
     void DummyDisableRaycastLine()
     {
         raycastLine.enabled = false;
+    }
+
+    void FiveShoots_1()
+    {
+        Quaternion rotation = Quaternion.Euler(0, -30, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void FiveShoots_2()
+    {
+        Quaternion rotation = Quaternion.Euler(0, -15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void FiveShoots_3()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void FiveShoots_4()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void FiveShoots_5()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 30, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
     }
 }

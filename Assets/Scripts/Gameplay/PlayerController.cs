@@ -41,7 +41,9 @@ public class PlayerController : MonoBehaviour
     public float lastShieldTime;
     public float shieldDelay = 15f;
     public float shieldTimer = 5f;
-    
+    private float healDelay = 1f;
+    private float lastHealTime = 0f;
+
     private TypesOfActions actions;
 
     private CinemachineVirtualCamera cam;
@@ -57,8 +59,11 @@ public class PlayerController : MonoBehaviour
     public float dashDuration = 0.15f;
     private bool isDashing = false;
     private bool recievedDamage = false;
+    private bool justHealed = false;
     public GameObject blueTeamBullet, redTeamBullet, shockBullet;
     private Quaternion LastRotation;
+    private float timerShoots = 0f;
+
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
@@ -77,6 +82,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         raycastLine.enabled = false;
+
+        actions.heal = false;
 
         bulletHitManager_ = FindObjectOfType<BulletHitManager>();
         bulletHitDummyManager_ = FindObjectOfType<BulletHitDummyManager>();
@@ -100,6 +107,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
+        
     }
 
     void Update()
@@ -195,17 +203,17 @@ public class PlayerController : MonoBehaviour
             actions.shoot = false;
         }
 
-        //TODO IN BRANCH: Instantiate 1 by 1 the  bullets with a delay
-        //if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
-        //{
-        //    FiveShoots(-30);
-        //    lastShootTimeShotgun = Time.time;
-        //    actions.shotgun = true;
-        //}
-        //else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
-        //{
-        //    actions.shotgun = false;
-        //}
+        if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
+        {
+            
+            Shotgun();
+            lastShootTimeShotgun = Time.time;
+            actions.shotgun = true;
+        }
+        else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
+        {
+            actions.shotgun = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.E) && Time.time - lastShieldTime > shieldDelay)
         {
@@ -224,21 +232,61 @@ public class PlayerController : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
     }
 
-    public void FiveShoots(int degree)
+    public void FiveShoots_1()
     {
         //Quaternion rotation = Quaternion.Euler(0, degree, 0);
         //GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
-        //for(int i = 0; i <= 300;i++)
+        //for (int i = 0; i <= 300; i++)
         //{
-        //    Console.WriteLine("Delay");
-        //    if(i == 300)
+        //    if (i == 300)
         //    {
         //        if (degree <= 30)
-        //            FiveShoots(degree + 15);
+        //        {
+        //            if (timerShoots >= 0.2f)
+        //            {
+        //                timerShoots = 0f;
+        //                FiveShoots(degree + 15);
+        //            }   
+        //        }
+
         //    }
         //}
 
-       
+        Quaternion rotation = Quaternion.Euler(0, -30, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_2()
+    {
+        Quaternion rotation = Quaternion.Euler(0, -15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_3()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_4()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 15, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    public void FiveShoots_5()
+    {
+        Quaternion rotation = Quaternion.Euler(0, 30, 0);
+        GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation);
+    }
+
+    void Shotgun()
+    {
+        Invoke("FiveShoots_1", 0.0f);
+        Invoke("FiveShoots_2", 0.1f);
+        Invoke("FiveShoots_3", 0.2f);
+        Invoke("FiveShoots_4", 0.3f);
+        Invoke("FiveShoots_5", 0.4f);
     }
 
     #region NetworkUpdates
@@ -304,16 +352,11 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleCharacterUpdates()
     {
-        //TODO IN BRANCH: If we wanna do health pool we need the follwing thigns:
-        /* a boolean similar to recieve damage that says heals
-         * detecting collisions with the healing tag
-         * OnCollisionStay() => heal the player x amount
-         * reset the boolean once you have sent the info similar to line 316
-         */
-        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage)
+        if(actions.walk || actions.run || actions.dash || actions.shoot || actions.shield || recievedDamage || actions.heal)
         {
             UpdateInfo();
             recievedDamage = false;
+            actions.heal = false;
         }
     }
     void UpdateInfo()
@@ -333,9 +376,37 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    void OnTriggerStay(Collider trigger)
+    {
+        if (!actions.heal)
+        {
+            if (trigger.gameObject.CompareTag("HealPad"))
+            {
+                if (Time.time - lastHealTime > healDelay)
+                {
+                    lastHealTime = Time.time;
+
+                    bulletHitManager_.entityLife += 5;
+                }
+                    
+
+                if (bulletHitManager_.entityLife >= 100)
+                {
+                    bulletHitManager_.entityLife = 100;
+                }
+
+                actions.heal = true;
+
+            }
+        }
+        
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if(!actions.shield)
+        //Debug.Log("Current collision: " + collision.gameObject);
+
+        if (!actions.shield)
         {
             switch (characterData.team)
             {
