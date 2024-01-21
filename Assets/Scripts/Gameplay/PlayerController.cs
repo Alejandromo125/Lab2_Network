@@ -193,7 +193,18 @@ public class PlayerController : MonoBehaviour
             actions.shoot = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && Time.time - lastShieldTime > shieldDelay)
+        if (Input.GetMouseButton(1) && Time.time - lastShootTime > shootDelay)
+        {
+            FiveShoots();
+            lastShootTime = Time.time;
+            actions.shoot = true;
+        }
+        else if (Time.time - lastShootTime < shootDelay)
+        {
+            actions.shoot = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.E) && Time.time - lastShieldTime > shieldDelay)
         {
             lastShieldTime = Time.time;
             actions.shield = true;
@@ -209,6 +220,23 @@ public class PlayerController : MonoBehaviour
         audioSource.PlayOneShot(shootSound);
         GameObject bullet = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
     }
+
+    void FiveShoots()
+    {
+        // Create bullets at different rotations
+        Quaternion rotation2 = Quaternion.Euler(0, -10, 0);
+        Quaternion rotation3 = Quaternion.Euler(0, -25, 0);
+        Quaternion rotation4 = Quaternion.Euler(0, 10, 0);
+        Quaternion rotation5 = Quaternion.Euler(0, 25, 0);
+
+        // Spawn the explosion particle at the gun's position.
+        GameObject bullet1 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation);
+        GameObject bullet2 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation2);
+        GameObject bullet3 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation3);
+        GameObject bullet4 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation4);
+        GameObject bullet5 = Instantiate(bulletPrefab, particleSpawnerTr.position, transform.rotation * rotation5);
+    }
+
     #region NetworkUpdates
     private void UpdateCharacterData()
     {
