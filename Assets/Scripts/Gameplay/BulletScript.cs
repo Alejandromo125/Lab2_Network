@@ -15,6 +15,8 @@ public class BulletScript : MonoBehaviour
 
         // Apply initial force to the bullet in the forward direction
         rb.AddForce(transform.forward * speed, ForceMode.VelocityChange);
+
+        Destroy(gameObject,10.0f);
     }
     private void OnCollisionEnter(Collision collision)
     {

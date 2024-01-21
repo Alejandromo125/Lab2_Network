@@ -62,6 +62,8 @@ public class PlayerController : MonoBehaviour
     #region TimerForData
     [SerializeField]
     private float timeForUpdate;
+    private float lastShootTimeShotgun;
+    private float shootDelayshotgun = 5f;
     #endregion
     private void Awake()
     {
@@ -193,13 +195,13 @@ public class PlayerController : MonoBehaviour
             actions.shoot = false;
         }
 
-        if (Input.GetMouseButton(1) && Time.time - lastShootTime > shootDelay)
+        if (Input.GetMouseButton(1) && Time.time - lastShootTimeShotgun > shootDelayshotgun)
         {
             FiveShoots();
-            lastShootTime = Time.time;
+            lastShootTimeShotgun = Time.time;
             actions.shoot = true;
         }
-        else if (Time.time - lastShootTime < shootDelay)
+        else if (Time.time - lastShootTimeShotgun < shootDelayshotgun)
         {
             actions.shoot = false;
         }
